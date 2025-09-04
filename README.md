@@ -5,7 +5,7 @@ Zolara is a fullstack chat application that provides real-time messaging capabil
 ## 🧑‍💻 Members
 
 - Nguyễn Trung Nguyên (leader 🗿)
-- Nguyễn Văn Minh (fullstack dev 🤩)
+- Nguyễn Văn Minh (fullstack 🤩)
 
 ## 🌟 Features
 - **Real-time Messaging**: Powered by Firebase for seamless communication.
