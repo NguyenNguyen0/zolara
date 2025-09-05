@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const MessageReactionSchema = z.object({
+	id: z.string(),
+	url: z.union([z.emoji(), z.url()]),
+	description: z.string().max(20).optional(),
+});
+
 export const MessageSchema = z.object({
 	id: z.string(),
 	chatId: z.string(),
@@ -11,6 +17,7 @@ export const MessageSchema = z.object({
 	deliveryStatus: z
 		.enum(['sending', 'sent', 'delivered', 'read'])
 		.default('sending'),
+	reactions: z.array(MessageReactionSchema).optional(),
 	timestamp: z.date().default(new Date()),
 	replyTo: z.string().optional(),
 	mentions: z.array(z.string()).optional(),
@@ -29,5 +36,6 @@ export const CallSchema = z.object({
 	duration: z.int().min(0).default(0),
 });
 
+export type MessageReaction = z.infer<typeof MessageReactionSchema>;
 export type Message = z.infer<typeof MessageSchema>;
 export type Call = z.infer<typeof CallSchema>;
