@@ -1,10 +1,24 @@
-import { z } from "zod";
+export {
+	type User,
+	type MinimalUser,
+	type FriendList,
+	UserSchema,
+	MinimalUserSchema,
+	FriendListSchema
+} from './schema/user';
 
-export const UserSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string(),
-    age: z.number().int().optional()
-});
+export {
+	type Group,
+	type GroupConfig,
+	type Chat,
+	GroupSchema,
+	GroupConfigSchema,
+	ChatSchema,
+} from './schema/chat';
 
-export type User = z.infer<typeof UserSchema>;
+export {
+	type Message,
+	type Call,
+	MessageSchema,
+	CallSchema,
+} from './schema/message';
