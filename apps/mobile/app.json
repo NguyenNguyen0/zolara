@@ -1,11 +1,11 @@
 {
 	"expo": {
-		"name": "mobile",
-		"slug": "mobile",
+		"name": "Zolara",
+		"slug": "zolara",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
-		"scheme": "mobile",
+		"icon": "./src/assets/brand/logo_temporary.png",
+		"scheme": "zolara",
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
 		"ios": {
@@ -13,7 +13,7 @@
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"foregroundImage": "./src/assets/brand/logo_temporary.png",
 				"backgroundColor": "#ffffff"
 			},
 			"edgeToEdgeEnabled": true
@@ -21,14 +21,14 @@
 		"web": {
 			"bundler": "metro",
 			"output": "static",
-			"favicon": "./assets/images/favicon.png"
+			"favicon": "./src/assets/brand/logo_temporary.png"
 		},
 		"plugins": [
 			"expo-router",
 			[
 				"expo-splash-screen",
 				{
-					"image": "./assets/images/splash-icon.png",
+					"image": "./src/assets/brand/logo_temporary.png",
 					"imageWidth": 200,
 					"resizeMode": "contain",
 					"backgroundColor": "#ffffff"

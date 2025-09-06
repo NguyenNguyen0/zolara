@@ -1,0 +1,27 @@
+import { Stack } from 'expo-router';
+
+export default function ScreenLayout() {
+	return (
+		<Stack>
+			<Stack.Screen name="index" options={{ headerShown: false }} />
+			<Stack.Screen name="splash" options={{ headerShown: false }} />
+			<Stack.Screen
+				name="(auth)/welcome"
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="(auth)/login.email"
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="(auth)/confirm.password"
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="(auth)/verify"
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+		</Stack>
+	);
+}
