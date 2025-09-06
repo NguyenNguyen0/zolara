@@ -1,44 +1,40 @@
 import { Stack } from 'expo-router';
-import '@/global.css';
-import { Provider } from 'react-redux';
-import { store } from '@/src/store';
-import '@/src/utils/i18n';
+import * as SplashScreen from 'expo-splash-screen';
+import 'react-native-reanimated';
 import { ThemeProvider } from '@/src/contexts/ThemeContext';
+import { store } from '@/src/store';
+import { Provider } from 'react-redux';
+import '@/global.css';
+import '@/src/utils/i18n';
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+// SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+	//   const [loaded] = useFonts({
+	//     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+	//   });
+
+	//   useEffect(() => {
+	//     if (loaded) {
+	//       SplashScreen.hideAsync();
+	//     }
+	//   }, [loaded]);
+
+	//   if (!loaded) {
+	//     return null;
+	//   }
+
 	return (
 		<ThemeProvider>
 			<Provider store={store}>
-				<Stack
-					screenOptions={{
-						headerTintColor: 'blue',
-						headerTitleStyle: {
-							color: 'black',
-						},
-					}}
-				>
+				<Stack>
 					<Stack.Screen
-						name="index"
+						name="(screens)"
 						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
-						name="(auth)/welcome"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="(auth)/login.email"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="(auth)/confirm.password"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="(auth)/verify"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="(tabs)"
+						name="+not-found"
 						options={{ headerShown: false }}
 					/>
 				</Stack>
