@@ -1,9 +1,11 @@
 import { Stack, useRouter } from 'expo-router';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function NotFoundScreen() {
 	const router = useRouter();
+	const { t } = useTranslation('not-found');
 
 	const handleGoHome = () => {
 		router.replace('/');
@@ -19,119 +21,54 @@ export default function NotFoundScreen() {
 
 	return (
 		<>
-			<Stack.Screen options={{ title: 'Không tìm thấy trang' }} />
-			<View style={styles.container}>
-				<View style={styles.iconContainer}>
+			<Stack.Screen options={{ title: t('title') }} />
+			<View className="flex-1 justify-center items-center bg-gray-50 p-5">
+				<View className="mb-5">
 					<Ionicons name="sad-outline" size={120} color="#6B7280" />
 				</View>
 
-				<Text style={styles.errorCode}>404</Text>
-				<Text style={styles.title}>Oops! Trang không tồn tại</Text>
-				<Text style={styles.description}>
-					Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm
-					thời không khả dụng.
+				<Text className="text-7xl font-black text-gray-200 mb-2.5 text-center">
+					{t('errorCode')}
+				</Text>
+				<Text className="text-2xl font-bold text-gray-900 mb-2.5 text-center">
+					{t('subtitle')}
+				</Text>
+				<Text className="text-base text-gray-500 text-center leading-6 max-w-xs mb-10">
+					{t('description')}
 				</Text>
 
-				<View style={styles.buttonContainer}>
+				<View className="w-full max-w-xs gap-3">
 					<Pressable
-						style={[styles.button, styles.primaryButton]}
+						className="flex-row items-center justify-center py-3 px-6 bg-blue-500 rounded-lg min-h-12"
 						onPress={handleGoHome}
 					>
 						<Ionicons
 							name="home"
 							size={20}
 							color="white"
-							style={styles.buttonIcon}
+							style={{ marginRight: 8 }}
 						/>
-						<Text style={styles.primaryButtonText}>
-							Về trang chủ
+						<Text className="text-white text-base font-semibold">
+							{t('buttons.goHome')}
 						</Text>
 					</Pressable>
 
 					<Pressable
-						style={[styles.button, styles.secondaryButton]}
+						className="flex-row items-center justify-center py-3 px-6 bg-transparent border border-gray-300 rounded-lg min-h-12"
 						onPress={handleGoBack}
 					>
 						<Ionicons
 							name="arrow-back"
 							size={20}
 							color="#3B82F6"
-							style={styles.buttonIcon}
+							style={{ marginRight: 8 }}
 						/>
-						<Text style={styles.secondaryButtonText}>Quay lại</Text>
+						<Text className="text-blue-500 text-base font-semibold">
+							{t('buttons.goBack')}
+						</Text>
 					</Pressable>
 				</View>
 			</View>
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#F9FAFB',
-		padding: 20,
-	},
-	iconContainer: {
-		marginBottom: 20,
-	},
-	errorCode: {
-		fontSize: 72,
-		fontWeight: '900',
-		color: '#E5E7EB',
-		marginBottom: 10,
-		textAlign: 'center',
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: '700',
-		color: '#111827',
-		marginBottom: 10,
-		textAlign: 'center',
-	},
-	description: {
-		fontSize: 16,
-		color: '#6B7280',
-		textAlign: 'center',
-		lineHeight: 24,
-		maxWidth: 300,
-		marginBottom: 40,
-	},
-	buttonContainer: {
-		width: '100%',
-		maxWidth: 300,
-		gap: 12,
-	},
-	button: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'center',
-		paddingVertical: 12,
-		paddingHorizontal: 24,
-		borderRadius: 8,
-		minHeight: 48,
-	},
-	primaryButton: {
-		backgroundColor: '#3B82F6',
-	},
-	secondaryButton: {
-		backgroundColor: 'transparent',
-		borderWidth: 1,
-		borderColor: '#D1D5DB',
-	},
-	buttonIcon: {
-		marginRight: 8,
-	},
-	primaryButtonText: {
-		color: 'white',
-		fontSize: 16,
-		fontWeight: '600',
-	},
-	secondaryButtonText: {
-		color: '#3B82F6',
-		fontSize: 16,
-		fontWeight: '600',
-	},
-});
