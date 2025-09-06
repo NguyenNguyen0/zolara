@@ -26,16 +26,16 @@ export default function RootLayout() {
 						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
-						name="(auth)/login"
-						// options={{ headerShown: false }}
+						name="(auth)/login.email"
+						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
-						name="(auth)/signup"
-						// options={{ headerShown: false }}
+						name="(auth)/confirm.password"
+						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
 						name="(auth)/verify"
-						// options={{ headerShown: false }}
+						options={{ headerShown: false }}
 					/>
 					<Stack.Screen
 						name="(tabs)"

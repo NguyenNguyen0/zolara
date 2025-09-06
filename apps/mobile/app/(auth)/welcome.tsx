@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, SafeAreaView, StatusBar } from 'react-native';
+import { View, Image, SafeAreaView, StatusBar, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/src/components/button/share.button';
 import ThemeToggle from '@/src/components/ThemeToggle';
@@ -46,14 +46,12 @@ export default function Welcome() {
 						{/* Login */}
 						<ShareButton
 							title={t('login')}
-							onPress={() => router.navigate("/(auth)/login")}
+							onPress={() =>
+								router.navigate('/(auth)/login.email')
+							}
 							buttonStyle={{
 								backgroundColor: APP_COLOR.PRIMARY,
 								borderColor: APP_COLOR.PRIMARY,
-								borderWidth: 0,
-								borderRadius: 25,
-								paddingVertical: 16,
-								paddingHorizontal: 24,
 								width: '100%',
 								alignSelf: 'stretch',
 								justifyContent: 'center',
@@ -70,7 +68,8 @@ export default function Welcome() {
 						{/* Create */}
 						<ShareButton
 							title={t('createAccount')}
-							onPress={() => router.navigate("/(auth)/signup")}
+							// onPress={() => router.navigate('/(auth)/signup.email')}
+							onPress={() => Alert.alert("Coming Soon!, in development mode")}
 							buttonStyle={{
 								backgroundColor: isDark
 									? APP_COLOR.GREYDARK
@@ -78,40 +77,6 @@ export default function Welcome() {
 								borderColor: isDark
 									? APP_COLOR.GREYDARK
 									: APP_COLOR.GREYLIGHT,
-								borderWidth: 0,
-								borderRadius: 25,
-								paddingVertical: 16,
-								paddingHorizontal: 24,
-								width: '100%',
-								alignSelf: 'stretch',
-								justifyContent: 'center',
-							}}
-							textStyle={{
-								color: isDark
-									? APP_COLOR.WHITE
-									: APP_COLOR.DARK,
-								fontSize: 18,
-								fontWeight: '600',
-							}}
-							pressStyle={{
-								alignSelf: 'stretch',
-							}}
-						/>
-						{/* Test */}
-						<ShareButton
-							title={"Test open tabs"}
-							onPress={() => router.replace("/(tabs)")}
-							buttonStyle={{
-								backgroundColor: isDark
-									? APP_COLOR.GREYDARK
-									: APP_COLOR.GREYLIGHT,
-								borderColor: isDark
-									? APP_COLOR.GREYDARK
-									: APP_COLOR.GREYLIGHT,
-								borderWidth: 0,
-								borderRadius: 25,
-								paddingVertical: 16,
-								paddingHorizontal: 24,
 								width: '100%',
 								alignSelf: 'stretch',
 								justifyContent: 'center',

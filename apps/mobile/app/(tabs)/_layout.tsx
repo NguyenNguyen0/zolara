@@ -1,6 +1,7 @@
 import { APP_COLOR } from '@/src/utils/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 
 const getIcons = (routeName: string, focused: boolean, size: number) => {
 	let iconName: keyof typeof Ionicons.glyphMap;
@@ -49,6 +50,24 @@ const TabLayout = () => {
 				},
 				tabBarLabelStyle: { paddingBottom: 5 },
 				tabBarActiveTintColor: APP_COLOR.PRIMARY,
+				// Disable hover gray color when click!
+				tabBarActiveBackgroundColor: 'transparent',
+				tabBarInactiveBackgroundColor: 'transparent',
+				tabBarItemStyle: {
+					backgroundColor: 'transparent',
+				},
+				tabBarButton: (props: any) => (
+					<TouchableOpacity
+						{...props}
+						activeOpacity={1}
+						style={[
+							props.style,
+							{
+								backgroundColor: 'transparent',
+							},
+						]}
+					/>
+				),
 			})}
 		>
 			<Tabs.Screen name="index" options={{ title: 'Messages' }} />

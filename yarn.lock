@@ -7217,6 +7217,11 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.1.7:
   resolved "https://registry.npmjs.org/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
+react-native-otp-textinput@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-otp-textinput/-/react-native-otp-textinput-1.1.7.tgz#c7c3611c35701996777d117a1990c58ca94796da"
+  integrity sha512-XIMwDRoAKaQTCBnnPaSu94a1y/gfARsVYV6ybu8r4OcdUiMLirrcGgo2iZEnzaodrFIU5GoF4cUcLtsFcWcsew==
+
 react-native-reanimated@~3.17.4:
   version "3.17.5"
   resolved "https://registry.npmmirror.com/react-native-reanimated/-/react-native-reanimated-3.17.5.tgz"

@@ -9,6 +9,15 @@ import viWelcome from '@/src/locales/vi/welcome.json';
 import enCommon from '@/src/locales/en/common.json';
 import viCommon from '@/src/locales/vi/common.json';
 
+import enLoginEmail from '@/src/locales/en/login-email.json';
+import viLoginEmail from '@/src/locales/vi/login-email.json';
+
+import enConfirmPassword from '@/src/locales/en/confirm-password.json';
+import viConfirmPassword from '@/src/locales/vi/confirm-password.json';
+
+import enVerify from '@/src/locales/en/verify.json';
+import viVerify from '@/src/locales/vi/verify.json';
+
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
 	async: true,
@@ -44,14 +53,20 @@ i18n.use(LANGUAGE_DETECTOR)
 			en: {
 				welcome: enWelcome,
 				common: enCommon,
+				'login-email': enLoginEmail,
+				'confirm-password': enConfirmPassword,
+				verify: enVerify,
 			},
 			vi: {
 				welcome: viWelcome,
 				common: viCommon,
+				'login-email': viLoginEmail,
+				'confirm-password': viConfirmPassword,
+				verify: viVerify,
 			},
 		},
 
-		ns: ['welcome', 'common'],
+		ns: ['welcome', 'common', 'login-email', 'confirm-password', 'verify'],
 		defaultNS: 'common',
 
 		interpolation: {
