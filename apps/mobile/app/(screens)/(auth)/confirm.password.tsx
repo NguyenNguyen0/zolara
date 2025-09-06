@@ -26,6 +26,10 @@ export default function ConfirmPassword() {
 
 	const email = params.email as string;
 	const isLogin = params.isLogin === '1';
+	const isSignup = params.isSignup === '1';
+
+	// Determine flow type
+	const flowType = isLogin ? 'login' : isSignup ? 'signup' : 'unknown';
 
 	const handleNext = () => {
 		// TODO: Implement navigation to next step
@@ -34,12 +38,21 @@ export default function ConfirmPassword() {
 			password,
 			'Email:',
 			email,
-			'IsLogin:',
-			isLogin,
+			'FlowType:',
+			flowType,
 		);
+
+		// Pass the correct flow type to verify screen
+		const verifyParams: any = { email, password };
+		if (isLogin) {
+			verifyParams.isLogin = '1';
+		} else if (isSignup) {
+			verifyParams.isSignup = '1';
+		}
+
 		router.replace({
 			pathname: '/(screens)/(auth)/verify',
-			params: { email, password, isLogin: 1 },
+			params: verifyParams,
 		});
 	};
 
@@ -132,14 +145,16 @@ export default function ConfirmPassword() {
 						}}
 					/>
 
-					{/* Forgot Password Link */}
-					<ShareQuestionLink
-						questionText=""
-						linkName={t('forgotPassword')}
-						path="/(auth)/forgot-password"
-						questionColor={isDark ? 'white' : 'black'}
-						linkColor={APP_COLOR.PRIMARY}
-					/>
+					{/* Forgot Password Link - Only show for login flow */}
+					{isLogin && (
+						<ShareQuestionLink
+							questionText=""
+							linkName={t('forgotPassword')}
+							path="/(auth)/forgot-password"
+							questionColor={isDark ? 'white' : 'black'}
+							linkColor={APP_COLOR.PRIMARY}
+						/>
+					)}
 				</View>
 			</KeyboardAvoidingView>
 		</SafeAreaView>

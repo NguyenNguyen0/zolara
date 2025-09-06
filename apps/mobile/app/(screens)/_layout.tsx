@@ -21,6 +21,10 @@ export default function ScreenLayout() {
 				name="(auth)/verify"
 				options={{ headerShown: false }}
 			/>
+			<Stack.Screen
+				name="(auth)/signup.email"
+				options={{ headerShown: false }}
+			/>
 			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 		</Stack>
 	);

@@ -68,8 +68,7 @@ export default function Welcome() {
 						{/* Create */}
 						<ShareButton
 							title={t('createAccount')}
-							// onPress={() => router.navigate('/(auth)/signup.email')}
-							onPress={() => Alert.alert("Coming Soon!, in development mode")}
+							onPress={() => router.navigate('/(screens)/(auth)/signup.email')}
 							buttonStyle={{
 								backgroundColor: isDark
 									? APP_COLOR.GREYDARK

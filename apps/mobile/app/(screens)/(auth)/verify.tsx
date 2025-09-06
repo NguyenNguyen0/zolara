@@ -29,6 +29,10 @@ export default function Verify() {
 	const email = params.email as string;
 	const password = params.password as string;
 	const isLogin = params.isLogin === '1';
+	const isSignup = params.isSignup === '1';
+
+	// Determine flow type
+	const flowType = isLogin ? 'login' : isSignup ? 'signup' : 'unknown';
 
 	// Memoize computed values để tránh re-computation không cần thiết
 	const isNextDisabled = useMemo(() => otp.length !== 6, [otp.length]);
@@ -40,8 +44,8 @@ export default function Verify() {
 	// Debug: Log params to see what's being passed
 	console.log('Verify params:', params);
 	console.log('Email from params:', email);
-	console.log('Email type:', typeof email);
-	console.log('Email length:', email?.length);
+	console.log('FlowType:', flowType);
+	console.log('IsLogin:', isLogin, 'IsSignup:', isSignup);
 
 	const handleNext = useCallback(() => {
 		// TODO: Implement navigation to next step
@@ -52,13 +56,26 @@ export default function Verify() {
 			email,
 			'Password:',
 			password,
-			'IsLogin:',
-			isLogin,
+			'FlowType:',
+			flowType,
 		);
-		// Reset navigation stack và navigate to tabs
-		router.dismissAll();
-		router.replace('/(screens)/(tabs)');
-	}, [otp, email, password, isLogin]);
+
+		// Different navigation based on flow type
+		if (flowType === 'login') {
+			// For login: go to main app
+			router.dismissAll();
+			router.replace('/(screens)/(tabs)');
+		} else if (flowType === 'signup') {
+			// For signup: might need additional steps or go to main app
+			router.dismissAll();
+			router.replace('/(screens)/(tabs)');
+		} else {
+			// Fallback: go to main app
+			console.warn('Unknown flow type, defaulting to main app');
+			router.dismissAll();
+			router.replace('/(screens)/(tabs)');
+		}
+	}, [otp, email, password, flowType, router]);
 
 	const handleResendCode = useCallback(() => {
 		// TODO: Implement resend code logic

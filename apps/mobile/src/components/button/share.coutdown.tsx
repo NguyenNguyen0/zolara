@@ -77,7 +77,7 @@ const CountdownButton = memo(
 						className="text-base font-semibold"
 						style={{
 							color: isButtonDisabled
-								? APP_COLOR.GREYLIGHT
+								? isDark ? APP_COLOR.WHITE : APP_COLOR.DARK
 								: APP_COLOR.PRIMARY,
 						}}
 					>
