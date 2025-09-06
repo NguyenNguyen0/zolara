@@ -23,14 +23,14 @@ export const MinimalUserSchema = z.object({
 	lastName: z.string().trim().nonempty().max(20),
 	avatar: z.url().max(100).optional(),
 	isOnline: z.boolean().optional(),
-	lastSeen: z.date().optional()
+	lastSeen: z.date().optional(),
 });
 
 export const FriendListSchema = z.object({
 	id: z.string(),
 	ownerId: z.string(),
 	count: z.int().default(0),
-	friends: z.array(MinimalUserSchema)
+	friends: z.array(MinimalUserSchema),
 });
 
 export type User = z.infer<typeof UserSchema>;

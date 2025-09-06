@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
 import { MinimalUserSchema } from './user';
-import { CallSchema, MessageSchema } from "./message";
+import { CallSchema, MessageSchema } from './message';
 
 export const GroupConfigSchema = z.object({
-	autoMemberApproval: z.boolean().default(true)
+	autoMemberApproval: z.boolean().default(true),
 });
 
 export type GroupConfig = z.infer<typeof GroupConfigSchema>;
@@ -20,7 +20,6 @@ export const GroupSchema = z.object({
 	members: z.array(MinimalUserSchema).min(2).max(100).optional(),
 	groupConfig: GroupConfigSchema.default({ autoMemberApproval: true }),
 });
-
 
 export const ChatSchema = z.object({
 	id: z.string(),

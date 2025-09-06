@@ -1,33 +1,74 @@
 import express from 'express';
-import http from 'http';
+import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { loggerMiddleware } from './middlewares/logger';
-import { User, UserSchema } from '@repo/types';
+import { loggerMiddleware } from './middlewares/logger.middleware';
 import chalk from 'chalk';
+import { specs } from './configs/swagger.config';
+import { userRouter } from './routes/user';
+import { messageRouter } from './routes/message';
+import { chatRouter } from './routes/chat';
 
-// Load environment variables
 dotenv.config();
 
-// Create Express app
 const app = express();
-const server = http.createServer(app);
 
 // Middleware
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
-app.use(loggerMiddleware)
+app.use(loggerMiddleware);
 
-// Basic route
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: API status check
+ *     description: Check if the API is running
+ *     responses:
+ *       200:
+ *         description: API is running
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 version:
+ *                   type: string
+ */
 app.get('/', (req, res) => {
-  const user: User = UserSchema.parse({id: "1", name: "nguyen", email: "n@gmail.com"});
-  res.send(`Zolara Chat API is running: ${JSON.stringify(user)}`);
+	res.json({
+		status: 'API is running',
+		version: '1.0.0',
+	});
 });
 
+// API documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+// API routes
+app.use('/api/users', userRouter);
+app.use('/api/chats', chatRouter);
+app.use('/api/messages', messageRouter);
+
 // Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(
-    `🌐 ${chalk.bold("SERVER RUNNING ON")} ${chalk.green("http://localhost:" + PORT)}`
-  );
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+	console.log(
+		`🌐 ${chalk.bold('SERVER RUNNING ON')} ${chalk.green('http://localhost:' + PORT)}`,
+	);
+	console.log(
+		`📚 ${chalk.bold('API DOCUMENTATION')} ${chalk.yellow('http://localhost:' + PORT + '/api-docs')}`,
+	);
 });
