@@ -47,7 +47,7 @@ export default function Welcome() {
 						<ShareButton
 							title={t('login')}
 							onPress={() =>
-								router.navigate('/(auth)/login.email')
+								router.navigate('/(screens)/(auth)/login.email')
 							}
 							buttonStyle={{
 								backgroundColor: APP_COLOR.PRIMARY,

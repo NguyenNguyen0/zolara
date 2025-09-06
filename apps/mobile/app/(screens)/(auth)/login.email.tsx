@@ -26,7 +26,7 @@ export default function LoginEmail() {
 	const handleNext = () => {
 		// TODO: Implement navigation to next step
 		router.navigate({
-			pathname: '/(auth)/confirm.password',
+			pathname: '/(screens)/(auth)/confirm.password',
 			params: { email, isLogin: 1 },
 		});
 	};

@@ -38,7 +38,7 @@ export default function ConfirmPassword() {
 			isLogin,
 		);
 		router.replace({
-			pathname: '/(auth)/verify',
+			pathname: '/(screens)/(auth)/verify',
 			params: { email, password, isLogin: 1 },
 		});
 	};

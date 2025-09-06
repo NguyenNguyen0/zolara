@@ -57,7 +57,7 @@ export default function Verify() {
 		);
 		// Reset navigation stack và navigate to tabs
 		router.dismissAll();
-		router.replace('/(tabs)');
+		router.replace('/(screens)/(tabs)');
 	}, [otp, email, password, isLogin]);
 
 	const handleResendCode = useCallback(() => {
