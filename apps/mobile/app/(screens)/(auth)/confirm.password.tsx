@@ -62,7 +62,7 @@ export default function ConfirmPassword() {
 		<SafeAreaView
 			className="flex-1"
 			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.WHITE,
+				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
 			}}
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
@@ -73,7 +73,7 @@ export default function ConfirmPassword() {
 					<Ionicons
 						name="arrow-back"
 						size={24}
-						color={isDark ? APP_COLOR.WHITE : APP_COLOR.DARK}
+						color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -88,7 +88,7 @@ export default function ConfirmPassword() {
 					<Text
 						className="text-xl text-center mb-2"
 						style={{
-							color: isDark ? APP_COLOR.WHITE : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
 						}}
 					>
 						{t('title')}
@@ -98,7 +98,7 @@ export default function ConfirmPassword() {
 					<Text
 						className="text-3xl font-bold text-center mb-10"
 						style={{
-							color: isDark ? APP_COLOR.WHITE : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
 						}}
 					>
 						{email ? email : 'Unknown Email'}
@@ -126,17 +126,17 @@ export default function ConfirmPassword() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? '#cccc'
+								? APP_COLOR.GREY
 								: APP_COLOR.PRIMARY,
 							borderColor: isNextDisabled
-								? '#cccc'
+								? APP_COLOR.GREY
 								: APP_COLOR.PRIMARY,
 							width: '100%',
 							alignSelf: 'stretch',
 							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? 'black' : APP_COLOR.WHITE,
+							color: isNextDisabled ? 'black' : APP_COLOR.LIGHT,
 							fontSize: 18,
 							fontWeight: '600',
 						}}

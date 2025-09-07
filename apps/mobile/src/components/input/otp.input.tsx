@@ -39,7 +39,7 @@ const OTPInput = memo(
 						borderColor: isDark
 							? APP_COLOR.GREYLIGHT
 							: APP_COLOR.GREYLIGHT,
-						backgroundColor: APP_COLOR.WHITE,
+						backgroundColor: APP_COLOR.LIGHT,
 					}}
 					inputCount={inputCount}
 					keyboardType="numeric"

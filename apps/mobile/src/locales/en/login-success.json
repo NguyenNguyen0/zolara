@@ -1,0 +1,8 @@
+{
+	"title": "Login Success",
+	"userName": "Minh",
+	"successMessage": "Logged in successfully",
+	"buttons": {
+		"done": "Done"
+	}
+}
