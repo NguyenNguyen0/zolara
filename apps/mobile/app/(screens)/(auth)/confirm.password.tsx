@@ -15,7 +15,7 @@ import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import ShareQuestionLink from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 
 export default function ConfirmPassword() {
 	const { t } = useTranslation('confirm-password');

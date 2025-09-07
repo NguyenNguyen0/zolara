@@ -2,6 +2,7 @@ import { APP_COLOR } from '@/src/utils/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const getIcons = (routeName: string, focused: boolean, size: number) => {
 	let iconName: keyof typeof Ionicons.glyphMap;
@@ -36,13 +37,15 @@ const getIcons = (routeName: string, focused: boolean, size: number) => {
 };
 
 const TabLayout = () => {
+	const insets = useSafeAreaInsets();
+	
 	return (
 		<Tabs
 			screenOptions={({ route }) => ({
 				headerShown: false,
 				tabBarStyle: {
-					height: 50,
-					paddingBottom: 5,
+					height: 50 + insets.bottom,
+					paddingBottom: insets.bottom,
 					backgroundColor: '#fff',
 				},
 				tabBarIcon: ({ focused, color, size }) => {

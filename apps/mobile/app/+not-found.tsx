@@ -2,7 +2,7 @@ import { Stack, useRouter } from 'expo-router';
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
 
@@ -99,7 +99,7 @@ export default function NotFoundScreen() {
 							<Ionicons
 								name="arrow-back"
 								size={20}
-								color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
+								color={isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT}
 							/>
 						}
 						buttonStyle={{
@@ -116,7 +116,7 @@ export default function NotFoundScreen() {
 							width: '100%',
 						}}
 						textStyle={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
 							fontSize: 16,
 							fontWeight: '600',
 						}}

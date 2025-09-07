@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 
 const ThemeToggle: React.FC = () => {

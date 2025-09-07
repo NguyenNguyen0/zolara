@@ -13,6 +13,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/datetimepicker": "^8.4.4",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
@@ -41,6 +42,8 @@
     "react-dom": "19.0.0",
     "react-i18next": "^15.7.3",
     "react-native": "0.79.5",
+    "react-native-date-picker": "^5.0.13",
+    "react-native-element-dropdown": "^2.12.4",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-otp-textinput": "^1.1.7",
     "react-native-reanimated": "~3.17.4",
@@ -48,7 +51,9 @@
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "workspace": "^0.0.1-preview.2",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

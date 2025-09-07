@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 
 const LanguageToggle: React.FC = () => {
-  const { t, i18n } = useTranslation('common');
+  const { i18n } = useTranslation('common');
   const { isDark } = useTheme();
 
   const changeLanguage = () => {

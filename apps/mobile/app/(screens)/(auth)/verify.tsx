@@ -16,7 +16,7 @@ import ShareButton from '@/src/components/button/share.button';
 import OTPInput from '@/src/components/input/share.otp';
 import ShareCountdownButton from '@/src/components/button/share.coutdown';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 
 export default function Verify() {
 	const { t } = useTranslation('verify');
