@@ -3,7 +3,7 @@ import 'react-native-reanimated';
 import { store } from '@/src/store';
 import { Provider } from 'react-redux';
 import '@/global.css';
-import '@/src/utils/i18n';
+import '@/src/config/i18n';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 // SplashScreen.preventAutoHideAsync();

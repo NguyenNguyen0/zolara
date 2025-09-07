@@ -22,8 +22,8 @@ export default function SignUpName() {
 	const [name, setName] = useState('Nguyễn Văn Minh');
 
 	const handleContinue = () => {
-		router.replace({
-            pathname: '/(screens)/(tabs)',
+		router.navigate({
+            pathname: '/(screens)/(auth)/signup.detail',
             params: { name },
         });
 	};

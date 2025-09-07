@@ -29,6 +29,11 @@ import viLoginSuccess from '@/src/locales/vi/login-success.json';
 
 import enSignupName from '@/src/locales/en/signup-name.json';
 import viSignupName from '@/src/locales/vi/signup-name.json';
+import enSignupDetail from '@/src/locales/en/signup-detail.json';
+import viSignupDetail from '@/src/locales/vi/signup-detail.json';
+
+import enGender from '@/src/locales/en/gender.json';
+import viGender from '@/src/locales/vi/gender.json';
 
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
@@ -72,6 +77,8 @@ i18n.use(LANGUAGE_DETECTOR)
 				'not-found': enNotFound,
 				'login-success': enLoginSuccess,
 				'signup-name': enSignupName,
+				'signup-detail': enSignupDetail,
+				gender: enGender,
 			},
 			vi: {
 				welcome: viWelcome,
@@ -83,6 +90,8 @@ i18n.use(LANGUAGE_DETECTOR)
 				'not-found': viNotFound,
 				'login-success': viLoginSuccess,
 				'signup-name': viSignupName,
+				'signup-detail': viSignupDetail,
+				gender: viGender,
 			},
 		},
 
@@ -96,6 +105,8 @@ i18n.use(LANGUAGE_DETECTOR)
 			'not-found',
 			'login-success',
 			'signup-name',
+			'signup-detail',
+			'gender',
 		],
 		defaultNS: 'common',
 

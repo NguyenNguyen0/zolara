@@ -1,0 +1,6 @@
+{
+  "male": "Male",
+  "female": "Female", 
+  "other": "Other",
+  "placeholder": "Select gender"
+}
