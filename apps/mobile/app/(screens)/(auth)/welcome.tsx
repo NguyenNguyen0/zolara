@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import ShareButton from '@/src/components/button/share.button';
 import ThemeToggle from '@/src/components/theme.toggle';
 import LanguageToggle from '@/src/components/language.toggle';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { router } from 'expo-router';
 

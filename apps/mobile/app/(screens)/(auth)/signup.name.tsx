@@ -12,7 +12,7 @@ import { useRouter } from 'expo-router';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/contexts/theme.context';
+import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestionButton from '@/src/components/button/share.question';
 
 export default function SignUpName() {
