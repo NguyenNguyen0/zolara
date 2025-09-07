@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts/theme.context';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
 

@@ -14,7 +14,7 @@ interface CountdownButtonProps {
 	disabled?: boolean;
 }
 
-const CountdownButton = memo(
+const ShareCountdownButton = memo(
 	({
 		isDark,
 		onResend,
@@ -93,6 +93,6 @@ const CountdownButton = memo(
 	},
 );
 
-CountdownButton.displayName = 'CountdownButton';
+ShareCountdownButton.displayName = 'CountdownButton';
 
-export default CountdownButton;
+export default ShareCountdownButton;

@@ -28,6 +28,7 @@ export default function SplashScreen() {
     loop.start();
 
     const timer = setTimeout(() => {
+      // TODO: SET LOGIC NAVIGATE
       router.replace('/(screens)/(auth)/welcome');
     }, 3000);
 
