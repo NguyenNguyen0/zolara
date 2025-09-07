@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	TouchableOpacity,
 	SafeAreaView,
 	StatusBar,
 	KeyboardAvoidingView,
@@ -10,12 +9,11 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
-import ShareQuestionLink from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts/theme.context';
+import ShareQuestionButton from '@/src/components/button/share.question';
 
 export default function LoginEmail() {
 	const { t } = useTranslation('login-email');
@@ -42,20 +40,9 @@ export default function LoginEmail() {
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
-			{/* Header with back button */}
-			<View className="flex-row items-center px-5 py-10">
-				<TouchableOpacity onPress={() => router.back()} className="p-2">
-					<Ionicons
-						name="arrow-back"
-						size={24}
-						color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
-					/>
-				</TouchableOpacity>
-			</View>
-
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				className="flex-1 px-5"
+				className="flex-1 px-5 mt-32"
 			>
 				{/* Content Container */}
 				<View>
@@ -111,13 +98,15 @@ export default function LoginEmail() {
 					/>
 
 					{/* Create Account Link */}
-					<ShareQuestionLink
-						questionText={t('noAccount')}
-						linkName={t('createAccount')}
-						path="/(auth)/signup.email"
-						questionColor={isDark ? 'white' : 'black'}
-						linkColor={APP_COLOR.PRIMARY}
-					/>
+					<View className="flex-row items-center justify-center mt-5">
+						<ShareQuestionButton
+							questionText={t('noAccount')}
+							linkName={t('createAccount')}
+							path="/(auth)/signup.email"
+							questionColor={isDark ? 'white' : 'black'}
+							linkColor={APP_COLOR.PRIMARY}
+						/>
+					</View>
 				</View>
 			</KeyboardAvoidingView>
 		</SafeAreaView>

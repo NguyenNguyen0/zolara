@@ -9,7 +9,7 @@ interface IProps {
 	linkColor?: any;
 }
 
-const QuestionButton = (props: IProps) => {
+const ShareQuestionButton = (props: IProps) => {
 	const {
 		questionText,
 		linkName: questionBtnName,
@@ -31,9 +31,8 @@ const QuestionButton = (props: IProps) => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginVertical: 25,
+		marginVertical: 5,
 		flexDirection: 'row',
-		justifyContent: 'center',
 		gap: 5,
 	},
 	questionBtnName: {
@@ -42,4 +41,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default QuestionButton;
+export default ShareQuestionButton;

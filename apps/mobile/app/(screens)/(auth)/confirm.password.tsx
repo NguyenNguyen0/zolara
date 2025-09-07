@@ -15,7 +15,7 @@ import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import ShareQuestionLink from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts/theme.context';
 
 export default function ConfirmPassword() {
 	const { t } = useTranslation('confirm-password');
@@ -147,13 +147,15 @@ export default function ConfirmPassword() {
 
 					{/* Forgot Password Link - Only show for login flow */}
 					{isLogin && (
-						<ShareQuestionLink
-							questionText=""
-							linkName={t('forgotPassword')}
-							path="/(auth)/forgot-password"
-							questionColor={isDark ? 'white' : 'black'}
-							linkColor={APP_COLOR.PRIMARY}
-						/>
+						<View className="flex-row items-center justify-center mt-5">
+							<ShareQuestionLink
+								questionText=""
+								linkName={t('forgotPassword')}
+								path="/(auth)/forgot-password"
+								questionColor={isDark ? 'white' : 'black'}
+								linkColor={APP_COLOR.PRIMARY}
+							/>
+						</View>
 					)}
 				</View>
 			</KeyboardAvoidingView>

@@ -1,7 +1,6 @@
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
-import { ThemeProvider } from '@/src/contexts/ThemeContext';
+import { ThemeProvider } from '@/src/contexts/theme.context';
 import { store } from '@/src/store';
 import { Provider } from 'react-redux';
 import '@/global.css';

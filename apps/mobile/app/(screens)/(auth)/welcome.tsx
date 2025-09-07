@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Image, SafeAreaView, StatusBar, Alert } from 'react-native';
+import { View, Image, SafeAreaView, StatusBar } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/src/components/button/share.button';
-import ThemeToggle from '@/src/components/ThemeToggle';
-import LanguageToggle from '@/src/components/LanguageToggle';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import ThemeToggle from '@/src/components/theme.toggle';
+import LanguageToggle from '@/src/components/language.toggle';
+import { useTheme } from '@/src/contexts/theme.context';
 import { APP_COLOR } from '@/src/utils/constants';
 import { router } from 'expo-router';
 

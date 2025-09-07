@@ -13,10 +13,10 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import OTPTextView from 'react-native-otp-textinput';
 import ShareButton from '@/src/components/button/share.button';
-import OTPInput from '@/src/components/input/otp.input';
-import CountdownButton from '@/src/components/button/share.coutdown';
+import OTPInput from '@/src/components/input/share.otp';
+import ShareCountdownButton from '@/src/components/button/share.coutdown';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/contexts/ThemeContext';
+import { useTheme } from '@/src/contexts/theme.context';
 
 export default function Verify() {
 	const { t } = useTranslation('verify');
@@ -68,7 +68,7 @@ export default function Verify() {
 		} else if (flowType === 'signup') {
 			// For signup: might need additional steps or go to main app
 			router.dismissAll();
-			router.replace('/(screens)/(tabs)');
+			router.replace('/(screens)/(auth)/signup.name');
 		} else {
 			// Fallback: go to main app
 			console.warn('Unknown flow type, defaulting to main app');
@@ -194,7 +194,7 @@ export default function Verify() {
 					/>
 
 					{/* Resend Code Link */}
-					<CountdownButton
+					<ShareCountdownButton
 						isDark={isDark}
 						onResend={handleResendCode}
 					/>
