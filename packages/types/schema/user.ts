@@ -37,13 +37,27 @@ export const BlockUserListSchema = z.object({
 	id: z.string(),
 	ownerId: z.string(),
 	count: z.int().min(0).default(0),
-	blockedUsers: z.array(z.object({
-		userId: z.string(),
-		blockedAt: z.date().default(new Date())
-	}))
+	blockedUsers: z.array(
+		z.object({
+			userId: z.string(),
+			blockedAt: z.date().default(new Date()),
+		}),
+	),
+});
+
+export const InvitationSchema = z.object({
+	id: z.string(),
+	timestamp: z.date().default(new Date()),
+	senderId: z.string(),
+	receiverId: z.string(),
+	content: z.string(),
+	status: z.enum(['pending', 'accepted', 'rejected']),
+	type: z.enum(['friend', 'group']),
+	groupId: z.string().optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;
 export type MinimalUser = z.infer<typeof MinimalUserSchema>;
 export type FriendList = z.infer<typeof FriendListSchema>;
 export type BlockUserList = z.infer<typeof BlockUserListSchema>;
+export type Invitation = z.infer<typeof InvitationSchema>;

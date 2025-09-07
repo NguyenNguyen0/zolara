@@ -10,6 +10,10 @@ import {
 	createUserProfile,
 	unBlockUser,
 	getBlockList,
+	sendFriendInvitation,
+	getFriendInvitations,
+	acceptFriendInvitation,
+	rejectFriendInvitation,
 } from '../controllers/user.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import {
@@ -347,44 +351,157 @@ export const userRouter = express.Router();
  *         error:
  *           type: string
  *           description: Error message if any
+ *
+ *     Invitation:
+ *       type: object
+ *       required:
+ *         - id
+ *         - senderId
+ *         - receiverId
+ *         - status
+ *         - type
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the invitation
+ *         timestamp:
+ *           type: string
+ *           format: date-time
+ *           description: When the invitation was sent
+ *         senderId:
+ *           type: string
+ *           description: ID of the user who sent the invitation
+ *         receiverId:
+ *           type: string
+ *           description: ID of the user who received the invitation
+ *         content:
+ *           type: string
+ *           description: Optional message with the invitation
+ *         status:
+ *           type: string
+ *           enum: [pending, accepted, rejected]
+ *           description: Current status of the invitation
+ *         type:
+ *           type: string
+ *           enum: [friend, group]
+ *           description: Type of invitation
+ *         groupId:
+ *           type: string
+ *           description: ID of the group if this is a group invitation
+ *
+ *     SendInvitationRequest:
+ *       type: object
+ *       required:
+ *         - receiverId
+ *       properties:
+ *         receiverId:
+ *           type: string
+ *           description: ID of the user to send the invitation to
+ *         content:
+ *           type: string
+ *           description: Optional message to include with the invitation
+ *           maxLength: 200
+ *         type:
+ *           type: string
+ *           enum: [friend, group]
+ *           default: friend
+ *           description: Type of invitation
+ *         groupId:
+ *           type: string
+ *           description: ID of the group if this is a group invitation
+ *
+ *     SendInvitationResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Whether the operation was successful
+ *         message:
+ *           type: string
+ *           description: Human-readable message about the operation
+ *         data:
+ *           $ref: '#/components/schemas/Invitation'
+ *           description: The created invitation
+ *         error:
+ *           type: string
+ *           description: Error message if any
+ *
+ *     GetInvitationsResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Whether the operation was successful
+ *         message:
+ *           type: string
+ *           description: Human-readable message about the operation
+ *         data:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Invitation'
+ *           description: List of invitations
+ *         error:
+ *           type: string
+ *           description: Error message if any
+ *
+ *     RespondInvitationRequest:
+ *       type: object
+ *       required:
+ *         - invitationId
+ *         - status
+ *       properties:
+ *         invitationId:
+ *           type: string
+ *           description: ID of the invitation to respond to
+ *         status:
+ *           type: string
+ *           enum: [accepted, rejected]
+ *           description: The response to the invitation
+ *
+ *     RespondInvitationResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Whether the operation was successful
+ *         message:
+ *           type: string
+ *           description: Human-readable message about the operation
+ *         error:
+ *           type: string
+ *           description: Error message if any
  */
 
+// --------------------- INVITATION ROUTES ---------------------
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/users/invitation:
  *   get:
- *     summary: Get user profile information
- *     description: Retrieve user profile by user ID.
+ *     summary: Get pending friend invitations
+ *     description: Retrieve all pending friend invitations for the authenticated user
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: User ID to get current authenticated user's profile
  *     responses:
  *       200:
- *         description: User profile information
+ *         description: Invitations retrieved successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/GetUserProfileResponse'
- *       404:
- *         description: User not found
+ *               $ref: '#/components/schemas/GetInvitationsResponse'
+ *       401:
+ *         description: Unauthorized - invalid or missing token
  *       500:
  *         description: Server error
  */
-userRouter.get('/:id', authMiddleware({ optionalAuth: true }), getUserProfile);
+userRouter.get('/invitation', authMiddleware(), getFriendInvitations);
 
 /**
  * @swagger
- * /api/users/:
+ * /api/users/invitation:
  *   post:
- *     summary: Create user profile
- *     description: Create a new user profile with required information
+ *     summary: Send a friend invitation
+ *     description: Send a friend invitation to another user
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -393,68 +510,31 @@ userRouter.get('/:id', authMiddleware({ optionalAuth: true }), getUserProfile);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateUserProfileRequest'
+ *             $ref: '#/components/schemas/SendInvitationRequest'
  *     responses:
  *       201:
- *         description: User profile created successfully
+ *         description: Invitation sent successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CreateUserProfileResponse'
+ *               $ref: '#/components/schemas/SendInvitationResponse'
  *       400:
- *         description: Invalid input data
- *       401:
- *         description: Unauthorized - invalid or missing token
- *       500:
- *         description: Server error
- */
-userRouter.post('/', authMiddleware(), createUserProfile);
-
-/**
- * @swagger
- * /api/users/:
- *   put:
- *     summary: Update user profile
- *     description: Update user profile information and optionally upload a profile picture
- *     tags: [Users]
- *     security:
- *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             $ref: '#/components/schemas/UpdateUserProfileRequest'
- *     responses:
- *       200:
- *         description: User profile updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/UpdateUserProfileResponse'
- *       400:
- *         description: Invalid input data
+ *         description: Invalid input data or user already friend
  *       401:
  *         description: Unauthorized - invalid or missing token
  *       404:
- *         description: User not found
+ *         description: Receiver not found
  *       500:
  *         description: Server error
  */
-userRouter.put(
-	'/',
-	authMiddleware(),
-	uploadImage,
-	handleUploadError,
-	updateUserProfile,
-);
+userRouter.post('/invitation', authMiddleware(), sendFriendInvitation);
 
 /**
  * @swagger
- * /api/users/reset-password/:
- *   post:
- *     summary: Reset user password
- *     description: Change user password
+ * /api/users/invitation/accept:
+ *   put:
+ *     summary: Accept a friend invitation
+ *     description: Accept a pending friend invitation
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -463,25 +543,63 @@ userRouter.put(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ResetPasswordRequest'
+ *             $ref: '#/components/schemas/RespondInvitationRequest'
  *     responses:
  *       200:
- *         description: Password reset successfully
+ *         description: Invitation accepted successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ResetPasswordResponse'
+ *               $ref: '#/components/schemas/RespondInvitationResponse'
  *       400:
- *         description: Invalid input data
+ *         description: Invalid input data or invitation already processed
  *       401:
- *         description: Unauthorized - current password is incorrect or invalid token
+ *         description: Unauthorized - invalid or missing token
+ *       403:
+ *         description: Not authorized to respond to this invitation
  *       404:
- *         description: User not found
+ *         description: Invitation not found
  *       500:
  *         description: Server error
  */
-userRouter.post('/reset-password/', authMiddleware(), resetPassword);
+userRouter.put('/invitation/accept', authMiddleware(), acceptFriendInvitation);
 
+/**
+ * @swagger
+ * /api/users/invitation/reject:
+ *   put:
+ *     summary: Reject a friend invitation
+ *     description: Reject a pending friend invitation
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RespondInvitationRequest'
+ *     responses:
+ *       200:
+ *         description: Invitation rejected successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RespondInvitationResponse'
+ *       400:
+ *         description: Invalid input data or invitation already processed
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *       403:
+ *         description: Not authorized to respond to this invitation
+ *       404:
+ *         description: Invitation not found
+ *       500:
+ *         description: Server error
+ */
+userRouter.put('/invitation/reject', authMiddleware(), rejectFriendInvitation);
+
+// --------------------- FRIENDS ROUTES ---------------------
 /**
  * @swagger
  * /api/users/friends/{id}:
@@ -554,34 +672,74 @@ userRouter.post('/friends/', authMiddleware(), addFriend);
 /**
  * @swagger
  * /api/users/friends/:
- *   put:
- *     summary: Block a user
- *     description: Block or unblock a user from the friend list
+ *   delete:
+ *     summary: Delete a friend
+ *     description: Remove a user from the friend list
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/BlockUserRequest'
+ *     parameters:
+ *       - in: query
+ *         name: friendId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Friend ID to remove
  *     responses:
  *       200:
- *         description: User blocked/unblocked successfully
+ *         description: Friend removed successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/BlockUserResponse'
+ *               $ref: '#/components/schemas/DeleteFriendResponse'
  *       400:
  *         description: Invalid input data
  *       401:
  *         description: Unauthorized - invalid or missing token
  *       404:
- *         description: User not found
+ *         description: Friend list or friend not found
  *       500:
  *         description: Server error
  */
+userRouter.delete('/friends/', authMiddleware(), deleteFriend);
+
+// --------------------- BLOCK LIST ROUTES ---------------------
+/**
+ * @swagger
+ * /api/users/block/{id}:
+ *   get:
+ *     summary: Get user's block list
+ *     description: Retrieve list of blocked users for a specific user. Use "me" as ID to get your own block list (requires authentication).
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID or "me" to get current authenticated user's block list
+ *     responses:
+ *       200:
+ *         description: Block list retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GetBlockListResponse'
+ *       401:
+ *         description: Unauthorized - authentication required when using "me" parameter
+ *       404:
+ *         description: Block list not found
+ *       500:
+ *         description: Server error
+ */
+userRouter.get(
+	'/block/:id',
+	authMiddleware({ optionalAuth: true }),
+	getBlockList,
+);
+
 /**
  * @swagger
  * /api/users/block/:
@@ -659,12 +817,117 @@ userRouter.post('/block/', authMiddleware(), blockUser);
  */
 userRouter.delete('/block/', authMiddleware(), unBlockUser);
 
+// --------------------- PASSWORD RESET ROUTE ---------------------
 /**
  * @swagger
- * /api/users/block/{id}:
+ * /api/users/reset-password/:
+ *   post:
+ *     summary: Reset user password
+ *     description: Change user password
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ResetPasswordRequest'
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResetPasswordResponse'
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized - current password is incorrect or invalid token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+userRouter.post('/reset-password/', authMiddleware(), resetPassword);
+
+// --------------------- USER PROFILE ROUTES ---------------------
+/**
+ * @swagger
+ * /api/users/:
+ *   post:
+ *     summary: Create user profile
+ *     description: Create a new user profile with required information
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateUserProfileRequest'
+ *     responses:
+ *       201:
+ *         description: User profile created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CreateUserProfileResponse'
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *       500:
+ *         description: Server error
+ */
+userRouter.post('/', authMiddleware(), createUserProfile);
+
+/**
+ * @swagger
+ * /api/users/:
+ *   put:
+ *     summary: Update user profile
+ *     description: Update user profile information and optionally upload a profile picture
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateUserProfileRequest'
+ *     responses:
+ *       200:
+ *         description: User profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UpdateUserProfileResponse'
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+userRouter.put(
+	'/',
+	authMiddleware(),
+	uploadImage,
+	handleUploadError,
+	updateUserProfile,
+);
+
+/**
+ * @swagger
+ * /api/users/{id}:
  *   get:
- *     summary: Get user's block list
- *     description: Retrieve list of blocked users for a specific user. Use "me" as ID to get your own block list (requires authentication).
+ *     summary: Get user profile information
+ *     description: Retrieve user profile by user ID.
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -674,57 +937,17 @@ userRouter.delete('/block/', authMiddleware(), unBlockUser);
  *         schema:
  *           type: string
  *         required: true
- *         description: User ID or "me" to get current authenticated user's block list
+ *         description: User ID to get current authenticated user's profile
  *     responses:
  *       200:
- *         description: Block list retrieved successfully
+ *         description: User profile information
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/GetBlockListResponse'
- *       401:
- *         description: Unauthorized - authentication required when using "me" parameter
+ *               $ref: '#/components/schemas/GetUserProfileResponse'
  *       404:
- *         description: Block list not found
+ *         description: User not found
  *       500:
  *         description: Server error
  */
-userRouter.get(
-	'/block/:id',
-	authMiddleware({ optionalAuth: true }),
-	getBlockList,
-);
-
-/**
- * @swagger
- * /api/users/friends/:
- *   delete:
- *     summary: Delete a friend
- *     description: Remove a user from the friend list
- *     tags: [Users]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: query
- *         name: friendId
- *         schema:
- *           type: string
- *         required: true
- *         description: Friend ID to remove
- *     responses:
- *       200:
- *         description: Friend removed successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/DeleteFriendResponse'
- *       400:
- *         description: Invalid input data
- *       401:
- *         description: Unauthorized - invalid or missing token
- *       404:
- *         description: Friend list or friend not found
- *       500:
- *         description: Server error
- */
-userRouter.delete('/friends/', authMiddleware(), deleteFriend);
+userRouter.get('/:id', authMiddleware({ optionalAuth: true }), getUserProfile);

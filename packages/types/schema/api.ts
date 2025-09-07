@@ -4,6 +4,7 @@ import {
 	MinimalUserSchema,
 	FriendListSchema,
 	BlockUserListSchema,
+	InvitationSchema,
 } from './user';
 import { ChatSchema } from './chat';
 import { MessageSchema } from './message';
@@ -90,6 +91,29 @@ export const DeleteFriendRequestSchema = z.object({
 
 export const DeleteFriendResponseSchema = ApiResponseSchema;
 
+// Invitation API Schemas
+export const SendInvitationRequestSchema = z.object({
+	receiverId: z.string().trim().min(1),
+	content: z.string().trim().max(200).optional(),
+	type: z.enum(['friend', 'group']).default('friend'),
+	groupId: z.string().trim().min(1).optional(),
+});
+
+export const SendInvitationResponseSchema = ApiResponseSchema.extend({
+	data: InvitationSchema.optional(),
+});
+
+export const GetInvitationsResponseSchema = ApiResponseSchema.extend({
+	data: z.array(InvitationSchema).optional(),
+});
+
+export const RespondInvitationRequestSchema = z.object({
+	invitationId: z.string().trim().min(1),
+	status: z.enum(['accepted', 'rejected']),
+});
+
+export const RespondInvitationResponseSchema = ApiResponseSchema;
+
 // Type definitions
 export type ApiResponse = z.infer<typeof ApiResponseSchema>;
 export type CreateUserProfileRequest = z.infer<
@@ -119,3 +143,10 @@ export type UnblockUserResponse = z.infer<typeof UnblockUserResponseSchema>;
 export type GetBlockListResponse = z.infer<typeof GetBlockListResponseSchema>;
 export type DeleteFriendRequest = z.infer<typeof DeleteFriendRequestSchema>;
 export type DeleteFriendResponse = z.infer<typeof DeleteFriendResponseSchema>;
+
+// Invitation type definitions
+export type SendInvitationRequest = z.infer<typeof SendInvitationRequestSchema>;
+export type SendInvitationResponse = z.infer<typeof SendInvitationResponseSchema>;
+export type GetInvitationsResponse = z.infer<typeof GetInvitationsResponseSchema>;
+export type RespondInvitationRequest = z.infer<typeof RespondInvitationRequestSchema>;
+export type RespondInvitationResponse = z.infer<typeof RespondInvitationResponseSchema>;

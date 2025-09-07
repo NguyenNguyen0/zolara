@@ -16,7 +16,12 @@ const app = express();
 // Middleware
 // app.use(cors());
 app.use(express.json());
-app.use(logger({ logType: process.env.NODE_ENV! }));
+app.use(
+	logger({
+		logHeader: true,
+		logBody: process.env.NODE_ENV === 'development',
+	}),
+);
 
 /**
  * @swagger

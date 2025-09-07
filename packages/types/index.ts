@@ -3,10 +3,12 @@ export {
 	type MinimalUser,
 	type FriendList,
 	type BlockUserList,
+	type Invitation,
 	UserSchema,
 	MinimalUserSchema,
 	FriendListSchema,
 	BlockUserListSchema,
+	InvitationSchema,
 } from './schema/user';
 
 export {
@@ -42,6 +44,11 @@ export {
 	type GetBlockListResponse,
 	type DeleteFriendRequest,
 	type DeleteFriendResponse,
+	type SendInvitationRequest,
+	type SendInvitationResponse,
+	type GetInvitationsResponse,
+	type RespondInvitationRequest,
+	type RespondInvitationResponse,
 	ApiResponseSchema,
 	GetUserProfileResponseSchema,
 	UpdateUserProfileRequestSchema,
@@ -60,4 +67,9 @@ export {
 	DeleteFriendResponseSchema,
 	CreateUserProfileRequestSchema,
 	CreateUserProfileResponseSchema,
+	SendInvitationRequestSchema,
+	SendInvitationResponseSchema,
+	GetInvitationsResponseSchema,
+	RespondInvitationRequestSchema,
+	RespondInvitationResponseSchema,
 } from './schema/api';

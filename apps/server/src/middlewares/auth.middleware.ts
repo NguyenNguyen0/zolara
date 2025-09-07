@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { admin } from '../configs/firebase.config';
+import { log } from 'console';
 
 export const authMiddleware = (
 	config: { optionalAuth: boolean } = { optionalAuth: false },
@@ -24,6 +25,8 @@ export const authMiddleware = (
 			req.user = decoded;
 			next();
 		} catch (error) {
+			console.log(error);
+
 			if (config.optionalAuth) {
 				return next();
 			} else {
