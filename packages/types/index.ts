@@ -2,9 +2,11 @@ export {
 	type User,
 	type MinimalUser,
 	type FriendList,
+	type BlockUserList,
 	UserSchema,
 	MinimalUserSchema,
 	FriendListSchema,
+	BlockUserListSchema,
 } from './schema/user';
 
 export {
@@ -35,6 +37,9 @@ export {
 	type AddFriendResponse,
 	type BlockUserRequest,
 	type BlockUserResponse,
+	type UnblockUserRequest,
+	type UnblockUserResponse,
+	type GetBlockListResponse,
 	type DeleteFriendRequest,
 	type DeleteFriendResponse,
 	ApiResponseSchema,
@@ -48,6 +53,9 @@ export {
 	AddFriendResponseSchema,
 	BlockUserRequestSchema,
 	BlockUserResponseSchema,
+	UnblockUserRequestSchema,
+	UnblockUserResponseSchema,
+	GetBlockListResponseSchema,
 	DeleteFriendRequestSchema,
 	DeleteFriendResponseSchema,
 	CreateUserProfileRequestSchema,

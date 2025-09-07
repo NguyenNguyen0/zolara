@@ -92,6 +92,20 @@ const requestFormat = (tokens: any, req: Request, res: Response) => {
  */
 export const loggerMiddleware = morgan(requestFormat as any);
 
+export const logger = (
+	config: { logType: string } = {
+		logType: 'simple',
+	},
+) => {
+	if (config.logType === 'development') {
+		return developmentLogger;
+	} else if (config.logType === 'error') {
+		return errorLoggerMiddleware;
+	} else {
+		return loggerMiddleware;
+	}
+};
+
 /**
  * More detailed logger for development environment
  */

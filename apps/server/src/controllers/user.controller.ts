@@ -4,16 +4,19 @@ import {
 	User,
 	FriendList,
 	MinimalUser,
+	BlockUserList,
 	UpdateUserProfileRequestSchema,
 	ResetPasswordRequestSchema,
 	AddFriendRequestSchema,
 	BlockUserRequestSchema,
+	UnblockUserRequestSchema,
 	DeleteFriendRequestSchema,
 	CreateUserProfileRequestSchema,
 } from '@repo/types';
 
 const USERS_COLLECTION = 'users';
 const FRIEND_LISTS_COLLECTION = 'friendLists';
+const BLOCK_USER_LIST_COLLECTION = 'blockLists';
 
 export const createUserProfile = async (
 	req: Request & { user?: any },
@@ -113,6 +116,15 @@ export const getUserProfile = async (
 	res: Response,
 ) => {
 	try {
+		// Handle the case where 'me' is requested but user is not authenticated
+		if (req.params.id === 'me' && !req.user) {
+			return res.status(401).json({
+				success: false,
+				message: 'Authentication required',
+				error: 'You must be logged in to access your own profile',
+			});
+		}
+
 		// Use ID from token if the "me" parameter is provided, otherwise use the ID from the URL
 		const userId =
 			req.params.id === 'me' && req.user ? req.user.uid : req.params.id;
@@ -321,6 +333,15 @@ export const getFriendList = async (
 	res: Response,
 ) => {
 	try {
+		// Handle the case where 'me' is requested but user is not authenticated
+		if (req.params.id === 'me' && !req.user) {
+			return res.status(401).json({
+				success: false,
+				message: 'Authentication required',
+				error: 'You must be logged in to access your own friend list',
+			});
+		}
+
 		// Use ID from token if the "me" parameter is provided, otherwise use the ID from the URL
 		const userId =
 			req.params.id === 'me' && req.user ? req.user.uid : req.params.id;
@@ -500,22 +521,255 @@ export const blockUser = async (
 			});
 		}
 
-		const { userId: blockUserId, isBlocked = true } = req.body;
+		const { userId: blockUserId } = req.body;
 
-		// In a real implementation, you would have a blockedUsers collection or field
-		// For this example, we'll just respond with success
+		// Check if user exists
+		const userToBlock = await db
+			.collection(USERS_COLLECTION)
+			.doc(blockUserId)
+			.get();
+
+		if (!userToBlock.exists) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found',
+				error: 'The user you are trying to block does not exist',
+			});
+		}
+
+		// Find block list document or create a new one
+		const blockListQuery = await db
+			.collection(BLOCK_USER_LIST_COLLECTION)
+			.where('ownerId', '==', userId)
+			.limit(1)
+			.get();
+
+		let blockListId: string;
+		let blockList: BlockUserList;
+
+		if (blockListQuery.empty) {
+			// Create new block list
+			blockListId = db.collection(BLOCK_USER_LIST_COLLECTION).doc().id;
+			blockList = {
+				id: blockListId,
+				ownerId: userId,
+				count: 0,
+				blockedUsers: [],
+			};
+		} else {
+			// Use existing block list
+			blockListId = blockListQuery.docs[0].id;
+			blockList = blockListQuery.docs[0].data() as BlockUserList;
+
+			// Check if user is already blocked
+			const isAlreadyBlocked = blockList.blockedUsers.some(
+				(u: { userId: string }) => u.userId === blockUserId,
+			);
+
+			if (isAlreadyBlocked) {
+				return res.status(400).json({
+					success: false,
+					message: 'User is already blocked',
+					error: 'This user is already in your block list',
+				});
+			}
+		}
+
+		// Add user to block list
+		blockList.blockedUsers.push({
+			userId: blockUserId,
+			blockedAt: new Date(),
+		});
+		blockList.count = blockList.blockedUsers.length;
+
+		// Update or create block list document
+		await db
+			.collection(BLOCK_USER_LIST_COLLECTION)
+			.doc(blockListId)
+			.set(blockList);
+
+		// Also remove this user from friend list if they are a friend
+		const friendListQuery = await db
+			.collection(FRIEND_LISTS_COLLECTION)
+			.where('ownerId', '==', userId)
+			.limit(1)
+			.get();
+
+		if (!friendListQuery.empty) {
+			const friendListId = friendListQuery.docs[0].id;
+			const friendList = friendListQuery.docs[0].data() as FriendList;
+
+			const friendIndex = friendList.friends.findIndex(
+				(f) => f.id === blockUserId,
+			);
+
+			if (friendIndex !== -1) {
+				// Remove from friend list
+				friendList.friends.splice(friendIndex, 1);
+				friendList.count = friendList.friends.length;
+
+				await db
+					.collection(FRIEND_LISTS_COLLECTION)
+					.doc(friendListId)
+					.update({
+						friends: friendList.friends,
+						count: friendList.count,
+					});
+			}
+		}
 
 		return res.status(200).json({
 			success: true,
-			message: isBlocked
-				? 'User blocked successfully'
-				: 'User unblocked successfully',
+			message: 'User blocked successfully',
 		});
 	} catch (error) {
 		console.error('Error blocking user:', error);
 		return res.status(500).json({
 			success: false,
 			message: 'Failed to block user',
+			error: error instanceof Error ? error.message : 'Unknown error',
+		});
+	}
+};
+
+export const unBlockUser = async (
+	req: Request & { user?: any },
+	res: Response,
+) => {
+	try {
+		// Get user ID from token
+		const userId = req.user.uid;
+
+		// Get the user ID to unblock from the query parameters
+		const userIdToUnblock = req.query.userId as string;
+
+		if (!userIdToUnblock) {
+			return res.status(400).json({
+				success: false,
+				message: 'Invalid input data',
+				error: 'User ID is required',
+			});
+		}
+
+		// Find the block list for the current user
+		const blockListQuery = await db
+			.collection(BLOCK_USER_LIST_COLLECTION)
+			.where('ownerId', '==', userId)
+			.limit(1)
+			.get();
+
+		// If no block list exists or it's empty, return appropriate response
+		if (blockListQuery.empty) {
+			return res.status(404).json({
+				success: false,
+				message: 'Block list not found',
+				error: 'You do not have a block list',
+			});
+		}
+
+		// Get the block list document
+		const blockListId = blockListQuery.docs[0].id;
+		const blockList = blockListQuery.docs[0].data() as BlockUserList;
+
+		// Find the index of the user to unblock
+		const blockedUserIndex = blockList.blockedUsers.findIndex(
+			(u: { userId: string }) => u.userId === userIdToUnblock,
+		);
+
+		// If user is not in the block list, return appropriate response
+		if (blockedUserIndex === -1) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found in block list',
+				error: 'This user is not in your block list',
+			});
+		}
+
+		// Remove the user from the block list
+		blockList.blockedUsers.splice(blockedUserIndex, 1);
+		blockList.count = blockList.blockedUsers.length;
+
+		// Update the block list document
+		await db
+			.collection(BLOCK_USER_LIST_COLLECTION)
+			.doc(blockListId)
+			.update({
+				blockedUsers: blockList.blockedUsers,
+				count: blockList.count,
+			});
+
+		return res.status(200).json({
+			success: true,
+			message: 'User unblocked successfully',
+		});
+	} catch (error) {
+		console.error('Error unblocking user:', error);
+		return res.status(500).json({
+			success: false,
+			message: 'Failed to unblock user',
+			error: error instanceof Error ? error.message : 'Unknown error',
+		});
+	}
+};
+
+export const getBlockList = async (
+	req: Request & { user?: any },
+	res: Response,
+) => {
+	try {
+		// Handle the case where 'me' is requested but user is not authenticated
+		if (req.params.id === 'me' && !req.user) {
+			return res.status(401).json({
+				success: false,
+				message: 'Authentication required',
+				error: 'You must be logged in to access your own block list',
+			});
+		}
+
+		// Use ID from token if the "me" parameter is provided, otherwise use the ID from the URL
+		const userId =
+			req.params.id === 'me' && req.user ? req.user.uid : req.params.id;
+
+		// Find block list document
+		const blockListDoc = await db
+			.collection(BLOCK_USER_LIST_COLLECTION)
+			.where('ownerId', '==', userId)
+			.limit(1)
+			.get();
+
+		if (blockListDoc.empty) {
+			// Create new empty block list if not found
+			const newBlockList: BlockUserList = {
+				id: db.collection(BLOCK_USER_LIST_COLLECTION).doc().id,
+				ownerId: userId,
+				count: 0,
+				blockedUsers: [],
+			};
+
+			await db
+				.collection(BLOCK_USER_LIST_COLLECTION)
+				.doc(newBlockList.id)
+				.set(newBlockList);
+
+			return res.status(200).json({
+				success: true,
+				message: 'Block list retrieved successfully',
+				data: newBlockList,
+			});
+		}
+
+		const blockList = blockListDoc.docs[0].data() as BlockUserList;
+
+		return res.status(200).json({
+			success: true,
+			message: 'Block list retrieved successfully',
+			data: blockList,
+		});
+	} catch (error) {
+		console.error('Error getting block list:', error);
+		return res.status(500).json({
+			success: false,
+			message: 'Failed to retrieve block list',
 			error: error instanceof Error ? error.message : 'Unknown error',
 		});
 	}

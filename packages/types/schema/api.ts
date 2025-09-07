@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { UserSchema, MinimalUserSchema, FriendListSchema } from './user';
+import {
+	UserSchema,
+	MinimalUserSchema,
+	FriendListSchema,
+	BlockUserListSchema,
+} from './user';
 import { ChatSchema } from './chat';
 import { MessageSchema } from './message';
 
@@ -65,10 +70,19 @@ export const AddFriendResponseSchema = ApiResponseSchema.extend({
 
 export const BlockUserRequestSchema = z.object({
 	userId: z.string().trim().min(1),
-	isBlocked: z.boolean().default(true),
 });
 
 export const BlockUserResponseSchema = ApiResponseSchema;
+
+export const UnblockUserRequestSchema = z.object({
+	userId: z.string().trim().min(1),
+});
+
+export const UnblockUserResponseSchema = ApiResponseSchema;
+
+export const GetBlockListResponseSchema = ApiResponseSchema.extend({
+	data: BlockUserListSchema.optional(),
+});
 
 export const DeleteFriendRequestSchema = z.object({
 	friendId: z.string().trim().min(1),
@@ -100,5 +114,8 @@ export type AddFriendRequest = z.infer<typeof AddFriendRequestSchema>;
 export type AddFriendResponse = z.infer<typeof AddFriendResponseSchema>;
 export type BlockUserRequest = z.infer<typeof BlockUserRequestSchema>;
 export type BlockUserResponse = z.infer<typeof BlockUserResponseSchema>;
+export type UnblockUserRequest = z.infer<typeof UnblockUserRequestSchema>;
+export type UnblockUserResponse = z.infer<typeof UnblockUserResponseSchema>;
+export type GetBlockListResponse = z.infer<typeof GetBlockListResponseSchema>;
 export type DeleteFriendRequest = z.infer<typeof DeleteFriendRequestSchema>;
 export type DeleteFriendResponse = z.infer<typeof DeleteFriendResponseSchema>;

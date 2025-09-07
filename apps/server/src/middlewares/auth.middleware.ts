@@ -1,26 +1,34 @@
 import { Request, Response } from 'express';
 import { admin } from '../configs/firebase.config';
 
-export const authMiddleware = async (
-	req: Request,
-	res: Response,
-	next: Function,
+export const authMiddleware = (
+	config: { optionalAuth: boolean } = { optionalAuth: false },
 ) => {
-	const authHeader = req.headers.authorization || '';
-	const match = authHeader.match(/^Bearer (.+)$/);
+	return async (req: Request, res: Response, next: Function) => {
+		const authHeader = req.headers.authorization || '';
+		const match = authHeader.match(/^Bearer (.+)$/);
 
-	if (!match) {
-		return res
-			.status(401)
-			.json({ error: 'No authorization token provided' });
-	}
+		if (!match && config.optionalAuth) {
+			return next();
+		}
 
-	const token = match[1];
-	try {
-		const decoded = await admin.auth().verifyIdToken(token);
-		req.user = decoded;
-		next();
-	} catch (error) {
-		return res.status(401).json({ error: 'Invalid token' });
-	}
+		if (!match && !config.optionalAuth) {
+			return res
+				.status(401)
+				.json({ error: 'No authorization token provided' });
+		}
+
+		try {
+			const token = match![1];
+			const decoded = await admin.auth().verifyIdToken(token);
+			req.user = decoded;
+			next();
+		} catch (error) {
+			if (config.optionalAuth) {
+				return next();
+			} else {
+				return res.status(401).json({ error: 'Invalid token' });
+			}
+		}
+	};
 };

@@ -8,6 +8,8 @@ import {
 	resetPassword,
 	updateUserProfile,
 	createUserProfile,
+	unBlockUser,
+	getBlockList,
 } from '../controllers/user.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import {
@@ -138,7 +140,7 @@ export const userRouter = express.Router();
  *         dob:
  *           type: string
  *           format: date
- *           description: User's date of birth (format: YYYY-MM-DD)
+ *           description: User's date of birth (format YYYY-MM-DD)
  *         gender:
  *           type: string
  *           enum: [male, female, other, prefer_not_to_say]
@@ -273,10 +275,6 @@ export const userRouter = express.Router();
  *         userId:
  *           type: string
  *           description: ID of the user to block
- *         isBlocked:
- *           type: boolean
- *           description: Whether to block or unblock the user
- *           default: true
  *
  *     BlockUserResponse:
  *       type: object
@@ -287,6 +285,52 @@ export const userRouter = express.Router();
  *         message:
  *           type: string
  *           description: Human-readable message about the operation
+ *         error:
+ *           type: string
+ *           description: Error message if any
+ *
+ *     BlockUserList:
+ *       type: object
+ *       required:
+ *         - id
+ *         - ownerId
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the block list
+ *         ownerId:
+ *           type: string
+ *           description: ID of the user who owns this block list
+ *         count:
+ *           type: integer
+ *           description: Number of users in the block list
+ *           default: 0
+ *         blockedUsers:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: ID of the blocked user
+ *               blockedAt:
+ *                 type: string
+ *                 format: date-time
+ *                 description: When the user was blocked
+ *           description: Array of blocked users
+ *
+ *     GetBlockListResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Whether the operation was successful
+ *         message:
+ *           type: string
+ *           description: Human-readable message about the operation
+ *         data:
+ *           $ref: '#/components/schemas/BlockUserList'
+ *           description: The block list data
  *         error:
  *           type: string
  *           description: Error message if any
@@ -310,15 +354,17 @@ export const userRouter = express.Router();
  * /api/users/{id}:
  *   get:
  *     summary: Get user profile information
- *     description: Retrieve user profile by user ID. Use "me" as ID to get your own profile (requires authentication).
+ *     description: Retrieve user profile by user ID.
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
- *         description: User ID or "me" to get current authenticated user's profile
+ *         description: User ID to get current authenticated user's profile
  *     responses:
  *       200:
  *         description: User profile information
@@ -331,7 +377,7 @@ export const userRouter = express.Router();
  *       500:
  *         description: Server error
  */
-userRouter.get('/:id', getUserProfile);
+userRouter.get('/:id', authMiddleware({ optionalAuth: true }), getUserProfile);
 
 /**
  * @swagger
@@ -362,7 +408,7 @@ userRouter.get('/:id', getUserProfile);
  *       500:
  *         description: Server error
  */
-userRouter.post('/', authMiddleware, createUserProfile);
+userRouter.post('/', authMiddleware(), createUserProfile);
 
 /**
  * @swagger
@@ -397,7 +443,7 @@ userRouter.post('/', authMiddleware, createUserProfile);
  */
 userRouter.put(
 	'/',
-	authMiddleware,
+	authMiddleware(),
 	uploadImage,
 	handleUploadError,
 	updateUserProfile,
@@ -434,7 +480,7 @@ userRouter.put(
  *       500:
  *         description: Server error
  */
-userRouter.post('/reset-password/', authMiddleware, resetPassword);
+userRouter.post('/reset-password/', authMiddleware(), resetPassword);
 
 /**
  * @swagger
@@ -443,6 +489,8 @@ userRouter.post('/reset-password/', authMiddleware, resetPassword);
  *     summary: Get user's friend list
  *     description: Retrieve list of friends for a specific user. Use "me" as ID to get your own friend list (requires authentication).
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -457,12 +505,18 @@ userRouter.post('/reset-password/', authMiddleware, resetPassword);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/GetFriendListResponse'
+ *       401:
+ *         description: Unauthorized - authentication required when using "me" parameter
  *       404:
  *         description: Friend list not found
  *       500:
  *         description: Server error
  */
-userRouter.get('/friends/:id', getFriendList);
+userRouter.get(
+	'/friends/:id',
+	authMiddleware({ optionalAuth: true }),
+	getFriendList,
+);
 
 /**
  * @swagger
@@ -495,7 +549,7 @@ userRouter.get('/friends/:id', getFriendList);
  *       500:
  *         description: Server error
  */
-userRouter.post('/friends/', authMiddleware, addFriend);
+userRouter.post('/friends/', authMiddleware(), addFriend);
 
 /**
  * @swagger
@@ -528,7 +582,118 @@ userRouter.post('/friends/', authMiddleware, addFriend);
  *       500:
  *         description: Server error
  */
-userRouter.put('/friends/', authMiddleware, blockUser);
+/**
+ * @swagger
+ * /api/users/block/:
+ *   post:
+ *     summary: Block a user
+ *     description: Block a user to prevent them from interacting with you
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/BlockUserRequest'
+ *     responses:
+ *       200:
+ *         description: User blocked successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BlockUserResponse'
+ *       400:
+ *         description: Invalid input data or user already blocked
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+userRouter.post('/block/', authMiddleware(), blockUser);
+
+/**
+ * @swagger
+ * /api/users/block/:
+ *   delete:
+ *     summary: Unblock a user
+ *     description: Remove a user from your block list
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the user to unblock
+ *     responses:
+ *       200:
+ *         description: User unblocked successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the operation was successful
+ *                 message:
+ *                   type: string
+ *                   description: Human-readable message about the operation
+ *                 error:
+ *                   type: string
+ *                   description: Error message if any
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *       404:
+ *         description: User not found in block list
+ *       500:
+ *         description: Server error
+ */
+userRouter.delete('/block/', authMiddleware(), unBlockUser);
+
+/**
+ * @swagger
+ * /api/users/block/{id}:
+ *   get:
+ *     summary: Get user's block list
+ *     description: Retrieve list of blocked users for a specific user. Use "me" as ID to get your own block list (requires authentication).
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID or "me" to get current authenticated user's block list
+ *     responses:
+ *       200:
+ *         description: Block list retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GetBlockListResponse'
+ *       401:
+ *         description: Unauthorized - authentication required when using "me" parameter
+ *       404:
+ *         description: Block list not found
+ *       500:
+ *         description: Server error
+ */
+userRouter.get(
+	'/block/:id',
+	authMiddleware({ optionalAuth: true }),
+	getBlockList,
+);
 
 /**
  * @swagger
@@ -562,4 +727,4 @@ userRouter.put('/friends/', authMiddleware, blockUser);
  *       500:
  *         description: Server error
  */
-userRouter.delete('/friends/', authMiddleware, deleteFriend);
+userRouter.delete('/friends/', authMiddleware(), deleteFriend);

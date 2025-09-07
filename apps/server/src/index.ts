@@ -2,7 +2,7 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { loggerMiddleware } from './middlewares/logger.middleware';
+import { logger } from './middlewares/logger.middleware';
 import chalk from 'chalk';
 import { specs } from './configs/swagger.config';
 import { userRouter } from './routes/user';
@@ -16,7 +16,7 @@ const app = express();
 // Middleware
 // app.use(cors());
 app.use(express.json());
-app.use(loggerMiddleware);
+app.use(logger({ logType: process.env.NODE_ENV! }));
 
 /**
  * @swagger

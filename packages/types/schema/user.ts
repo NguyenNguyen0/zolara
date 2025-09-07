@@ -33,6 +33,17 @@ export const FriendListSchema = z.object({
 	friends: z.array(MinimalUserSchema),
 });
 
+export const BlockUserListSchema = z.object({
+	id: z.string(),
+	ownerId: z.string(),
+	count: z.int().min(0).default(0),
+	blockedUsers: z.array(z.object({
+		userId: z.string(),
+		blockedAt: z.date().default(new Date())
+	}))
+});
+
 export type User = z.infer<typeof UserSchema>;
 export type MinimalUser = z.infer<typeof MinimalUserSchema>;
 export type FriendList = z.infer<typeof FriendListSchema>;
+export type BlockUserList = z.infer<typeof BlockUserListSchema>;
