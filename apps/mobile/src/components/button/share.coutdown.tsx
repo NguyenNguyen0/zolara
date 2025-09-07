@@ -63,7 +63,7 @@ const CountdownButton = memo(
 				<Text
 					className="text-base"
 					style={{
-						color: isDark ? APP_COLOR.WHITE : APP_COLOR.DARK,
+						color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
 					}}
 				>
 					{t(resendTextKey)}{' '}
@@ -77,7 +77,9 @@ const CountdownButton = memo(
 						className="text-base font-semibold"
 						style={{
 							color: isButtonDisabled
-								? isDark ? APP_COLOR.WHITE : APP_COLOR.DARK
+								? isDark
+									? APP_COLOR.LIGHT
+									: APP_COLOR.DARK
 								: APP_COLOR.PRIMARY,
 						}}
 					>

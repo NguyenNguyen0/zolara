@@ -64,7 +64,7 @@ export default function Verify() {
 		if (flowType === 'login') {
 			// For login: go to main app
 			router.dismissAll();
-			router.replace('/(screens)/(tabs)');
+			router.replace('/(screens)/(auth)/login.success');
 		} else if (flowType === 'signup') {
 			// For signup: might need additional steps or go to main app
 			router.dismissAll();
@@ -90,7 +90,7 @@ export default function Verify() {
 		<SafeAreaView
 			className="flex-1"
 			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.WHITE,
+				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
 			}}
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
@@ -101,7 +101,7 @@ export default function Verify() {
 					<Ionicons
 						name="arrow-back"
 						size={24}
-						color={isDark ? APP_COLOR.WHITE : APP_COLOR.DARK}
+						color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -116,7 +116,7 @@ export default function Verify() {
 					<Text
 						className="text-3xl font-bold text-center"
 						style={{
-							color: isDark ? APP_COLOR.WHITE : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
 						}}
 					>
 						{t('title')}
@@ -128,7 +128,7 @@ export default function Verify() {
 							className="text-xl text-center leading-6"
 							style={{
 								color: isDark
-									? APP_COLOR.WHITE
+									? APP_COLOR.LIGHT
 									: APP_COLOR.DARK,
 							}}
 						>
@@ -140,7 +140,7 @@ export default function Verify() {
 							className="text-2xl font-bold text-center my-2"
 							style={{
 								color: isDark
-									? APP_COLOR.WHITE
+									? APP_COLOR.LIGHT
 									: APP_COLOR.DARK,
 							}}
 						>
@@ -151,7 +151,7 @@ export default function Verify() {
 							className="text-xl text-center leading-6"
 							style={{
 								color: isDark
-									? APP_COLOR.WHITE
+									? APP_COLOR.LIGHT
 									: APP_COLOR.DARK,
 							}}
 						>
@@ -174,17 +174,17 @@ export default function Verify() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? '#cccc'
+								? APP_COLOR.GREY
 								: APP_COLOR.PRIMARY,
 							borderColor: isNextDisabled
-								? '#cccc'
+								? APP_COLOR.GREY
 								: APP_COLOR.PRIMARY,
 							width: '100%',
 							alignSelf: 'stretch',
 							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? 'black' : APP_COLOR.WHITE,
+							color: isNextDisabled ? 'black' : APP_COLOR.LIGHT,
 							fontSize: 18,
 							fontWeight: '600',
 						}}

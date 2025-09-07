@@ -24,6 +24,9 @@ import viSignupEmail from '@/src/locales/vi/signup-email.json';
 import enNotFound from '@/src/locales/en/not-found.json';
 import viNotFound from '@/src/locales/vi/not-found.json';
 
+import enLoginSuccess from '@/src/locales/en/login-success.json';
+import viLoginSuccess from '@/src/locales/vi/login-success.json';
+
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
 	async: true,
@@ -35,7 +38,7 @@ const LANGUAGE_DETECTOR = {
 			} else {
 				callback('en'); // Default language
 			}
-		} catch (error) {
+		} catch {
 			callback('en');
 		}
 	},
@@ -49,7 +52,8 @@ const LANGUAGE_DETECTOR = {
 	},
 };
 
-i18n.use(LANGUAGE_DETECTOR)
+i18n
+	.use(LANGUAGE_DETECTOR)
 	.use(initReactI18next)
 	.init({
 		fallbackLng: 'en',
@@ -64,6 +68,7 @@ i18n.use(LANGUAGE_DETECTOR)
 				verify: enVerify,
 				'signup-email': enSignupEmail,
 				'not-found': enNotFound,
+				'login-success': enLoginSuccess,
 			},
 			vi: {
 				welcome: viWelcome,
@@ -73,10 +78,11 @@ i18n.use(LANGUAGE_DETECTOR)
 				verify: viVerify,
 				'signup-email': viSignupEmail,
 				'not-found': viNotFound,
+				'login-success': viLoginSuccess,
 			},
 		},
 
-		ns: ['welcome', 'common', 'login-email', 'confirm-password', 'verify', 'signup-email', 'not-found'],
+		ns: ['welcome', 'common', 'login-email', 'confirm-password', 'verify', 'signup-email', 'not-found', 'login-success'],
 		defaultNS: 'common',
 
 		interpolation: {

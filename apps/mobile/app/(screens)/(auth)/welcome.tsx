@@ -18,7 +18,7 @@ export default function Welcome() {
 		>
 			<StatusBar
 				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={isDark ? APP_COLOR.DARK : APP_COLOR.WHITE}
+				backgroundColor={isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT}
 			/>
 			{/* Theme & Language Selection */}
 			<View className="absolute top-12 right-6 z-10 flex-row gap-3">
@@ -57,7 +57,7 @@ export default function Welcome() {
 								justifyContent: 'center',
 							}}
 							textStyle={{
-								color: APP_COLOR.WHITE,
+								color: APP_COLOR.LIGHT,
 								fontSize: 18,
 								fontWeight: '600',
 							}}
@@ -82,7 +82,7 @@ export default function Welcome() {
 							}}
 							textStyle={{
 								color: isDark
-									? APP_COLOR.WHITE
+									? APP_COLOR.LIGHT
 									: APP_COLOR.DARK,
 								fontSize: 18,
 								fontWeight: '600',
