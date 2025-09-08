@@ -36,7 +36,7 @@ export default function SignUpDetail() {
 	const handleContinue = () => {
 		console.log('Birthday:', birthday, 'Gender:', gender);
 		router.navigate({
-            pathname: '/(screens)/(tabs)',
+            pathname: '/(screens)/(auth)/signup.avatar',
             // params: { name },
         });
 	};

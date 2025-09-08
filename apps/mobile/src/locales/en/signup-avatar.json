@@ -1,0 +1,13 @@
+{
+	"title": "Update profile photo",
+	"subtitle": "Set a photo so people can recognize you",
+	"updateButton": "Update",
+	"skipButton": "Skip",
+	"pickOptionsTitle": "Choose a photo",
+	"pickFromLibrary": "Choose from library",
+	"takePhoto": "Take a photo",
+	"permissionDenied": "Permission denied. Please enable Photos permission in Settings.",
+	"placeholderInitials": "T"
+}
+
+

@@ -37,6 +37,10 @@ export default function ScreenLayout() {
 				name="(auth)/signup.detail"
 				options={{ headerShown: false }}
 			/>
+			<Stack.Screen
+				name="(auth)/signup.avatar"
+				options={{ headerShown: false }}
+			/>
 			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 		</Stack>
 	);

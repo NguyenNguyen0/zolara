@@ -35,6 +35,8 @@ import viSignupDetail from '@/src/locales/vi/signup-detail.json';
 import enGender from '@/src/locales/en/gender.json';
 import viGender from '@/src/locales/vi/gender.json';
 
+import enSignupAvatar from '@/src/locales/en/signup-avatar.json';
+import viSignupAvatar from '@/src/locales/vi/signup-avatar.json';
 import enSplash from '@/src/locales/en/splash.json';
 import viSplash from '@/src/locales/vi/splash.json';
 
@@ -72,6 +74,7 @@ i18n.use(LANGUAGE_DETECTOR)
 		resources: {
 			en: {
 				common: enCommon,
+				'signup-avatar': enSignupAvatar,
 				splash: enSplash,
 				welcome: enWelcome,
 				'login-email': enLoginEmail,
@@ -86,6 +89,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			},
 			vi: {
 				common: viCommon,
+				'signup-avatar': viSignupAvatar,
 				splash: viSplash,
 				welcome: viWelcome,
 				'login-email': viLoginEmail,
@@ -113,6 +117,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			'signup-name',
 			'signup-detail',
 			'gender',
+			'signup-avatar',
 		],
 		defaultNS: 'common',
 
