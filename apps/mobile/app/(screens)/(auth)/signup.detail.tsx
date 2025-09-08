@@ -88,17 +88,6 @@ export default function SignUpDetail() {
 						{t('title')}
 					</Text>
 
-					<View className="mb-5">
-						<ShareDatePicker
-							value={date}
-							onChange={(d) => {
-								setDate(d);
-								setBirthday(formatDate(d));
-							}}
-							placeholder={t('birthdayLabel')}
-						/>
-					</View>
-
 					<View className="mb-8">
 						<ShareDropdown
 							data={genderOptions}
@@ -106,6 +95,17 @@ export default function SignUpDetail() {
 							onChange={setGender}
 							placeholder={tGender('placeholder')}
 							search={false}
+						/>
+					</View>
+
+					<View className="mb-8">
+						<ShareDatePicker
+							value={date}
+							onChange={(d) => {
+								setDate(d);
+								setBirthday(formatDate(d));
+							}}
+							placeholder={t('birthdayLabel')}
 						/>
 					</View>
 

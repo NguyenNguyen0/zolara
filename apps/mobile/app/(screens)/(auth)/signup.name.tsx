@@ -57,7 +57,7 @@ export default function SignUpName() {
 
 					{/* Subtitle */}
 					<Text
-						className="text-base text-center mb-10"
+						className="text-[15px] text-center mb-10"
 						style={{
 							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
 							opacity: 0.7,
@@ -67,7 +67,7 @@ export default function SignUpName() {
 					</Text>
 
 					{/* Name Input */}
-					<View className="mb-6">
+					<View className="mb-8">
 						<ShareInput
 							value={name}
 							onTextChange={setName}
@@ -107,7 +107,7 @@ export default function SignUpName() {
 					</View>
 
 					{/* Continue Button */}
-					<View className="flex-1 justify-end mb-10">
+					<View className="mb-8">
 						<ShareButton
 							title={t('continueButton')}
 							onPress={handleContinue}

@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, Image, Animated, Easing } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useTranslation } from 'react-i18next';
 
 export default function SplashScreen() {
   const router = useRouter();
+  const { t } = useTranslation('splash');
 
   // Pulse animation cho logo
   const scale = useRef(new Animated.Value(1)).current;
@@ -51,19 +53,17 @@ export default function SplashScreen() {
           accessibilityLabel="App Logo"
         />
         <Text className="mt-6 text-white/90 tracking-[0.25em] uppercase font-semibold">
-          loading…
+          {t('loading')}
         </Text>
 
-        {/* subtitle nhỏ cho có “brand feel” */}
-        <Text className="mt-2 text-white/70 text-xs">
-          Let’s build something awesome
+        <Text className="mt-2 text-white/70 text-[13px]">
+          {t('subtitle')}
         </Text>
       </Animated.View>
 
-      {/* Footer nhỏ */}
       <View className="absolute bottom-10">
         <Text className="text-white/80 text-[13px]">
-          © {new Date().getFullYear()} Zolara - IUH • All rights reserved
+          {t('copyright', { year: new Date().getFullYear() })}
         </Text>
       </View>
     </View>
