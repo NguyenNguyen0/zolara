@@ -99,7 +99,7 @@ export default function NotFoundScreen() {
 							<Ionicons
 								name="arrow-back"
 								size={20}
-								color={isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT}
+								color={APP_COLOR.DARK}
 							/>
 						}
 						buttonStyle={{
@@ -116,7 +116,7 @@ export default function NotFoundScreen() {
 							width: '100%',
 						}}
 						textStyle={{
-							color: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
+							color: APP_COLOR.DARK,
 							fontSize: 16,
 							fontWeight: '600',
 						}}

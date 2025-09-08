@@ -35,6 +35,11 @@ import viSignupDetail from '@/src/locales/vi/signup-detail.json';
 import enGender from '@/src/locales/en/gender.json';
 import viGender from '@/src/locales/vi/gender.json';
 
+import enSignupAvatar from '@/src/locales/en/signup-avatar.json';
+import viSignupAvatar from '@/src/locales/vi/signup-avatar.json';
+import enSplash from '@/src/locales/en/splash.json';
+import viSplash from '@/src/locales/vi/splash.json';
+
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
 	async: true,
@@ -68,8 +73,10 @@ i18n.use(LANGUAGE_DETECTOR)
 
 		resources: {
 			en: {
-				welcome: enWelcome,
 				common: enCommon,
+				'signup-avatar': enSignupAvatar,
+				splash: enSplash,
+				welcome: enWelcome,
 				'login-email': enLoginEmail,
 				'confirm-password': enConfirmPassword,
 				verify: enVerify,
@@ -81,8 +88,10 @@ i18n.use(LANGUAGE_DETECTOR)
 				gender: enGender,
 			},
 			vi: {
-				welcome: viWelcome,
 				common: viCommon,
+				'signup-avatar': viSignupAvatar,
+				splash: viSplash,
+				welcome: viWelcome,
 				'login-email': viLoginEmail,
 				'confirm-password': viConfirmPassword,
 				verify: viVerify,
@@ -96,8 +105,9 @@ i18n.use(LANGUAGE_DETECTOR)
 		},
 
 		ns: [
-			'welcome',
 			'common',
+			'welcome',
+			'splash',
 			'login-email',
 			'confirm-password',
 			'verify',
@@ -107,6 +117,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			'signup-name',
 			'signup-detail',
 			'gender',
+			'signup-avatar',
 		],
 		defaultNS: 'common',
 
