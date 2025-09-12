@@ -2,9 +2,9 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { APP_COLOR } from '@/src/utils/constants';
+import { useTheme } from '@/src/hooks/useTheme';
 
 interface CountdownButtonProps {
-	isDark: boolean;
 	onResend: () => void;
 	initialCountdown?: number;
 	resendTextKey?: string;
@@ -16,7 +16,6 @@ interface CountdownButtonProps {
 
 const ShareCountdownButton = memo(
 	({
-		isDark,
 		onResend,
 		initialCountdown = 30,
 		resendTextKey = 'resendCode',
@@ -26,6 +25,7 @@ const ShareCountdownButton = memo(
 		disabled = false,
 	}: CountdownButtonProps) => {
 		const { t } = useTranslation(translationNamespace);
+		const { isDark } = useTheme();
 		const [countdown, setCountdown] = useState(initialCountdown);
 		const [isResendDisabled, setIsResendDisabled] = useState(true);
 
@@ -61,10 +61,7 @@ const ShareCountdownButton = memo(
 		return (
 			<View className={containerClassName}>
 				<Text
-					className="text-base"
-					style={{
-						color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
-					}}
+					className="text-base text-dark-mode dark:text-light-mode"
 				>
 					{t(resendTextKey)}{' '}
 				</Text>
@@ -74,14 +71,11 @@ const ShareCountdownButton = memo(
 					activeOpacity={isButtonDisabled ? 1 : 0.7}
 				>
 					<Text
-						className="text-base font-semibold"
-						style={{
-							color: isButtonDisabled
-								? isDark
-									? APP_COLOR.LIGHT_MODE
-									: APP_COLOR.DARK_MODE
-								: APP_COLOR.PRIMARY,
-						}}
+						className={`text-base font-semibold ${
+							isButtonDisabled
+								? 'text-dark-mode dark:text-light-mode'
+								: 'text-primary'
+						}`}
 					>
 						{isResendDisabled
 							? `${t(callMeBackTextKey)} (${countdown}s)`

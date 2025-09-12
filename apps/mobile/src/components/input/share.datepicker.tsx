@@ -36,12 +36,7 @@ export default function ShareDatePicker({
 	return (
 		<View>
 			<TouchableOpacity
-				className="flex-row items-center justify-between px-4 py-4 rounded-xl border"
-				style={{
-					borderColor: APP_COLOR.GRAY_700,
-					backgroundColor: APP_COLOR.LIGHT_MODE,
-					height: 50,
-				}}
+				className="flex-row items-center justify-between px-4 py-4 rounded-xl border bg-light-mode h-[50px] border-gray-700"
 				onPress={() => {
 					if (Platform.OS === 'android') {
 						DateTimePickerAndroid.open({
@@ -62,8 +57,7 @@ export default function ShareDatePicker({
 				activeOpacity={0.7}
 			>
 				<Text
-					className="text-base"
-					style={{ color: APP_COLOR.DARK_MODE }}
+					className="text-base text-dark-mode"
 				>
 					{value ? formatDate(value) : placeholder}
 				</Text>
@@ -76,12 +70,11 @@ export default function ShareDatePicker({
 
 			{Platform.OS === 'ios' && iosVisible && (
 				<View
-					className="absolute left-0 right-0 bottom-0"
-					style={{ backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE }}
+					className="absolute left-0 right-0 bottom-0 bg-light-mode dark:bg-dark-mode"
 				>
 					<View className="flex-row justify-end px-4 py-2">
 						<TouchableOpacity onPress={() => setIosVisible(false)}>
-							<Text style={{ color: APP_COLOR.PRIMARY }}>OK</Text>
+							<Text className="text-primary">OK</Text>
 						</TouchableOpacity>
 					</View>
 					<DateTimePicker

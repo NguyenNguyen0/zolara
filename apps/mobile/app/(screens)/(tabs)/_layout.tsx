@@ -14,8 +14,8 @@ const getIcons = (routeName: string, focused: boolean, size: number) => {
 		case 'contact':
 			iconName = focused ? 'people' : 'people-outline';
 			break;
-		case 'timeline':
-			iconName = focused ? 'time' : 'time-outline';
+		case 'newsfeed':
+			iconName = focused ? 'newspaper-sharp' : 'newspaper-outline';
 			break;
 		case 'notification':
 			iconName = focused ? 'notifications' : 'notifications-outline';
@@ -75,7 +75,7 @@ const TabLayout = () => {
 		>
 			<Tabs.Screen name="index" options={{ title: 'Messages' }} />
 			<Tabs.Screen name="contact" options={{ title: 'Contacts' }} />
-			<Tabs.Screen name="timeline" options={{ title: 'Timeline' }} />
+			<Tabs.Screen name="newsfeed" options={{ title: 'Newsfeed' }} />
 			<Tabs.Screen
 				name="notification"
 				options={{ title: 'Notifications' }}

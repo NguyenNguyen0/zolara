@@ -4,7 +4,6 @@ import OTPTextView from 'react-native-otp-textinput';
 import { APP_COLOR } from '@/src/utils/constants';
 
 interface OTPInputProps {
-	isDark: boolean;
 	otp: string;
 	onOTPChange: (text: string) => void;
 	otpInputRef: React.RefObject<OTPTextView | null>;
@@ -14,7 +13,6 @@ interface OTPInputProps {
 
 const OTPInput = memo(
 	({
-		isDark,
 		otp,
 		onOTPChange,
 		otpInputRef,
@@ -36,9 +34,7 @@ const OTPInput = memo(
 						width: 50,
 						height: 50,
 						marginHorizontal: 5,
-						borderColor: isDark
-							? APP_COLOR.GRAY_200
-							: APP_COLOR.GRAY_200,
+						borderColor: APP_COLOR.GRAY_200,
 						backgroundColor: APP_COLOR.LIGHT_MODE,
 					}}
 					inputCount={inputCount}

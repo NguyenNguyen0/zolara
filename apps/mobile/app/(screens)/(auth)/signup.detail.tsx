@@ -36,9 +36,9 @@ export default function SignUpDetail() {
 	const handleContinue = () => {
 		console.log('Birthday:', birthday, 'Gender:', gender);
 		router.navigate({
-            pathname: '/(screens)/(auth)/signup.avatar',
-            // params: { name },
-        });
+			pathname: '/(screens)/(auth)/signup.avatar',
+			// params: { name },
+		});
 	};
 
 	const isNextDisabled = !birthday.trim() || !gender.trim();
@@ -56,12 +56,7 @@ export default function SignUpDetail() {
 	};
 
 	return (
-		<SafeAreaView
-			className="flex-1"
-			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
-			}}
-		>
+		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
 			<View className="flex-row items-center px-5 py-10">
@@ -69,7 +64,9 @@ export default function SignUpDetail() {
 					<Ionicons
 						name="arrow-back"
 						size={24}
-						color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE}
+						color={
+							isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE
+						}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -79,12 +76,7 @@ export default function SignUpDetail() {
 				className="flex-1 px-5"
 			>
 				<View>
-					<Text
-						className="text-3xl font-bold text-center mb-10"
-						style={{
-							color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
-						}}
-					>
+					<Text className="text-3xl font-bold text-center mb-10 text-light-mode dark:text-dark-mode">
 						{t('title')}
 					</Text>
 
@@ -117,19 +109,12 @@ export default function SignUpDetail() {
 							backgroundColor: isNextDisabled
 								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
-							borderColor: isNextDisabled
-								? APP_COLOR.GRAY_300
-								: APP_COLOR.PRIMARY,
-							width: '100%',
-							alignSelf: 'stretch',
-							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
-							fontSize: 18,
-							fontWeight: '600',
+							color: isNextDisabled
+								? APP_COLOR.DARK_MODE
+								: APP_COLOR.LIGHT_MODE,
 						}}
-						pressStyle={{ alignSelf: 'stretch' }}
 					/>
 				</View>
 			</KeyboardAvoidingView>

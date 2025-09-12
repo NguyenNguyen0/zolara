@@ -70,7 +70,9 @@ export default function LoginEmail() {
 								? APP_COLOR.GRAY_200
 								: APP_COLOR.PRIMARY,
 						}}
-						textStyle={{ color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE }}
+						textStyle={{ 
+							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
+						}}
 					/>
 
 					{/* Create Account Link */}

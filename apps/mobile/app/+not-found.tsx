@@ -27,10 +27,7 @@ export default function NotFoundScreen() {
 		<>
 			<Stack.Screen options={{ title: t('title') }} />
 			<View
-				className="flex-1 justify-center items-center p-5"
-				style={{
-					backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
-				}}
+				className="flex-1 justify-center items-center p-5 bg-light-mode dark:bg-dark-mode"
 			>
 				<View className="mb-5">
 					<Ionicons
@@ -43,14 +40,12 @@ export default function NotFoundScreen() {
 				</View>
 
 				<Text
-					className="text-7xl font-black mb-2.5 text-center"
-					style={{ color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE }}
+					className="text-7xl font-black mb-2.5 text-center text-dark-mode dark:text-light-mode"
 				>
 					{t('errorCode')}
 				</Text>
 				<Text
-					className="text-2xl font-bold mb-2.5 text-center"
-					style={{ color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE }}
+					className="text-2xl font-bold mb-2.5 text-center text-dark-mode dark:text-light-mode"
 				>
 					{t('subtitle')}
 				</Text>

@@ -37,10 +37,7 @@ export default function SignUpEmail() {
 
 	return (
 		<SafeAreaView
-			className="flex-1"
-			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
-			}}
+			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
@@ -52,10 +49,7 @@ export default function SignUpEmail() {
 				<View>
 					{/* Title */}
 					<Text
-						className="text-3xl font-bold text-center mb-10"
-						style={{
-							color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
-						}}
+						className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode"
 					>
 						{t('title')}
 					</Text>
@@ -70,7 +64,7 @@ export default function SignUpEmail() {
 							inputStyle={{
 								backgroundColor: isDark
 									? APP_COLOR.GRAY_200
-									: 'transparent',
+									: APP_COLOR.TRANSPARENT,
 							}}
 						/>
 					</View>
@@ -117,20 +111,9 @@ export default function SignUpEmail() {
 							backgroundColor: isNextDisabled
 								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
-							borderColor: isNextDisabled
-								? APP_COLOR.GRAY_300
-								: APP_COLOR.PRIMARY,
-							width: '100%',
-							alignSelf: 'stretch',
-							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? 'black' : APP_COLOR.LIGHT_MODE,
-							fontSize: 18,
-							fontWeight: '600',
-						}}
-						pressStyle={{
-							alignSelf: 'stretch',
+							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 						}}
 					/>
 
@@ -140,7 +123,6 @@ export default function SignUpEmail() {
 							questionText={t('alreadyHaveAccount')}
 							linkName={t('loginLink')}
 							path="/(auth)/login.email"
-							questionColor={isDark ? 'white' : 'black'}
 							linkColor={APP_COLOR.PRIMARY}
 						/>
 					</View>

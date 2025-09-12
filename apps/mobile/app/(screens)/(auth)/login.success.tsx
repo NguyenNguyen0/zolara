@@ -18,12 +18,7 @@ const LoginSuccess = () => {
 	return (
 		<>
 			<Stack.Screen options={{ title: t('title') }} />
-			<View
-				className="flex-1 items-center justify-center px-5"
-				style={{
-					backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
-				}}
-			>
+			<View className="flex-1 items-center justify-center px-5 bg-light-mode dark:bg-dark-mode">
 				{/* Main Content Container */}
 				<View className="flex-1 items-center justify-center">
 					{/* Profile Picture with Success Check */}
@@ -67,32 +62,13 @@ const LoginSuccess = () => {
 				</View>
 
 				{/* Done Button - Fixed at bottom */}
-				<View className="w-full max-w-xs mb-16">
+				<View className="w-full mb-16">
 					<ShareButton
 						title={t('buttons.done')}
 						onPress={handleDone}
-						buttonStyle={{
-							backgroundColor: APP_COLOR.PRIMARY,
-							borderRadius: 12,
-							paddingVertical: 16,
-							paddingHorizontal: 24,
-							width: '100%',
-							alignItems: 'center',
-							justifyContent: 'center',
-							shadowColor: APP_COLOR.PRIMARY,
-							shadowOffset: {
-								width: 0,
-								height: 4,
-							},
-							shadowOpacity: 0.3,
-							shadowRadius: 8,
-							elevation: 8,
-						}}
-						textStyle={{
-							color: APP_COLOR.LIGHT_MODE,
-							fontSize: 18,
-							fontWeight: 'bold',
-						}}
+						buttonStyle={{ backgroundColor: APP_COLOR.PRIMARY }}
+						textStyle={{ color: APP_COLOR.LIGHT_MODE }}
+						// isLoading={true}
 					/>
 				</View>
 			</View>
