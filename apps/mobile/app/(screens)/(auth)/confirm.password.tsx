@@ -62,7 +62,7 @@ export default function ConfirmPassword() {
 		<SafeAreaView
 			className="flex-1"
 			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
+				backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 			}}
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
@@ -73,7 +73,7 @@ export default function ConfirmPassword() {
 					<Ionicons
 						name="arrow-back"
 						size={24}
-						color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
+						color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -88,7 +88,7 @@ export default function ConfirmPassword() {
 					<Text
 						className="text-xl text-center mb-2"
 						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
 						}}
 					>
 						{t('title')}
@@ -98,7 +98,7 @@ export default function ConfirmPassword() {
 					<Text
 						className="text-3xl font-bold text-center mb-10"
 						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
 						}}
 					>
 						{email ? email : 'Unknown Email'}
@@ -113,7 +113,7 @@ export default function ConfirmPassword() {
 							placeholder={t('passwordPlaceholder')}
 							inputStyle={{
 								backgroundColor: isDark
-									? APP_COLOR.GREYLIGHT
+									? APP_COLOR.GRAY_200
 									: 'transparent',
 							}}
 						/>
@@ -126,17 +126,17 @@ export default function ConfirmPassword() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? APP_COLOR.GREY
+								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
 							borderColor: isNextDisabled
-								? APP_COLOR.GREY
+								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
 							width: '100%',
 							alignSelf: 'stretch',
 							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? 'black' : APP_COLOR.LIGHT,
+							color: isNextDisabled ? 'black' : APP_COLOR.LIGHT_MODE,
 							fontSize: 18,
 							fontWeight: '600',
 						}}

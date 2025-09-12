@@ -46,38 +46,38 @@ const ShareDropdown: React.FC<ShareDropdownProps> = ({
   const defaultStyles = StyleSheet.create({
     dropdown: {
       height: 50,
-      borderColor: isDark ? APP_COLOR.GREY : APP_COLOR.GREYDARK,
+      borderColor: isDark ? APP_COLOR.GRAY_300 : APP_COLOR.GRAY_700,
       borderWidth: 1,
       borderRadius: 8,
       paddingHorizontal: 12,
-      backgroundColor: APP_COLOR.LIGHT,
+      backgroundColor: APP_COLOR.LIGHT_MODE,
     },
     placeholderStyle: {
       fontSize: 16,
-      color: APP_COLOR.GREY,
+      color: APP_COLOR.GRAY_300,
     },
     selectedTextStyle: {
       fontSize: 16,
-      color: APP_COLOR.DARK,
+      color: APP_COLOR.DARK_MODE,
     },
     iconStyle: {
       width: 20,
       height: 20,
-      tintColor: APP_COLOR.DARK,
+      tintColor: APP_COLOR.DARK_MODE,
     },
     inputSearchStyle: {
       height: 40,
       fontSize: 16,
-      color: APP_COLOR.DARK,
-      backgroundColor: APP_COLOR.LIGHT,
+      color: APP_COLOR.DARK_MODE,
+      backgroundColor: APP_COLOR.LIGHT_MODE,
     },
     itemTextStyle: {
-      color: APP_COLOR.DARK,
+      color: APP_COLOR.DARK_MODE,
       fontSize: 16,
     },
     containerStyle: {
-      backgroundColor: APP_COLOR.LIGHT,
-      borderColor: APP_COLOR.GREY,
+      backgroundColor: APP_COLOR.LIGHT_MODE,
+      borderColor: APP_COLOR.GRAY_300,
       borderRadius: 8,
       borderWidth: 1,
     }

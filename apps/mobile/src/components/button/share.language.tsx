@@ -1,11 +1,9 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
 
 const LanguageToggle: React.FC = () => {
   const { i18n } = useTranslation('common');
-  const { isDark } = useTheme();
 
   const changeLanguage = () => {
     const currentLang = i18n.language;
@@ -18,14 +16,10 @@ const LanguageToggle: React.FC = () => {
   return (
     <TouchableOpacity
       onPress={changeLanguage}
-      className={`px-3 py-2 rounded-full ${
-        isDark ? 'bg-gray-700' : 'bg-gray-100'
-      }`}
+      className="px-3 py-2 rounded-full bg-gray-200 dark:bg-gray-700"
       activeOpacity={0.7}
     >
-      <Text className={`font-medium text-sm ${
-        isDark ? 'text-white' : 'text-gray-700'
-      }`}>
+      <Text className='font-medium text-sm bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'>
         {displayLanguage}
       </Text>
     </TouchableOpacity>

@@ -21,7 +21,7 @@ const LoginSuccess = () => {
 			<View
 				className="flex-1 items-center justify-center px-5"
 				style={{
-					backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
+					backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 				}}
 			>
 				{/* Main Content Container */}
@@ -29,7 +29,7 @@ const LoginSuccess = () => {
 					{/* Profile Picture with Success Check */}
 					<View className="relative mb-5">
 						<Image
-							source={require('@/src/assets/brand/logo_temporary.png')}
+							source={require('@/src/assets/brand/logo.png')}
 							className="w-36 h-36 rounded-full"
 							resizeMode="cover"
 						/>
@@ -46,8 +46,8 @@ const LoginSuccess = () => {
 						className="text-3xl font-bold mb-2 text-center"
 						style={{
 							color: isDark
-								? APP_COLOR.LIGHT
-								: APP_COLOR.GREYDARK,
+								? APP_COLOR.LIGHT_MODE
+								: APP_COLOR.GRAY_700,
 						}}
 					>
 						{t('userName')}
@@ -58,8 +58,8 @@ const LoginSuccess = () => {
 						className="text-xl mb-10 text-center"
 						style={{
 							color: isDark
-								? APP_COLOR.GREYLIGHT
-								: APP_COLOR.GREYDARK,
+								? APP_COLOR.GRAY_200
+								: APP_COLOR.GRAY_700,
 						}}
 					>
 						{t('successMessage')}
@@ -89,7 +89,7 @@ const LoginSuccess = () => {
 							elevation: 8,
 						}}
 						textStyle={{
-							color: APP_COLOR.LIGHT,
+							color: APP_COLOR.LIGHT_MODE,
 							fontSize: 18,
 							fontWeight: 'bold',
 						}}

@@ -63,7 +63,7 @@ const ShareCountdownButton = memo(
 				<Text
 					className="text-base"
 					style={{
-						color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
+						color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
 					}}
 				>
 					{t(resendTextKey)}{' '}
@@ -78,8 +78,8 @@ const ShareCountdownButton = memo(
 						style={{
 							color: isButtonDisabled
 								? isDark
-									? APP_COLOR.LIGHT
-									: APP_COLOR.DARK
+									? APP_COLOR.LIGHT_MODE
+									: APP_COLOR.DARK_MODE
 								: APP_COLOR.PRIMARY,
 						}}
 					>

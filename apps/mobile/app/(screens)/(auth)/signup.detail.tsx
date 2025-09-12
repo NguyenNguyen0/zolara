@@ -59,7 +59,7 @@ export default function SignUpDetail() {
 		<SafeAreaView
 			className="flex-1"
 			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
+				backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 			}}
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
@@ -69,7 +69,7 @@ export default function SignUpDetail() {
 					<Ionicons
 						name="arrow-back"
 						size={24}
-						color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
+						color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -82,7 +82,7 @@ export default function SignUpDetail() {
 					<Text
 						className="text-3xl font-bold text-center mb-10"
 						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
 						}}
 					>
 						{t('title')}
@@ -115,17 +115,17 @@ export default function SignUpDetail() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? APP_COLOR.GREY
+								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
 							borderColor: isNextDisabled
-								? APP_COLOR.GREY
+								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
 							width: '100%',
 							alignSelf: 'stretch',
 							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? APP_COLOR.DARK : APP_COLOR.LIGHT,
+							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 							fontSize: 18,
 							fontWeight: '600',
 						}}

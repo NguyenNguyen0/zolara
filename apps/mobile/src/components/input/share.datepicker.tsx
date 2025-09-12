@@ -38,8 +38,8 @@ export default function ShareDatePicker({
 			<TouchableOpacity
 				className="flex-row items-center justify-between px-4 py-4 rounded-xl border"
 				style={{
-					borderColor: APP_COLOR.GREYDARK,
-					backgroundColor: APP_COLOR.LIGHT,
+					borderColor: APP_COLOR.GRAY_700,
+					backgroundColor: APP_COLOR.LIGHT_MODE,
 					height: 50,
 				}}
 				onPress={() => {
@@ -63,21 +63,21 @@ export default function ShareDatePicker({
 			>
 				<Text
 					className="text-base"
-					style={{ color: APP_COLOR.DARK }}
+					style={{ color: APP_COLOR.DARK_MODE }}
 				>
 					{value ? formatDate(value) : placeholder}
 				</Text>
 				<Ionicons
 					name="calendar"
 					size={20}
-					color={APP_COLOR.DARK}
+					color={APP_COLOR.DARK_MODE}
 				/>
 			</TouchableOpacity>
 
 			{Platform.OS === 'ios' && iosVisible && (
 				<View
 					className="absolute left-0 right-0 bottom-0"
-					style={{ backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT }}
+					style={{ backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE }}
 				>
 					<View className="flex-row justify-end px-4 py-2">
 						<TouchableOpacity onPress={() => setIosVisible(false)}>

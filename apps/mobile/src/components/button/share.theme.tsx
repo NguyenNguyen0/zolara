@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useTheme } from '@/src/hooks/useTheme';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
+import { APP_COLOR } from '@/src/utils/constants';
 
 const ThemeToggle: React.FC = () => {
   const { theme, isDark, setTheme } = useTheme();
@@ -16,14 +17,14 @@ const ThemeToggle: React.FC = () => {
     }
   };
 
-  const renderIcon = () => {
+  const renderIcon = (color: string) => {
     switch (theme) {
       case 'light':
         return (
           <Feather
             name="sun"
             size={20}
-            color={isDark ? '#ffffff' : '#374151'}
+            color={color}
           />
         );
       case 'dark':
@@ -31,7 +32,7 @@ const ThemeToggle: React.FC = () => {
           <Feather
             name="moon"
             size={20}
-            color={isDark ? '#ffffff' : '#374151'}
+            color={color}
           />
         );
       case 'system':
@@ -39,7 +40,7 @@ const ThemeToggle: React.FC = () => {
           <MaterialIcons
             name="smartphone"
             size={20}
-            color={isDark ? '#ffffff' : '#374151'}
+            color={color}
           />
         );
       default:
@@ -47,7 +48,7 @@ const ThemeToggle: React.FC = () => {
           <Feather
             name="sun"
             size={20}
-            color={isDark ? '#ffffff' : '#374151'}
+            color={color}
           />
         );
     }
@@ -56,12 +57,10 @@ const ThemeToggle: React.FC = () => {
   return (
     <TouchableOpacity
       onPress={toggleTheme}
-      className={`w-10 h-10 rounded-full items-center justify-center ${
-        isDark ? 'bg-gray-700' : 'bg-gray-100'
-      }`}
+      className='w-10 h-10 rounded-full items-center justify-center bg-gray-200 dark:bg-gray-700'
       activeOpacity={0.7}
     >
-      {renderIcon()}
+      {renderIcon(isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE)}
     </TouchableOpacity>
   );
 };

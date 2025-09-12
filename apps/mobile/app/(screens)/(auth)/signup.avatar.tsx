@@ -31,7 +31,7 @@ export default function SignUpAvatar() {
 	return (
 		<SafeAreaView
 			className="flex-1"
-			style={{ backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT }}
+			style={{ backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE }}
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 			<KeyboardAvoidingView
@@ -41,14 +41,14 @@ export default function SignUpAvatar() {
 				<View className="flex-1">
 					<Text
 						className="text-3xl font-bold text-center mb-4"
-						style={{ color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK }}
+						style={{ color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE }}
 					>
 						{t('title')}
 					</Text>
 					<Text
 						className="text-[15px] text-center mb-10"
 						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
+							color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE,
 							opacity: 0.7,
 						}}
 					>
@@ -75,7 +75,7 @@ export default function SignUpAvatar() {
 								alignSelf: 'stretch',
 								justifyContent: 'center',
 							}}
-							textStyle={{ color: APP_COLOR.LIGHT, fontSize: 18, fontWeight: '600' }}
+							textStyle={{ color: APP_COLOR.LIGHT_MODE, fontSize: 18, fontWeight: '600' }}
 							pressStyle={{ alignSelf: 'stretch' }}
 						/>
 					</View>

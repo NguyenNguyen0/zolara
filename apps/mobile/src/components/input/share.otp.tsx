@@ -37,14 +37,14 @@ const OTPInput = memo(
 						height: 50,
 						marginHorizontal: 5,
 						borderColor: isDark
-							? APP_COLOR.GREYLIGHT
-							: APP_COLOR.GREYLIGHT,
-						backgroundColor: APP_COLOR.LIGHT,
+							? APP_COLOR.GRAY_200
+							: APP_COLOR.GRAY_200,
+						backgroundColor: APP_COLOR.LIGHT_MODE,
 					}}
 					inputCount={inputCount}
 					keyboardType="numeric"
 					tintColor={APP_COLOR.PRIMARY}
-					offTintColor={APP_COLOR.GREYDARK}
+					offTintColor={APP_COLOR.GRAY_700}
 				/>
 			</View>
 		);

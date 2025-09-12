@@ -1,11 +1,11 @@
+import { APP_COLOR } from '@/src/utils/constants';
 import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 interface IProps {
 	questionText: string;
 	linkName: string;
 	path?: string;
-	questionColor?: any;
 	linkColor?: any;
 }
 
@@ -14,31 +14,18 @@ const ShareQuestionButton = (props: IProps) => {
 		questionText,
 		linkName: questionBtnName,
 		path,
-		questionColor: textColor = 'black',
-		linkColor = 'black',
+		linkColor = APP_COLOR.PRIMARY,
 	} = props;
 	return (
-		<View style={styles.container}>
-			<Text style={{ color: textColor }}>{questionText}</Text>
+		<View className='my-[5px] flex-row gap-[5px]'>
+			<Text className='text-black dark:text-white'>{questionText}</Text>
 			<Link href={path as any}>
-				<Text style={[styles.questionBtnName, { color: linkColor }]}>
+				<Text className='font-bold' style={{ color: linkColor }}>
 					{questionBtnName}
 				</Text>
 			</Link>
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		marginVertical: 5,
-		flexDirection: 'row',
-		gap: 5,
-	},
-	questionBtnName: {
-		fontWeight: '700',
-		// textDecorationLine: "underline",
-	},
-});
 
 export default ShareQuestionButton;
