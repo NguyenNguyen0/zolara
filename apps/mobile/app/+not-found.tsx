@@ -27,30 +27,25 @@ export default function NotFoundScreen() {
 		<>
 			<Stack.Screen options={{ title: t('title') }} />
 			<View
-				className="flex-1 justify-center items-center p-5"
-				style={{
-					backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
-				}}
+				className="flex-1 justify-center items-center p-5 bg-light-mode dark:bg-dark-mode"
 			>
 				<View className="mb-5">
 					<Ionicons
 						name="sad-outline"
 						size={120}
 						color={
-							isDark ? APP_COLOR.GREYLIGHT : APP_COLOR.GREYDARK
+							isDark ? APP_COLOR.GRAY_200 : APP_COLOR.GRAY_700
 						}
 					/>
 				</View>
 
 				<Text
-					className="text-7xl font-black mb-2.5 text-center"
-					style={{ color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK }}
+					className="text-7xl font-black mb-2.5 text-center text-dark-mode dark:text-light-mode"
 				>
 					{t('errorCode')}
 				</Text>
 				<Text
-					className="text-2xl font-bold mb-2.5 text-center"
-					style={{ color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK }}
+					className="text-2xl font-bold mb-2.5 text-center text-dark-mode dark:text-light-mode"
 				>
 					{t('subtitle')}
 				</Text>
@@ -58,8 +53,8 @@ export default function NotFoundScreen() {
 					className="text-base text-center leading-6 max-w-xs mb-10"
 					style={{
 						color: isDark
-							? APP_COLOR.GREYLIGHT
-							: APP_COLOR.GREYDARK,
+							? APP_COLOR.GRAY_200
+							: APP_COLOR.GRAY_700,
 					}}
 				>
 					{t('description')}
@@ -73,7 +68,7 @@ export default function NotFoundScreen() {
 							<Ionicons
 								name="home"
 								size={20}
-								color={APP_COLOR.LIGHT}
+								color={APP_COLOR.LIGHT_MODE}
 							/>
 						}
 						buttonStyle={{
@@ -86,7 +81,7 @@ export default function NotFoundScreen() {
 							width: '100%',
 						}}
 						textStyle={{
-							color: APP_COLOR.LIGHT,
+							color: APP_COLOR.LIGHT_MODE,
 							fontSize: 16,
 							fontWeight: '600',
 						}}
@@ -99,15 +94,15 @@ export default function NotFoundScreen() {
 							<Ionicons
 								name="arrow-back"
 								size={20}
-								color={APP_COLOR.DARK}
+								color={APP_COLOR.DARK_MODE}
 							/>
 						}
 						buttonStyle={{
-							backgroundColor: APP_COLOR.GREYLIGHT,
+							backgroundColor: APP_COLOR.GRAY_200,
 							borderWidth: 1,
 							borderColor: isDark
-								? APP_COLOR.GREYDARK
-								: APP_COLOR.GREYLIGHT,
+								? APP_COLOR.GRAY_700
+								: APP_COLOR.GRAY_200,
 							borderRadius: 8,
 							paddingVertical: 12,
 							paddingHorizontal: 24,
@@ -116,7 +111,7 @@ export default function NotFoundScreen() {
 							width: '100%',
 						}}
 						textStyle={{
-							color: APP_COLOR.DARK,
+							color: APP_COLOR.DARK_MODE,
 							fontSize: 16,
 							fontWeight: '600',
 						}}

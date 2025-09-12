@@ -1,4 +1,4 @@
-const { APP_COLOR } = require('./src/utils/constants');
+import { APP_COLOR } from './src/utils/constants';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -8,10 +8,13 @@ module.exports = {
 		'./src/components/**/*.{js,jsx,ts,tsx}',
 	],
 	presets: [require('nativewind/preset')],
+	darkMode: 'class', // Enable class-based dark mode
 	theme: {
 		extend: {
 			colors: {
-				primary: APP_COLOR.PRIMARY, // đặt tên gọn
+				primary: APP_COLOR.PRIMARY,
+				"light-mode": APP_COLOR.LIGHT_MODE,
+				"dark-mode": APP_COLOR.DARK_MODE,
 			},
 		},
 	},

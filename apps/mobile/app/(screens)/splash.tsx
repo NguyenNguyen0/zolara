@@ -48,7 +48,7 @@ export default function SplashScreen() {
         className="items-center"
       >
         <Image
-          source={require('@/src/assets/brand/logo_temporary.png')}
+          source={require('@/src/assets/brand/logo.png')}
           className="w-40 h-40 rounded-2xl shadow-2xl"
           accessibilityLabel="App Logo"
         />

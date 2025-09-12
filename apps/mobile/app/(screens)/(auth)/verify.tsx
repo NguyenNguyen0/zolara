@@ -87,12 +87,7 @@ export default function Verify() {
 	}, []);
 
 	return (
-		<SafeAreaView
-			className="flex-1"
-			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
-			}}
-		>
+		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
 			{/* Header with back button */}
@@ -101,7 +96,9 @@ export default function Verify() {
 					<Ionicons
 						name="arrow-back"
 						size={24}
-						color={isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK}
+						color={
+							isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE
+						}
 					/>
 				</TouchableOpacity>
 			</View>
@@ -113,55 +110,28 @@ export default function Verify() {
 				{/* Content Container */}
 				<View>
 					{/* Title */}
-					<Text
-						className="text-3xl font-bold text-center"
-						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
-						}}
-					>
+					<Text className="text-3xl font-bold text-center text-dark-mode dark:text-light-mode">
 						{t('title')}
 					</Text>
 
 					{/* Instructions */}
 					<View className="items-center my-10">
-						<Text
-							className="text-xl text-center leading-6"
-							style={{
-								color: isDark
-									? APP_COLOR.LIGHT
-									: APP_COLOR.DARK,
-							}}
-						>
+						<Text className="text-xl text-center leading-6 text-dark-mode dark:text-light-mode">
 							{t('instruction')}
 						</Text>
 
 						{/* Email Display */}
-						<Text
-							className="text-2xl font-bold text-center my-2"
-							style={{
-								color: isDark
-									? APP_COLOR.LIGHT
-									: APP_COLOR.DARK,
-							}}
-						>
+						<Text className="text-2xl font-bold text-center my-2 text-dark-mode dark:text-light-mode">
 							{emailDisplay}
 						</Text>
 
-						<Text
-							className="text-xl text-center leading-6"
-							style={{
-								color: isDark
-									? APP_COLOR.LIGHT
-									: APP_COLOR.DARK,
-							}}
-						>
+						<Text className="text-xl text-center leading-6 text-dark-mode dark:text-light-mode">
 							{t('instruction2')}
 						</Text>
 					</View>
 
 					{/* OTP Input */}
 					<OTPInput
-						isDark={isDark}
 						otp={otp}
 						onOTPChange={handleOTPChange}
 						otpInputRef={otpInput}
@@ -174,28 +144,18 @@ export default function Verify() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? APP_COLOR.GREY
+								? APP_COLOR.GRAY_300
 								: APP_COLOR.PRIMARY,
-							borderColor: isNextDisabled
-								? APP_COLOR.GREY
-								: APP_COLOR.PRIMARY,
-							width: '100%',
-							alignSelf: 'stretch',
-							justifyContent: 'center',
 						}}
 						textStyle={{
-							color: isNextDisabled ? 'black' : APP_COLOR.LIGHT,
-							fontSize: 18,
-							fontWeight: '600',
-						}}
-						pressStyle={{
-							alignSelf: 'stretch',
+							color: isNextDisabled
+								? APP_COLOR.DARK_MODE
+								: APP_COLOR.LIGHT_MODE,
 						}}
 					/>
 
 					{/* Resend Code Link */}
 					<ShareCountdownButton
-						isDark={isDark}
 						onResend={handleResendCode}
 					/>
 				</View>

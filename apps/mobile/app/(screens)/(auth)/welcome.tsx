@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Image, SafeAreaView, StatusBar } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/src/components/button/share.button';
-import ThemeToggle from '@/src/components/theme.toggle';
-import LanguageToggle from '@/src/components/language.toggle';
+import ThemeToggle from '@/src/components/button/share.theme';
+import LanguageToggle from '@/src/components/button/share.language';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { router } from 'expo-router';
@@ -13,13 +13,9 @@ export default function Welcome() {
 	const { isDark } = useTheme();
 
 	return (
-		<SafeAreaView
-			className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`}
-		>
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT}
-			/>
+		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
+			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+
 			{/* Theme & Language Selection */}
 			<View className="absolute top-12 right-6 z-10 flex-row gap-3">
 				<LanguageToggle />
@@ -30,13 +26,11 @@ export default function Welcome() {
 			<View className="flex-1 justify-between">
 				{/* Logo Section - Takes up most of the space */}
 				<View className="flex-1 justify-center items-center px-8">
-					<View className="items-center">
-						<Image
-							source={require('@/src/assets/brand/logo_temporary.png')}
-							resizeMode="contain"
-							style={{ width: 200, height: 200 }}
-						/>
-					</View>
+					<Image
+						source={require('@/src/assets/brand/logo.png')}
+						resizeMode="contain"
+						style={{ width: 200, height: 200 }}
+					/>
 				</View>
 
 				{/* Bottom Section */}
@@ -49,47 +43,15 @@ export default function Welcome() {
 							onPress={() =>
 								router.navigate('/(screens)/(auth)/login.email')
 							}
-							buttonStyle={{
-								backgroundColor: APP_COLOR.PRIMARY,
-								borderColor: APP_COLOR.PRIMARY,
-								width: '100%',
-								alignSelf: 'stretch',
-								justifyContent: 'center',
-							}}
-							textStyle={{
-								color: APP_COLOR.LIGHT,
-								fontSize: 18,
-								fontWeight: '600',
-							}}
-							pressStyle={{
-								alignSelf: 'stretch',
-							}}
+							buttonStyle={{ backgroundColor: APP_COLOR.PRIMARY }}
+							textStyle={{ color: APP_COLOR.LIGHT_MODE }}
+							// isLoading={true}
 						/>
 						{/* Create */}
 						<ShareButton
 							title={t('createAccount')}
 							onPress={() => router.navigate('/(screens)/(auth)/signup.email')}
-							buttonStyle={{
-								backgroundColor: isDark
-									? APP_COLOR.GREYDARK
-									: APP_COLOR.GREYLIGHT,
-								borderColor: isDark
-									? APP_COLOR.GREYDARK
-									: APP_COLOR.GREYLIGHT,
-								width: '100%',
-								alignSelf: 'stretch',
-								justifyContent: 'center',
-							}}
-							textStyle={{
-								color: isDark
-									? APP_COLOR.LIGHT
-									: APP_COLOR.DARK,
-								fontSize: 18,
-								fontWeight: '600',
-							}}
-							pressStyle={{
-								alignSelf: 'stretch',
-							}}
+							// isLoading={true}
 						/>
 					</View>
 				</View>

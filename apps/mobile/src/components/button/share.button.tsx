@@ -1,27 +1,14 @@
+import { APP_COLOR } from '@/src/utils/constants';
 import { ReactNode } from 'react';
 import {
 	ActivityIndicator,
 	Pressable,
 	StyleProp,
-	StyleSheet,
 	Text,
 	TextStyle,
 	View,
 	ViewStyle,
 } from 'react-native';
-
-const styles = StyleSheet.create({
-	btnContainer: {
-		borderRadius: 25,
-		paddingVertical: 13,
-		paddingHorizontal: 15,
-		flexDirection: 'row',
-		gap: 10,
-		alignItems: 'center',
-		backgroundColor: 'blue',
-		borderColor: 'red',
-	},
-});
 
 interface IProps {
 	title: string;
@@ -59,10 +46,13 @@ const ShareButton = (props: IProps) => {
 			onPress={onPress}
 			disabled={isLoading || disabled}
 		>
-			<View style={[styles.btnContainer, buttonStyle]}>
+			<View
+				className="flex-row items-center justify-center gap-5 py-[13px] px-[15px] rounded-[25px] bg-gray-200 dark:bg-gray-700"
+				style={buttonStyle}
+			>
 				{icon}
-				{isLoading && <ActivityIndicator color="black" />}
-				<Text style={textStyle}>{title}</Text>
+				<Text className='text-[18px] font-semibold text-gray-700 dark:text-gray-200' style={textStyle}>{title}</Text>
+				{isLoading && <ActivityIndicator color={APP_COLOR.GRAY_200} />}
 			</View>
 		</Pressable>
 	);

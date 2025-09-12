@@ -32,10 +32,7 @@ export default function SignUpName() {
 
 	return (
 		<SafeAreaView
-			className="flex-1"
-			style={{
-				backgroundColor: isDark ? APP_COLOR.DARK : APP_COLOR.LIGHT,
-			}}
+			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
@@ -47,21 +44,14 @@ export default function SignUpName() {
 				<View className="flex-1">
 					{/* Title */}
 					<Text
-						className="text-3xl font-bold text-center mb-4"
-						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
-						}}
+						className="text-3xl font-bold text-center mb-4 text-dark-mode dark:text-light-mode"
 					>
 						{t('title')}
 					</Text>
 
 					{/* Subtitle */}
 					<Text
-						className="text-[15px] text-center mb-10"
-						style={{
-							color: isDark ? APP_COLOR.LIGHT : APP_COLOR.DARK,
-							opacity: 0.7,
-						}}
+						className="text-[15px] text-center mb-10 text-dark-mode dark:text-light-mode opacity-70"
 					>
 						{t('subtitle')}
 					</Text>
@@ -75,8 +65,8 @@ export default function SignUpName() {
 							placeholder={t('namePlaceholder')}
 							inputStyle={{
 								backgroundColor: isDark
-									? APP_COLOR.GREYLIGHT
-									: 'transparent',
+									? APP_COLOR.GRAY_200
+									: APP_COLOR.TRANSPARENT,
 							}}
 						/>
 					</View>
@@ -87,21 +77,18 @@ export default function SignUpName() {
 							questionText={`• ${t('rule1')}`}
 							linkName={''}
 							path="/(auth)/login.email"
-							questionColor={isDark ? 'white' : 'black'}
 							linkColor={APP_COLOR.PRIMARY}
 						/>
 						<ShareQuestionButton
 							questionText={`• ${t('rule2')}`}
 							linkName={''}
 							path="/(auth)/login.email"
-							questionColor={isDark ? 'white' : 'black'}
 							linkColor={APP_COLOR.PRIMARY}
 						/>
 						<ShareQuestionButton
 							questionText={`• ${t('rule3')}`}
 							linkName={t('rule3Link')}
 							path="/name-rules"
-							questionColor={isDark ? 'white' : 'black'}
 							linkColor={APP_COLOR.PRIMARY}
 						/>
 					</View>
@@ -114,24 +101,13 @@ export default function SignUpName() {
 							disabled={isContinueDisabled}
 							buttonStyle={{
 								backgroundColor: isContinueDisabled
-									? APP_COLOR.GREY
+									? APP_COLOR.GRAY_300
 									: APP_COLOR.PRIMARY,
-								borderColor: isContinueDisabled
-									? APP_COLOR.GREY
-									: APP_COLOR.PRIMARY,
-								width: '100%',
-								alignSelf: 'stretch',
-								justifyContent: 'center',
 							}}
 							textStyle={{
 								color: isContinueDisabled
-									? 'black'
-									: APP_COLOR.LIGHT,
-								fontSize: 18,
-								fontWeight: '600',
-							}}
-							pressStyle={{
-								alignSelf: 'stretch',
+									? APP_COLOR.DARK_MODE
+									: APP_COLOR.LIGHT_MODE,
 							}}
 						/>
 					</View>

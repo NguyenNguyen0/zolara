@@ -51,6 +51,7 @@ const ShareInput = (props: IProps) => {
 			{title && <Text style={styles.text}>{title}</Text>}
 			<View>
 				<TextInput
+					className='bg-transparent dark:bg-gray-200'
 					value={value}
 					keyboardType={keyboardType}
 					placeholder={placeholder}
@@ -59,11 +60,7 @@ const ShareInput = (props: IProps) => {
 						{
 							borderColor: isFocus
 								? APP_COLOR.PRIMARY
-								: APP_COLOR.GREYDARK,
-							backgroundColor:
-								editable === false
-									? APP_COLOR.GREYDARK
-									: 'transparent',
+								: APP_COLOR.GRAY_700,
 						},
 						inputStyle
 					]}
