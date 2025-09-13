@@ -1,8 +1,6 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
 
 interface CountdownButtonProps {
 	onResend: () => void;
@@ -25,7 +23,6 @@ const ShareCountdownButton = memo(
 		disabled = false,
 	}: CountdownButtonProps) => {
 		const { t } = useTranslation(translationNamespace);
-		const { isDark } = useTheme();
 		const [countdown, setCountdown] = useState(initialCountdown);
 		const [isResendDisabled, setIsResendDisabled] = useState(true);
 

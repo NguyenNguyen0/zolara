@@ -9,7 +9,7 @@ interface IProps {
 	linkColor?: any;
 }
 
-const ShareQuestionButton = (props: IProps) => {
+const ShareQuestion = (props: IProps) => {
 	const {
 		questionText,
 		linkName: questionBtnName,
@@ -28,4 +28,4 @@ const ShareQuestionButton = (props: IProps) => {
 	);
 };
 
-export default ShareQuestionButton;
+export default ShareQuestion;

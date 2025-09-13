@@ -13,6 +13,8 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: APP_COLOR.PRIMARY,
+				"secondary-light": APP_COLOR.GRAY_200,
+				"secondary-dark": APP_COLOR.GRAY_700,
 				"light-mode": APP_COLOR.LIGHT_MODE,
 				"dark-mode": APP_COLOR.DARK_MODE,
 			},

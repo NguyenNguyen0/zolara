@@ -47,11 +47,11 @@ const ShareButton = (props: IProps) => {
 			disabled={isLoading || disabled}
 		>
 			<View
-				className="flex-row items-center justify-center gap-5 py-[13px] px-[15px] rounded-[25px] bg-gray-200 dark:bg-gray-700"
+				className="flex-row items-center justify-center gap-5 py-[13px] px-[15px] rounded-[25px] bg-secondary-light dark:bg-secondary-dark"
 				style={buttonStyle}
 			>
 				{icon}
-				<Text className='text-[18px] font-semibold text-gray-700 dark:text-gray-200' style={textStyle}>{title}</Text>
+				<Text className='text-[18px] font-semibold text-secondary-dark dark:text-secondary-light' style={textStyle}>{title}</Text>
 				{isLoading && <ActivityIndicator color={APP_COLOR.GRAY_200} />}
 			</View>
 		</Pressable>

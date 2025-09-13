@@ -1,7 +1,15 @@
 import { APP_COLOR } from '@/src/utils/constants';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useState } from 'react';
-import { KeyboardType, StyleProp, StyleSheet, Text, TextInput, TextStyle, View } from 'react-native';
+import {
+	KeyboardType,
+	StyleProp,
+	StyleSheet,
+	Text,
+	TextInput,
+	TextStyle,
+	View,
+} from 'react-native';
 
 const styles = StyleSheet.create({
 	inputGroup: { gap: 10 },
@@ -46,23 +54,27 @@ const ShareInput = (props: IProps) => {
 		placeholder,
 		inputStyle,
 	} = props;
+
+	const borderColor =
+		touched && error
+			? '#ef4444' // Tailwind red-500
+			: isFocus
+				? APP_COLOR.PRIMARY
+				: APP_COLOR.GRAY_700;
+
 	return (
 		<View style={styles.inputGroup}>
 			{title && <Text style={styles.text}>{title}</Text>}
 			<View>
 				<TextInput
-					className='bg-transparent dark:bg-gray-200'
+					className="bg-transparent dark:bg-secondary-light"
 					value={value}
 					keyboardType={keyboardType}
 					placeholder={placeholder}
 					style={[
 						styles.input,
-						{
-							borderColor: isFocus
-								? APP_COLOR.PRIMARY
-								: APP_COLOR.GRAY_700,
-						},
-						inputStyle
+						{ borderColor },
+						inputStyle,
 					]}
 					onFocus={() => setIsFocus(true)}
 					onBlur={(e) => {
@@ -76,7 +88,9 @@ const ShareInput = (props: IProps) => {
 					secureTextEntry={secureTextEntry && !isShowPassword}
 				/>
 				{touched && error && (
-					<Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
+					<Text className="m-2 text-red-600 font-semibold">
+						{error}
+					</Text>
 				)}
 				{secureTextEntry && (
 					<Entypo

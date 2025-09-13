@@ -57,7 +57,7 @@ const ThemeToggle: React.FC = () => {
   return (
     <TouchableOpacity
       onPress={toggleTheme}
-      className='w-10 h-10 rounded-full items-center justify-center bg-gray-200 dark:bg-gray-700'
+      className='w-10 h-10 rounded-full items-center justify-center bg-secondary-light dark:bg-secondary-dark'
       activeOpacity={0.7}
     >
       {renderIcon(isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE)}

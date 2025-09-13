@@ -46,7 +46,7 @@ const ShareDropdown: React.FC<ShareDropdownProps> = ({
   const defaultStyles = StyleSheet.create({
     dropdown: {
       height: 50,
-      borderColor: isDark ? APP_COLOR.GRAY_300 : APP_COLOR.GRAY_700,
+      borderColor: isDark ? APP_COLOR.GRAY_200 : APP_COLOR.GRAY_700,
       borderWidth: 1,
       borderRadius: 8,
       paddingHorizontal: 12,
@@ -54,7 +54,7 @@ const ShareDropdown: React.FC<ShareDropdownProps> = ({
     },
     placeholderStyle: {
       fontSize: 16,
-      color: APP_COLOR.GRAY_300,
+      color: APP_COLOR.GRAY_200,
     },
     selectedTextStyle: {
       fontSize: 16,
@@ -77,7 +77,7 @@ const ShareDropdown: React.FC<ShareDropdownProps> = ({
     },
     containerStyle: {
       backgroundColor: APP_COLOR.LIGHT_MODE,
-      borderColor: APP_COLOR.GRAY_300,
+      borderColor: APP_COLOR.GRAY_200,
       borderRadius: 8,
       borderWidth: 1,
     }

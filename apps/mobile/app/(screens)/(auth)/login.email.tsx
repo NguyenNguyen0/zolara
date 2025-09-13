@@ -13,7 +13,7 @@ import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
-import ShareQuestionButton from '@/src/components/button/share.question';
+import ShareQuestion from '@/src/components/button/share.question';
 
 export default function LoginEmail() {
 	const { t } = useTranslation('login-email');
@@ -22,7 +22,10 @@ export default function LoginEmail() {
 	const [email, setEmail] = useState('');
 
 	const handleNext = () => {
-		// TODO: Implement navigation to next step
+		console.log('Login Email:', {
+			email,
+			isLogin: 1
+		});
 		router.navigate({
 			pathname: '/(screens)/(auth)/confirm.password',
 			params: { email, isLogin: 1 },
@@ -57,6 +60,8 @@ export default function LoginEmail() {
 							onTextChange={setEmail}
 							keyboardType="email-address"
 							placeholder={t('emailPlaceholder')}
+							// touched={true}
+							// error={t('emailError')}
 						/>
 					</View>
 
@@ -70,14 +75,14 @@ export default function LoginEmail() {
 								? APP_COLOR.GRAY_200
 								: APP_COLOR.PRIMARY,
 						}}
-						textStyle={{ 
+						textStyle={{
 							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 						}}
 					/>
 
 					{/* Create Account Link */}
 					<View className="flex-row items-center justify-center mt-5">
-						<ShareQuestionButton
+						<ShareQuestion
 							questionText={t('noAccount')}
 							linkName={t('createAccount')}
 							path="/(auth)/signup.email"

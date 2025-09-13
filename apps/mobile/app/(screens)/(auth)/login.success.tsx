@@ -1,16 +1,29 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-import { router, Stack } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
+import { AntDesign } from '@expo/vector-icons';
 
 const LoginSuccess = () => {
 	const { t } = useTranslation('login-success');
-	const { isDark } = useTheme();
+	const params = useLocalSearchParams();
+
+	const email = params.email as string;
+	const password = params.password as string;
+	const otp = params.otp as string;
+	const isLogin = params.isLogin === '1';
+	const isSignup = params.isSignup === '1';
 
 	const handleDone = () => {
+		console.log('Login Success - Submit:', {
+			email,
+			password,
+			otp,
+			isLogin,
+			isSignup
+		});
 		// Navigate to main app or next screen
 		router.replace('/(screens)/(tabs)');
 	};
@@ -29,33 +42,21 @@ const LoginSuccess = () => {
 							resizeMode="cover"
 						/>
 						{/* Success Check Mark */}
-						<View className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-green-500 items-center justify-center border-3 border-white">
-							<Text className="text-white text-base font-bold">
-								✓
-							</Text>
+						<View className="absolute bottom-1 right-1 rounded-full">
+							<AntDesign name="checkcircle" size={25} style={{color: "#22c55e"}} />
 						</View>
 					</View>
 
 					{/* User Name */}
 					<Text
-						className="text-3xl font-bold mb-2 text-center"
-						style={{
-							color: isDark
-								? APP_COLOR.LIGHT_MODE
-								: APP_COLOR.GRAY_700,
-						}}
+						className="text-3xl font-bold mb-2 text-center text-secondary-dark dark:text-secondary-light"
 					>
 						{t('userName')}
 					</Text>
 
 					{/* Success Message */}
 					<Text
-						className="text-xl mb-10 text-center"
-						style={{
-							color: isDark
-								? APP_COLOR.GRAY_200
-								: APP_COLOR.GRAY_700,
-						}}
+						className="text-xl mb-10 text-center text-secondary-dark dark:text-secondary-light"
 					>
 						{t('successMessage')}
 					</Text>
