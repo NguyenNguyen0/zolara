@@ -1,0 +1,10 @@
+{
+	"title": "Không tìm thấy trang",
+	"errorCode": "404",
+	"subtitle": "Oops! Trang không tồn tại",
+	"description": "Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.",
+	"buttons": {
+		"goHome": "Về trang chủ",
+		"goBack": "Quay lại"
+	}
+}
