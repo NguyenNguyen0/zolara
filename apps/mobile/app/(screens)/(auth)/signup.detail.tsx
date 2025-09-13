@@ -2,26 +2,33 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	TouchableOpacity,
 	SafeAreaView,
 	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareDatePicker from '@/src/components/input/share.datepicker';
 import ShareDropdown from '@/src/components/input/share.dropdown';
+import ShareBack from '@/src/components/button/share.back';
 
 export default function SignUpDetail() {
 	const { t } = useTranslation('signup-detail');
 	const { t: tGender } = useTranslation('gender');
 	const router = useRouter();
 	const { isDark } = useTheme();
+	const params = useLocalSearchParams();
+
+	const name = params.name as string;
+	const email = params.email as string;
+	const password = params.password as string;
+	const otp = params.otp as string;
+	const isLogin = params.isLogin === '1';
+	const isSignup = params.isSignup === '1';
 
 	const [birthday, setBirthday] = useState('');
 	const [gender, setGender] = useState('other');
@@ -34,10 +41,29 @@ export default function SignUpDetail() {
 	];
 
 	const handleContinue = () => {
-		console.log('Birthday:', birthday, 'Gender:', gender);
+		console.log('Signup Detail - Continue:', {
+			name,
+			email,
+			password,
+			otp,
+			birthday,
+			gender,
+			isLogin,
+			isSignup
+		});
+		
 		router.navigate({
 			pathname: '/(screens)/(auth)/signup.avatar',
-			// params: { name },
+			params: {
+				name,
+				email,
+				password,
+				otp,
+				birthday,
+				gender,
+				isLogin: isLogin ? 1 : 0,
+				isSignup: isSignup ? 1 : 0
+			},
 		});
 	};
 
@@ -59,17 +85,7 @@ export default function SignUpDetail() {
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
-			<View className="flex-row items-center px-5 py-10">
-				<TouchableOpacity onPress={() => router.back()} className="p-2">
-					<Ionicons
-						name="arrow-back"
-						size={24}
-						color={
-							isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE
-						}
-					/>
-				</TouchableOpacity>
-			</View>
+			<ShareBack />
 
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -107,7 +123,7 @@ export default function SignUpDetail() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? APP_COLOR.GRAY_300
+								? APP_COLOR.GRAY_200
 								: APP_COLOR.PRIMARY,
 						}}
 						textStyle={{

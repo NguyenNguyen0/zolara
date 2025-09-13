@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	TouchableOpacity,
 	SafeAreaView,
 	StatusBar,
 	KeyboardAvoidingView,
@@ -10,12 +9,12 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
-import ShareQuestionLink from '@/src/components/button/share.question';
+import ShareQuestion from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
+import ShareBack from '@/src/components/button/share.back';
 
 export default function ConfirmPassword() {
 	const { t } = useTranslation('confirm-password');
@@ -28,31 +27,16 @@ export default function ConfirmPassword() {
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
-	// Determine flow type
-	const flowType = isLogin ? 'login' : isSignup ? 'signup' : 'unknown';
-
 	const handleNext = () => {
-		// TODO: Implement navigation to next step
-		console.log(
-			'Password:',
-			password,
-			'Email:',
+		console.log('Password Confirmation:', {
 			email,
-			'FlowType:',
-			flowType,
-		);
-
-		// Pass the correct flow type to verify screen
-		const verifyParams: any = { email, password };
-		if (isLogin) {
-			verifyParams.isLogin = '1';
-		} else if (isSignup) {
-			verifyParams.isSignup = '1';
-		}
-
+			password,
+			isLogin,
+			isSignup
+		});
 		router.replace({
 			pathname: '/(screens)/(auth)/verify',
-			params: verifyParams,
+			params: { email, password, isLogin: isLogin ? 1 : 0, isSignup: isSignup ? 1 : 0 },
 		});
 	};
 
@@ -64,16 +48,7 @@ export default function ConfirmPassword() {
 		>
 			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
-			{/* Header with back button */}
-			<View className="flex-row items-center px-5 py-10">
-				<TouchableOpacity onPress={() => router.back()} className="p-2">
-					<Ionicons
-						name="arrow-back"
-						size={24}
-						color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE}
-					/>
-				</TouchableOpacity>
-			</View>
+			<ShareBack />
 
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -92,7 +67,7 @@ export default function ConfirmPassword() {
 					<Text
 						className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode"
 					>
-						{email ? email : 'Unknown Email'}
+						{email || 'Unknown Email'}
 					</Text>
 
 					{/* Password Input */}
@@ -102,11 +77,6 @@ export default function ConfirmPassword() {
 							onTextChange={setPassword}
 							secureTextEntry={true}
 							placeholder={t('passwordPlaceholder')}
-							inputStyle={{
-								backgroundColor: isDark
-									? APP_COLOR.GRAY_200
-									: APP_COLOR.TRANSPARENT,
-							}}
 						/>
 					</View>
 
@@ -117,7 +87,7 @@ export default function ConfirmPassword() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? APP_COLOR.GRAY_300
+								? APP_COLOR.GRAY_200
 								: APP_COLOR.PRIMARY,
 						}}
 						textStyle={{
@@ -128,11 +98,10 @@ export default function ConfirmPassword() {
 					{/* Forgot Password Link - Only show for login flow */}
 					{isLogin && (
 						<View className="flex-row items-center justify-center mt-5">
-							<ShareQuestionLink
+							<ShareQuestion
 								questionText=""
 								linkName={t('forgotPassword')}
 								path="/(auth)/forgot-password"
-								linkColor={APP_COLOR.PRIMARY}
 							/>
 						</View>
 					)}

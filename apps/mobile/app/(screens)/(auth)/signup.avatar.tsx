@@ -7,11 +7,11 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import ShareButton from '@/src/components/button/share.button';
-import ShareQuestionButton from '@/src/components/button/share.question';
+import ShareQuestion from '@/src/components/button/share.question';
 import ShareAvatar from '@/src/components/input/share.avatar';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
@@ -20,11 +20,33 @@ export default function SignUpAvatar() {
 	const router = useRouter();
 	const { t } = useTranslation('signup-avatar');
 	const { isDark } = useTheme();
+	const params = useLocalSearchParams();
+
+	const name = params.name as string;
+	const email = params.email as string;
+	const password = params.password as string;
+	const otp = params.otp as string;
+	const birthday = params.birthday as string;
+	const gender = params.gender as string;
+	const isLogin = params.isLogin === '1';
+	const isSignup = params.isSignup === '1';
 
 	const [imageUri, setImageUri] = useState<string | null>(null);
 
 	const continueNext = () => {
+		console.log('Signup Avatar - Complete:', {
+			name,
+			email,
+			password,
+			otp,
+			birthday,
+			gender,
+			imageUri: imageUri ? imageUri : 'none',
+			isLogin,
+			isSignup
+		});
 		// In the future, we will persist the image to backend or storage
+		router.dismissAll();
 		router.navigate('/(screens)/(tabs)');
 	};
 
@@ -70,11 +92,10 @@ export default function SignUpAvatar() {
 					</View>
 
 					<View className="flex-row items-center justify-center">
-						<ShareQuestionButton
+						<ShareQuestion
 							questionText={''}
 							linkName={t('skipButton')}
 							path="/(screens)/(tabs)"
-							linkColor={APP_COLOR.PRIMARY}
 						/>
 					</View>
 				</View>

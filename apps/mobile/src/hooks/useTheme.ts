@@ -21,18 +21,6 @@ export const useTheme = () => {
 	const deviceColorScheme = useColorScheme();
 	const { setColorScheme } = useNativeWindColorScheme();
 
-	// Sync device color scheme with store
-	useEffect(() => {
-		if (deviceColorScheme !== systemTheme) {
-			dispatch(setSystemTheme(deviceColorScheme || 'light'));
-		}
-	}, [deviceColorScheme, systemTheme, dispatch]);
-
-	// Sync NativeWind color scheme with theme state
-	useEffect(() => {
-		setColorScheme(isDark ? 'dark' : 'light');
-	}, [isDark, setColorScheme]);
-
 	// Load theme from storage on mount (chỉ chạy một lần)
 	useEffect(() => {
 		let isMounted = true;
@@ -41,32 +29,45 @@ export const useTheme = () => {
 			try {
 				const savedTheme = await AsyncStorage.getItem('app-theme');
 				const currentSystemTheme = deviceColorScheme || 'light';
-				
+
 				const themeToLoad =
-					savedTheme && ['light', 'dark', 'system'].includes(savedTheme)
+					savedTheme &&
+					['light', 'dark', 'system'].includes(savedTheme)
 						? (savedTheme as Theme)
 						: 'system';
 
 				if (isMounted) {
-					dispatch(initializeTheme({
-						theme: themeToLoad,
-						systemTheme: currentSystemTheme,
-					}));
+					dispatch(
+						initializeTheme({
+							theme: themeToLoad,
+							systemTheme: currentSystemTheme,
+						}),
+					);
 				}
 			} catch (error) {
 				console.log('Error loading theme:', error);
 			}
 		};
 
-		// Chỉ load nếu chưa khởi tạo (tránh load lại liên tục)
-		if (theme === 'system' && systemTheme === 'light' && deviceColorScheme) {
-			loadTheme();
-		}
+		loadTheme();
 
 		return () => {
 			isMounted = false;
 		};
-	}, []); // Empty dependency array - chỉ chạy một lần
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	// Sync device color scheme with store (sau khi đã load theme)
+	useEffect(() => {
+		if (deviceColorScheme && deviceColorScheme !== systemTheme) {
+			dispatch(setSystemTheme(deviceColorScheme));
+		}
+	}, [deviceColorScheme, systemTheme, dispatch]);
+
+	// Sync NativeWind color scheme with theme state
+	useEffect(() => {
+		setColorScheme(isDark ? 'dark' : 'light');
+	}, [isDark, setColorScheme]);
 
 	const setTheme = async (newTheme: Theme) => {
 		try {

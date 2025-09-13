@@ -50,12 +50,7 @@ export default function NotFoundScreen() {
 					{t('subtitle')}
 				</Text>
 				<Text
-					className="text-base text-center leading-6 max-w-xs mb-10"
-					style={{
-						color: isDark
-							? APP_COLOR.GRAY_200
-							: APP_COLOR.GRAY_700,
-					}}
+					className="text-base text-center leading-6 max-w-xs mb-10 dark:text-light-mode text-dark-mode"
 				>
 					{t('description')}
 				</Text>
@@ -64,57 +59,17 @@ export default function NotFoundScreen() {
 					<ShareButton
 						title={t('buttons.goHome')}
 						onPress={handleGoHome}
-						icon={
-							<Ionicons
-								name="home"
-								size={20}
-								color={APP_COLOR.LIGHT_MODE}
-							/>
-						}
 						buttonStyle={{
 							backgroundColor: APP_COLOR.PRIMARY,
-							borderRadius: 8,
-							paddingVertical: 12,
-							paddingHorizontal: 24,
-							minHeight: 48,
-							justifyContent: 'center',
-							width: '100%',
 						}}
 						textStyle={{
 							color: APP_COLOR.LIGHT_MODE,
-							fontSize: 16,
-							fontWeight: '600',
 						}}
 					/>
 
 					<ShareButton
 						title={t('buttons.goBack')}
 						onPress={handleGoBack}
-						icon={
-							<Ionicons
-								name="arrow-back"
-								size={20}
-								color={APP_COLOR.DARK_MODE}
-							/>
-						}
-						buttonStyle={{
-							backgroundColor: APP_COLOR.GRAY_200,
-							borderWidth: 1,
-							borderColor: isDark
-								? APP_COLOR.GRAY_700
-								: APP_COLOR.GRAY_200,
-							borderRadius: 8,
-							paddingVertical: 12,
-							paddingHorizontal: 24,
-							minHeight: 48,
-							justifyContent: 'center',
-							width: '100%',
-						}}
-						textStyle={{
-							color: APP_COLOR.DARK_MODE,
-							fontSize: 16,
-							fontWeight: '600',
-						}}
 					/>
 				</View>
 			</View>
