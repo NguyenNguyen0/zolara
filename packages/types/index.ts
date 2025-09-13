@@ -1,10 +1,75 @@
-import { z } from "zod";
+export {
+	type User,
+	type MinimalUser,
+	type FriendList,
+	type BlockUserList,
+	type Invitation,
+	UserSchema,
+	MinimalUserSchema,
+	FriendListSchema,
+	BlockUserListSchema,
+	InvitationSchema,
+} from './schema/user';
 
-export const UserSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string(),
-    age: z.number().int().optional()
-});
+export {
+	type Group,
+	type GroupConfig,
+	type Chat,
+	GroupSchema,
+	GroupConfigSchema,
+	ChatSchema,
+} from './schema/chat';
 
-export type User = z.infer<typeof UserSchema>;
+export {
+	type Message,
+	type Call,
+	MessageSchema,
+	CallSchema,
+} from './schema/message';
+
+export {
+	type ApiResponse,
+	type GetUserProfileResponse,
+	type UpdateUserProfileRequest,
+	type UpdateUserProfileResponse,
+	type ResetPasswordRequest,
+	type ResetPasswordResponse,
+	type GetFriendListResponse,
+	type AddFriendRequest,
+	type AddFriendResponse,
+	type BlockUserRequest,
+	type BlockUserResponse,
+	type UnblockUserRequest,
+	type UnblockUserResponse,
+	type GetBlockListResponse,
+	type DeleteFriendRequest,
+	type DeleteFriendResponse,
+	type SendInvitationRequest,
+	type SendInvitationResponse,
+	type GetInvitationsResponse,
+	type RespondInvitationRequest,
+	type RespondInvitationResponse,
+	ApiResponseSchema,
+	GetUserProfileResponseSchema,
+	UpdateUserProfileRequestSchema,
+	UpdateUserProfileResponseSchema,
+	ResetPasswordRequestSchema,
+	ResetPasswordResponseSchema,
+	GetFriendListResponseSchema,
+	AddFriendRequestSchema,
+	AddFriendResponseSchema,
+	BlockUserRequestSchema,
+	BlockUserResponseSchema,
+	UnblockUserRequestSchema,
+	UnblockUserResponseSchema,
+	GetBlockListResponseSchema,
+	DeleteFriendRequestSchema,
+	DeleteFriendResponseSchema,
+	CreateUserProfileRequestSchema,
+	CreateUserProfileResponseSchema,
+	SendInvitationRequestSchema,
+	SendInvitationResponseSchema,
+	GetInvitationsResponseSchema,
+	RespondInvitationRequestSchema,
+	RespondInvitationResponseSchema,
+} from './schema/api';
