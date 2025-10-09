@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^2.9.0",
     "@repo/types": "*",
     "babel-plugin-module-resolver": "^5.0.2",
+    "debounce": "^2.2.0",
     "dotenv": "^17.2.2",
     "expo": "~53.0.22",
     "expo-blur": "~14.1.5",
