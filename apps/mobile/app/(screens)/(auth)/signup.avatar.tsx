@@ -54,7 +54,12 @@ export default function SignUpAvatar() {
 		<SafeAreaView
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+			<StatusBar
+				barStyle={isDark ? 'light-content' : 'dark-content'}
+				backgroundColor={
+					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
+				}
+			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				className="flex-1 px-5 mt-32"

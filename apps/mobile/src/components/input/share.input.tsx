@@ -10,6 +10,7 @@ import {
 	TextStyle,
 	View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const styles = StyleSheet.create({
 	inputGroup: { gap: 10 },
@@ -27,6 +28,7 @@ interface IProps {
 	title?: string;
 	keyboardType?: KeyboardType;
 	secureTextEntry?: boolean;
+	clear?: boolean;
 	value: any;
 	onBlur?: (v: any) => void;
 	onTextChange?: (v: any) => void;
@@ -45,6 +47,7 @@ const ShareInput = (props: IProps) => {
 		title,
 		keyboardType,
 		secureTextEntry = false,
+		clear = false,
 		value,
 		onBlur,
 		onTextChange,
@@ -74,6 +77,7 @@ const ShareInput = (props: IProps) => {
 					style={[
 						styles.input,
 						{ borderColor },
+						{ paddingRight: (secureTextEntry || (clear && !!value)) ? 45 : undefined },
 						inputStyle,
 					]}
 					onFocus={() => setIsFocus(true)}
@@ -100,6 +104,9 @@ const ShareInput = (props: IProps) => {
 						size={20}
 						color="black"
 					/>
+				)}
+				{!secureTextEntry && clear && !!value && (
+					<Ionicons onPress={() => onTextChange && onTextChange('')} style={styles.eye} name="close-circle" size={20} color="gray" />
 				)}
 			</View>
 		</View>

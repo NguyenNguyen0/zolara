@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Contact() {
 	return (
-		<SafeAreaView className="flex-1 bg-white">
+		<SafeAreaView edges={['top']} className="flex-1 bg-white">
 			<StatusBar barStyle="dark-content" backgroundColor="white" />
 
 			{/* Header */}

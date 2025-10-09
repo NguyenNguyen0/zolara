@@ -83,7 +83,12 @@ export default function SignUpDetail() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+			<StatusBar
+				barStyle={isDark ? 'light-content' : 'dark-content'}
+				backgroundColor={
+					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
+				}
+			/>
 
 			<ShareBack />
 
