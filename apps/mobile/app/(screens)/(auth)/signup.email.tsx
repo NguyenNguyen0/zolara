@@ -15,6 +15,7 @@ import ShareRadio from '@/src/components/button/share.radio';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestion from '@/src/components/button/share.question';
+import ShareBack from '@/src/components/button/share.back';
 
 export default function SignUpEmail() {
 	const { t } = useTranslation('signup-email');
@@ -48,6 +49,8 @@ export default function SignUpEmail() {
 					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
 				}
 			/>
+
+			<ShareBack/>
 
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -125,7 +128,10 @@ export default function SignUpEmail() {
 						<ShareQuestion
 							questionText={t('alreadyHaveAccount')}
 							linkName={t('loginLink')}
-							path="/(auth)/login.email"
+							path=""
+							onPress={() => {
+								router.replace('/(screens)/(auth)/login.email');
+							}}
 						/>
 					</View>
 				</View>

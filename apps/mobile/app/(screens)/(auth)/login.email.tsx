@@ -14,6 +14,7 @@ import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestion from '@/src/components/button/share.question';
+import ShareBack from '@/src/components/button/share.back';
 
 export default function LoginEmail() {
 	const { t } = useTranslation('login-email');
@@ -24,7 +25,7 @@ export default function LoginEmail() {
 	const handleNext = () => {
 		console.log('Login Email:', {
 			email,
-			isLogin: 1
+			isLogin: 1,
 		});
 		router.navigate({
 			pathname: '/(screens)/(auth)/confirm.password',
@@ -35,15 +36,15 @@ export default function LoginEmail() {
 	const isNextDisabled = !email.trim(); // TODO: validate to allow next later
 
 	return (
-		<SafeAreaView
-			className="flex-1 bg-light-mode dark:bg-dark-mode"
-		>
+		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
 			<StatusBar
 				barStyle={isDark ? 'light-content' : 'dark-content'}
 				backgroundColor={
 					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
 				}
 			/>
+
+			<ShareBack/>
 
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -52,9 +53,7 @@ export default function LoginEmail() {
 				{/* Content Container */}
 				<View>
 					{/* Title */}
-					<Text
-						className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode"
-					>
+					<Text className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode">
 						{t('title')}
 					</Text>
 
@@ -81,7 +80,9 @@ export default function LoginEmail() {
 								: APP_COLOR.PRIMARY,
 						}}
 						textStyle={{
-							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
+							color: isNextDisabled
+								? APP_COLOR.DARK_MODE
+								: APP_COLOR.LIGHT_MODE,
 						}}
 					/>
 
@@ -90,7 +91,10 @@ export default function LoginEmail() {
 						<ShareQuestion
 							questionText={t('noAccount')}
 							linkName={t('createAccount')}
-							path="/(auth)/signup.email"
+							path=""
+							onPress={() => {
+								router.replace('/(screens)/(auth)/signup.email');
+							}}
 						/>
 					</View>
 				</View>
