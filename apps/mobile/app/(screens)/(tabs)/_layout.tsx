@@ -3,6 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { TouchableOpacity, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/src/hooks/useTheme';
 
 const notificationData = {
 	messages: 1,
@@ -36,7 +38,7 @@ const getIconsWithBadge = (routeName: string, focused: boolean, size: number) =>
 	let showDot = false;
 
 	switch (routeName) {
-		case 'index':
+		case 'convervations':
 			iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
 			badgeCount = notificationData.messages;
 			break;
@@ -74,6 +76,9 @@ const getIconsWithBadge = (routeName: string, focused: boolean, size: number) =>
 
 const TabLayout = () => {
 	const insets = useSafeAreaInsets();
+	const { t } = useTranslation('tabs');
+	const { isDark } = useTheme();
+	
 	return (
 		<Tabs
 			screenOptions={({ route }) => ({
@@ -81,15 +86,19 @@ const TabLayout = () => {
 				tabBarStyle: {
 					height: 50 + insets.bottom,
 					paddingBottom: insets.bottom,
-					backgroundColor: '#fff',
+					backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
 					borderTopWidth: 0.5,
-					borderTopColor: '#E5E5E5',
+					borderTopColor: isDark ? APP_COLOR.GRAY_200 : APP_COLOR.GRAY_700,
 				},
 				tabBarIcon: ({ focused, color, size }) => {
 					return getIconsWithBadge(route.name, focused, size);
 				},
-				tabBarLabelStyle: { paddingBottom: 5 },
+				tabBarLabelStyle: { 
+					paddingBottom: 5,
+					color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.GRAY_700,
+				},
 				tabBarActiveTintColor: APP_COLOR.PRIMARY,
+				tabBarInactiveTintColor: isDark ? '#9CA3AF' : '#6B7280',
 				// hide gray effect when click tabs
 				tabBarButton: (props: any) => (
 					<TouchableOpacity
@@ -101,14 +110,14 @@ const TabLayout = () => {
 				),
 			})}
 		>
-			<Tabs.Screen name="index" options={{ title: 'Messages' }} />
-			<Tabs.Screen name="contact" options={{ title: 'Contacts' }} />
-			<Tabs.Screen name="newsfeed" options={{ title: 'Newsfeed' }} />
+			<Tabs.Screen name="convervations" options={{ title: t('messages') }} />
+			<Tabs.Screen name="contact" options={{ title: t('contacts') }} />
+			<Tabs.Screen name="newsfeed" options={{ title: t('newsfeed') }} />
 			<Tabs.Screen
 				name="notification"
-				options={{ title: 'Notifications' }}
+				options={{ title: t('notifications') }}
 			/>
-			<Tabs.Screen name="profile" options={{ title: 'Me' }} />
+			<Tabs.Screen name="profile" options={{ title: t('profile') }} />
 		</Tabs>
 	);
 };

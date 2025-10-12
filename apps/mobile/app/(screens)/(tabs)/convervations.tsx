@@ -9,8 +9,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import MessageItem from '@/src/components/messages/message.item';
 import ShareInput from '@/src/components/input/share.input';
+import { useTheme } from '@/src/hooks/useTheme';
 import debounce from 'debounce';
 
 const DATA_MOCKS = [
@@ -127,6 +129,8 @@ const DATA_MOCKS = [
 ];
 
 export default function MessageTab() {
+	const { t } = useTranslation('conversations');
+	const { isDark } = useTheme();
 	// const [currentPage, setCurrentPage] = useState<number>(1);
 	// const [pageSize, setPageSize] = useState<number>(5);
 	// TODO: Xoá sau này dùng redux thay thế
@@ -171,12 +175,23 @@ export default function MessageTab() {
 	const data = useMemo(() => DATA_MOCKS, []);
 
 	return (
-		<SafeAreaView edges={['top']} className="flex-1 bg-white">
+		<SafeAreaView
+			edges={['top']}
+			className="flex-1 bg-light-mode dark:bg-dark-mode"
+		>
 			<StatusBar
-				barStyle="light-content"
-				backgroundColor={APP_COLOR.PRIMARY}
+				barStyle={isDark ? 'light-content' : 'dark-content'}
+				backgroundColor={`${isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY}`}
 			/>
-			<View className="bg-primary">
+			<View
+				className={`${isDark ? 'bg-dark-mode' : 'bg-primary'}`}
+				style={{
+					borderBottomColor: isDark
+						? APP_COLOR.GRAY_700
+						: APP_COLOR.GRAY_200,
+					borderBottomWidth: 1,
+				}}
+			>
 				<View className="p-4">
 					<View className="flex-row items-center justify-between">
 						<View className="flex-1 mr-3">
@@ -186,10 +201,11 @@ export default function MessageTab() {
 									setSearch(text);
 									debouncedSearch(text);
 								}}
-								placeholder={'Search...'}
+								placeholder={t('search')}
 								inputStyle={{
 									borderRadius: 10,
 									backgroundColor: 'white',
+									borderWidth: 0,
 								}}
 								clear
 							/>
@@ -213,7 +229,7 @@ export default function MessageTab() {
 			<FlatList
 				data={data}
 				keyExtractor={(item) => item.id}
-				renderItem={MessageItem}
+				renderItem={({ item }) => <MessageItem item={item} />}
 				className="flex-1"
 				onEndReachedThreshold={0.5}
 				onEndReached={handleEndReached}

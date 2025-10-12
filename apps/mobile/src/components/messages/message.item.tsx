@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/src/hooks/useTheme';
 
 type Item = {
 	name: string;
@@ -13,6 +14,7 @@ type Item = {
 
 export default function MessageItem({ item }: { item: Item }) {
 	const { name, message, time, avatar, verified, unread } = item;
+	const { isDark } = useTheme();
 
 	return (
 		<Pressable
@@ -24,7 +26,7 @@ export default function MessageItem({ item }: { item: Item }) {
 				<Image source={{ uri: avatar }} className="w-12 h-12 rounded-full mr-3" />
 				<View className="flex-1">
 					<View className="flex-row items-center">
-						<Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
+						<Text className={`text-base font-semibold text-gray-900 ${isDark ? "text-light-mode" : "text-dark-mode"}`} numberOfLines={1}>
 							{name}
 						</Text>
 						{verified ? (

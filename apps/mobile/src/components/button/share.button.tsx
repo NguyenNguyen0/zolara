@@ -51,7 +51,7 @@ const ShareButton = (props: IProps) => {
 				style={buttonStyle}
 			>
 				{icon}
-				<Text className='text-[18px] font-semibold text-secondary-dark dark:text-secondary-light' style={textStyle}>{title}</Text>
+				<Text className='text-[18px] font-extrabold text-secondary-dark dark:text-secondary-light' style={textStyle}>{title}</Text>
 				{isLoading && <ActivityIndicator color={APP_COLOR.GRAY_200} />}
 			</View>
 		</Pressable>
