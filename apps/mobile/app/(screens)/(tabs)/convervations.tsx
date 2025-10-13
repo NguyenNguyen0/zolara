@@ -2,18 +2,12 @@ import { APP_COLOR } from '@/src/utils/constants';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
 	View,
-	StatusBar,
 	FlatList,
-	TouchableOpacity,
 	ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
-import MessageItem from '@/src/components/messages/message.item';
-import ShareInput from '@/src/components/input/share.input';
-import { useTheme } from '@/src/hooks/useTheme';
-import debounce from 'debounce';
+import MessageItem from '@/src/components/item/convervation.item';
+import Header from '@/src/components/commons/header';
 
 const DATA_MOCKS = [
 	{
@@ -129,28 +123,10 @@ const DATA_MOCKS = [
 ];
 
 export default function MessageTab() {
-	const { t } = useTranslation('conversations');
-	const { isDark } = useTheme();
 	// const [currentPage, setCurrentPage] = useState<number>(1);
 	// const [pageSize, setPageSize] = useState<number>(5);
 	// TODO: Xoá sau này dùng redux thay thế
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const [search, setSearch] = useState<string>('');
-
-	const debouncedSearch = useMemo(
-		() =>
-			debounce((text: string) => {
-				if (!text) return;
-				console.log('fake log search:', text);
-			}, 1000),
-		[],
-	);
-	useEffect(() => {
-		return () => {
-			debouncedSearch.clear();
-		};
-	}, [debouncedSearch]);
 
 	const handleEndReached = async () => {
 		if (!isLoading) {
@@ -179,53 +155,7 @@ export default function MessageTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={`${isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY}`}
-			/>
-			<View
-				className={`${isDark ? 'bg-dark-mode' : 'bg-primary'}`}
-				style={{
-					borderBottomColor: isDark
-						? APP_COLOR.GRAY_700
-						: APP_COLOR.GRAY_200,
-					borderBottomWidth: 1,
-				}}
-			>
-				<View className="p-4">
-					<View className="flex-row items-center justify-between">
-						<View className="flex-1 mr-3">
-							<ShareInput
-								value={search}
-								onTextChange={(text) => {
-									setSearch(text);
-									debouncedSearch(text);
-								}}
-								placeholder={t('search')}
-								inputStyle={{
-									borderRadius: 10,
-									backgroundColor: 'white',
-									borderWidth: 0,
-								}}
-								clear
-							/>
-						</View>
-
-						<View className="flex-row">
-							<TouchableOpacity className="w-10 h-10 rounded-full bg-gray-500 items-center justify-center mr-2">
-								<Ionicons
-									name="qr-code"
-									size={18}
-									color="white"
-								/>
-							</TouchableOpacity>
-							<TouchableOpacity className="w-10 h-10 rounded-full bg-gray-500 items-center justify-center">
-								<Ionicons name="add" size={22} color="white" />
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			</View>
+			<Header showSearch showQRScanner showAdd />
 			<FlatList
 				data={data}
 				keyExtractor={(item) => item.id}

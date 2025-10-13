@@ -47,7 +47,7 @@ export default function SignUpAvatar() {
 		});
 		// In the future, we will persist the image to backend or storage
 		router.dismissAll();
-		router.navigate('/(screens)/(tabs)');
+		router.navigate('/(screens)/(tabs)/convervations');
 	};
 
 	return (
