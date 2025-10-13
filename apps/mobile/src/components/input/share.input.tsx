@@ -15,13 +15,25 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const styles = StyleSheet.create({
 	inputGroup: { gap: 10 },
 	text: { fontSize: 20 },
+	inputContainer: {
+		position: 'relative',
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
 	input: {
+		flex: 1,
 		borderWidth: 1,
 		paddingHorizontal: 15,
 		paddingVertical: 15,
 		borderRadius: 15,
 	},
-	eye: { position: 'absolute', right: 15, top: 15 },
+	iconContainer: {
+		position: 'absolute',
+		right: 15,
+		top: 0,
+		bottom: 0,
+		justifyContent: 'center',
+	},
 });
 
 interface IProps {
@@ -69,44 +81,54 @@ const ShareInput = (props: IProps) => {
 		<View style={styles.inputGroup}>
 			{title && <Text style={styles.text}>{title}</Text>}
 			<View>
-				<TextInput
-					className="bg-transparent dark:bg-secondary-light"
-					value={value}
-					keyboardType={keyboardType}
-					placeholder={placeholder}
-					style={[
-						styles.input,
-						{ borderColor },
-						{ paddingRight: (secureTextEntry || (clear && !!value)) ? 45 : undefined },
-						inputStyle,
-					]}
-					onFocus={() => setIsFocus(true)}
-					onBlur={(e) => {
-						if (onBlur) {
-							onBlur(e);
-						}
-						setIsFocus(false);
-					}}
-					editable={editable}
-					onChangeText={onTextChange}
-					secureTextEntry={secureTextEntry && !isShowPassword}
-				/>
+				<View style={styles.inputContainer}>
+					<TextInput
+						className="bg-transparent dark:bg-secondary-light"
+						value={value}
+						keyboardType={keyboardType}
+						placeholder={placeholder}
+						style={[
+							styles.input,
+							{ borderColor },
+							{ paddingRight: (secureTextEntry || (clear && !!value)) ? 45 : undefined },
+							inputStyle,
+						]}
+						onFocus={() => setIsFocus(true)}
+						onBlur={(e) => {
+							if (onBlur) {
+								onBlur(e);
+							}
+							setIsFocus(false);
+						}}
+						editable={editable}
+						onChangeText={onTextChange}
+						secureTextEntry={secureTextEntry && !isShowPassword}
+					/>
+					{secureTextEntry && (
+						<View style={styles.iconContainer}>
+							<Entypo
+								onPress={() => setIsShowPassword(!isShowPassword)}
+								name={isShowPassword ? 'eye-with-line' : 'eye'}
+								size={20}
+								color="black"
+							/>
+						</View>
+					)}
+					{!secureTextEntry && clear && !!value && (
+						<View style={styles.iconContainer}>
+							<Ionicons
+								onPress={() => onTextChange && onTextChange('')}
+								name="close-circle"
+								size={20}
+								color="gray"
+							/>
+						</View>
+					)}
+				</View>
 				{touched && error && (
 					<Text className="m-2 text-red-600 font-semibold">
 						{error}
 					</Text>
-				)}
-				{secureTextEntry && (
-					<Entypo
-						onPress={() => setIsShowPassword(!isShowPassword)}
-						style={styles.eye}
-						name={isShowPassword ? 'eye-with-line' : 'eye'}
-						size={20}
-						color="black"
-					/>
-				)}
-				{!secureTextEntry && clear && !!value && (
-					<Ionicons onPress={() => onTextChange && onTextChange('')} style={styles.eye} name="close-circle" size={20} color="gray" />
 				)}
 			</View>
 		</View>

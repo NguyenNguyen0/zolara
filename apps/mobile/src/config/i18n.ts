@@ -3,11 +3,14 @@ import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Import translation files
-import enWelcome from '@/src/locales/en/auth/welcome.json';
-import viWelcome from '@/src/locales/vi/auth/welcome.json';
-
 import enCommon from '@/src/locales/en/commons/common.json';
 import viCommon from '@/src/locales/vi/commons/common.json';
+
+import enHeader from '@/src/locales/en/commons/header.json';
+import viHeader from '@/src/locales/vi/commons/header.json';
+
+import enWelcome from '@/src/locales/en/auth/welcome.json';
+import viWelcome from '@/src/locales/vi/auth/welcome.json';
 
 import enLoginEmail from '@/src/locales/en/auth/login-email.json';
 import viLoginEmail from '@/src/locales/vi/auth/login-email.json';
@@ -86,6 +89,7 @@ const LANGUAGE_DETECTOR = {
 	},
 };
 
+// eslint-disable-next-line import/no-named-as-default-member
 i18n.use(LANGUAGE_DETECTOR)
 	.use(initReactI18next)
 	.init({
@@ -95,6 +99,7 @@ i18n.use(LANGUAGE_DETECTOR)
 		resources: {
 			en: {
 				common: enCommon,
+				header: enHeader,
 				'signup-avatar': enSignupAvatar,
 				splash: enSplash,
 				welcome: enWelcome,
@@ -116,6 +121,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			},
 			vi: {
 				common: viCommon,
+				header: viHeader,
 				'signup-avatar': viSignupAvatar,
 				splash: viSplash,
 				welcome: viWelcome,
@@ -139,6 +145,7 @@ i18n.use(LANGUAGE_DETECTOR)
 
 		ns: [
 			'common',
+			'header',
 			'welcome',
 			'splash',
 			'login-email',

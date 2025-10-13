@@ -1,4 +1,6 @@
 {
 	"title": "Danh bạ",
-	"content": "Danh bạ sẽ hiển thị ở đây"
+	"content": "Danh bạ sẽ hiển thị ở đây",
+	"noContacts": "Không tìm thấy danh bạ",
+	"searchPlaceholder": "Tìm kiếm danh bạ..."
 }
