@@ -530,18 +530,16 @@ export const acceptFriendInvitation = async (
 		// Get user ID from token
 		const userId = req.user.uid;
 
-		// Validate request body
-		try {
-			await RespondInvitationRequestSchema.parseAsync(req.body);
-		} catch (error) {
+		// Get invitation ID from URL parameter
+		const invitationId = req.params.invitationId;
+
+		if (!invitationId) {
 			return res.status(400).json({
 				success: false,
 				message: 'Invalid request data',
-				error: error,
+				error: 'Invitation ID is required',
 			});
 		}
-
-		const { invitationId } = req.body;
 
 		// Get the invitation
 		const invitationDoc = await db
@@ -750,18 +748,16 @@ export const rejectFriendInvitation = async (
 		// Get user ID from token
 		const userId = req.user.uid;
 
-		// Validate request body
-		try {
-			await RespondInvitationRequestSchema.parseAsync(req.body);
-		} catch (error) {
+		// Get invitation ID from URL parameter
+		const invitationId = req.params.invitationId;
+
+		if (!invitationId) {
 			return res.status(400).json({
 				success: false,
 				message: 'Invalid request data',
-				error: error,
+				error: 'Invitation ID is required',
 			});
 		}
-
-		const { invitationId } = req.body;
 
 		// Get the invitation
 		const invitationDoc = await db
@@ -887,18 +883,16 @@ export const addFriend = async (
 		// Get user ID from token
 		const userId = req.user.uid;
 
-		// Validate request body
-		try {
-			AddFriendRequestSchema.parse(req.body);
-		} catch (error) {
+		// Get friend ID from URL parameter
+		const friendId = req.params.userId;
+
+		if (!friendId) {
 			return res.status(400).json({
 				success: false,
 				message: 'Invalid input data',
-				error,
+				error: 'Friend ID is required',
 			});
 		}
-
-		const { friendId } = req.body;
 
 		// Check if friend exists
 		const friendDoc = await db
@@ -998,7 +992,8 @@ export const deleteFriend = async (
 		// Get user ID from token
 		const userId = req.user.uid;
 
-		const friendId = req.query.friendId as string;
+		// Get friend ID from URL parameter
+		const friendId = req.params.userId;
 
 		if (!friendId) {
 			return res.status(400).json({
@@ -1071,18 +1066,16 @@ export const blockUser = async (
 		// Get user ID from token
 		const userId = req.user.uid;
 
-		// Validate request body
-		try {
-			BlockUserRequestSchema.parse(req.body);
-		} catch (error) {
+		// Get block user ID from URL parameter
+		const blockUserId = req.params.userId;
+
+		if (!blockUserId) {
 			return res.status(400).json({
 				success: false,
 				message: 'Invalid input data',
-				error,
+				error: 'User ID is required',
 			});
 		}
-
-		const { userId: blockUserId } = req.body;
 
 		// Check if user exists
 		const userToBlock = await db
@@ -1201,8 +1194,8 @@ export const unBlockUser = async (
 		// Get user ID from token
 		const userId = req.user.uid;
 
-		// Get the user ID to unblock from the query parameters
-		const userIdToUnblock = req.query.userId as string;
+		// Get the user ID to unblock from the URL parameter
+		const userIdToUnblock = req.params.userId;
 
 		if (!userIdToUnblock) {
 			return res.status(400).json({

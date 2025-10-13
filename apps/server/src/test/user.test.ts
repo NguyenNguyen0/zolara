@@ -184,7 +184,7 @@ describe('User API Routes', () => {
 			};
 
 			const response = await agent
-				.post(`/api/users/invitation`)
+				.post(`/api/users/invitations`)
 				.set('Authorization', `Bearer ${testUser1.token}`)
 				.send(invitationData);
 
@@ -210,12 +210,12 @@ describe('User API Routes', () => {
 
 			try {
 				await agent
-					.post(`/api/users/invitation`)
+					.post(`/api/users/invitations`)
 					.set('Authorization', `Bearer ${testUser1.token}`)
 					.send(invitationData);
 
 				const response = await agent
-					.get(`/api/users/invitation`)
+					.get(`/api/users/invitations`)
 					.set('Authorization', `Bearer ${testUser2.token}`);
 
 				expect(response.status).toBe(200);
@@ -240,7 +240,7 @@ describe('User API Routes', () => {
 
 			// Try to send a new invitation - this might not succeed if they're already friends
 			const sendResponse = await agent
-				.post(`/api/users/invitation`)
+				.post(`/api/users/invitations`)
 				.set('Authorization', `Bearer ${testUser1.token}`)
 				.send(invitationData);
 
@@ -248,7 +248,7 @@ describe('User API Routes', () => {
 			if (sendResponse.status === 201) {
 				// Get the invitation ID
 				const getResponse = await agent
-					.get(`/api/users/invitation`)
+					.get(`/api/users/invitations`)
 					.set('Authorization', `Bearer ${testUser2.token}`);
 
 				// Find the invitation we just created
@@ -259,9 +259,8 @@ describe('User API Routes', () => {
 				if (invitation) {
 					// Reject the invitation
 					const rejectResponse = await agent
-						.put(`/api/users/invitation/reject`)
-						.set('Authorization', `Bearer ${testUser2.token}`)
-						.send({ invitationId: invitation.id });
+						.patch(`/api/users/invitations/${invitation.id}/reject`)
+						.set('Authorization', `Bearer ${testUser2.token}`);
 
 					expect(rejectResponse.status).toBe(200);
 					expect(rejectResponse.body.success).toBe(true);
@@ -284,7 +283,7 @@ describe('User API Routes', () => {
 			};
 
 			const response = await agent
-				.post(`/api/users/invitation`)
+				.post(`/api/users/invitations`)
 				.set('Authorization', `Bearer ${testUser1.token}`)
 				.send(invitationData);
 
@@ -311,14 +310,14 @@ describe('User API Routes', () => {
 
 				// Send invitation
 				const sendResponse = await agent
-					.post(`/api/users/invitation`)
+					.post(`/api/users/invitations`)
 					.set('Authorization', `Bearer ${testUser1.token}`)
 					.send(invitationData);
 
 				if (sendResponse.status === 201) {
 					// Get the invitation ID
 					const getResponse = await agent
-						.get(`/api/users/invitation`)
+						.get(`/api/users/invitations`)
 						.set('Authorization', `Bearer ${testUser2.token}`);
 
 					if (
@@ -334,12 +333,11 @@ describe('User API Routes', () => {
 						if (invitation) {
 							// Accept the invitation
 							await agent
-								.put(`/api/users/invitation/accept`)
+								.patch(`/api/users/invitations/${invitation.id}/accept`)
 								.set(
 									'Authorization',
-									`Bearer ${testUser2.token}`,
-								)
-								.send({ invitationId: invitation.id });
+									`Bearer ${testUser2.token}`
+								);
 						}
 					}
 				}
@@ -349,7 +347,7 @@ describe('User API Routes', () => {
 		});
 		it('should get friend list for the authenticated user', async () => {
 			const response = await agent
-				.get(`/api/users/friends/me`)
+				.get(`/api/users/me/friends`)
 				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			expect(response.status).toBe(200);
@@ -361,7 +359,7 @@ describe('User API Routes', () => {
 
 		it('should get friend list for another user', async () => {
 			const response = await agent
-				.get(`/api/users/friends/${testUser2.uid}`)
+				.get(`/api/users/${testUser2.uid}/friends`)
 				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			expect(response.status).toBe(200);
@@ -374,7 +372,7 @@ describe('User API Routes', () => {
 		it('should delete a friend successfully', async () => {
 			// First check if they are friends
 			const checkResponse = await agent
-				.get(`/api/users/friends/me`)
+				.get(`/api/users/me/friends`)
 				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			// Only proceed with deletion if they are friends
@@ -385,7 +383,7 @@ describe('User API Routes', () => {
 				)
 			) {
 				const response = await agent
-					.delete(`/api/users/friends?friendId=${testUser2.uid}`)
+					.delete(`/api/users/friends/${testUser2.uid}`)
 					.set('Authorization', `Bearer ${testUser1.token}`);
 
 				expect(response.status).toBe(200);
@@ -393,7 +391,7 @@ describe('User API Routes', () => {
 
 				// Check that friend is removed
 				const afterDeleteResponse = await agent
-					.get(`/api/users/friends/me`)
+					.get(`/api/users/me/friends`)
 					.set('Authorization', `Bearer ${testUser1.token}`);
 
 				expect(
@@ -414,14 +412,9 @@ describe('User API Routes', () => {
 	// Block User Tests
 	describe('Block User Endpoints', () => {
 		it('should block a user successfully', async () => {
-			const blockData = {
-				userId: testUser2.uid,
-			};
-
 			const response = await agent
-				.post(`/api/users/block/`)
-				.set('Authorization', `Bearer ${testUser1.token}`)
-				.send(blockData);
+				.post(`/api/users/blocks/${testUser2.uid}`)
+				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			expect(response.status).toBe(200);
 			expect(response.body.success).toBe(true);
@@ -429,7 +422,7 @@ describe('User API Routes', () => {
 
 		it('should get block list for the authenticated user', async () => {
 			const response = await agent
-				.get(`/api/users/block/me`)
+				.get(`/api/users/me/blocks`)
 				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			expect(response.status).toBe(200);
@@ -445,7 +438,7 @@ describe('User API Routes', () => {
 
 		it('should unblock a user successfully', async () => {
 			const response = await agent
-				.delete(`/api/users/block?userId=${testUser2.uid}`)
+				.delete(`/api/users/blocks/${testUser2.uid}`)
 				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			expect(response.status).toBe(200);
@@ -453,7 +446,7 @@ describe('User API Routes', () => {
 
 			// Check that user is unblocked
 			const checkResponse = await agent
-				.get(`/api/users/block/me`)
+				.get(`/api/users/me/blocks`)
 				.set('Authorization', `Bearer ${testUser1.token}`);
 
 			expect(checkResponse.body.data.blockedUsers.length).toBe(0);

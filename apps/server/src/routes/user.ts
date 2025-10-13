@@ -475,7 +475,7 @@ export const userRouter = express.Router();
 // --------------------- INVITATION ROUTES ---------------------
 /**
  * @swagger
- * /api/users/invitation:
+ * /api/users/invitations:
  *   get:
  *     summary: Get pending friend invitations
  *     description: Retrieve all pending friend invitations for the authenticated user
@@ -494,11 +494,11 @@ export const userRouter = express.Router();
  *       500:
  *         description: Server error
  */
-userRouter.get('/invitation', authMiddleware(), getFriendInvitations);
+userRouter.get('/invitations', authMiddleware(), getFriendInvitations);
 
 /**
  * @swagger
- * /api/users/invitation:
+ * /api/users/invitations:
  *   post:
  *     summary: Send a friend invitation
  *     description: Send a friend invitation to another user
@@ -527,23 +527,24 @@ userRouter.get('/invitation', authMiddleware(), getFriendInvitations);
  *       500:
  *         description: Server error
  */
-userRouter.post('/invitation', authMiddleware(), sendFriendInvitation);
+userRouter.post('/invitations', authMiddleware(), sendFriendInvitation);
 
 /**
  * @swagger
- * /api/users/invitation/accept:
- *   put:
+ * /api/users/invitations/{invitationId}/accept:
+ *   patch:
  *     summary: Accept a friend invitation
  *     description: Accept a pending friend invitation
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/RespondInvitationRequest'
+ *     parameters:
+ *       - in: path
+ *         name: invitationId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the invitation to accept
  *     responses:
  *       200:
  *         description: Invitation accepted successfully
@@ -562,23 +563,24 @@ userRouter.post('/invitation', authMiddleware(), sendFriendInvitation);
  *       500:
  *         description: Server error
  */
-userRouter.put('/invitation/accept', authMiddleware(), acceptFriendInvitation);
+userRouter.patch('/invitations/:invitationId/accept', authMiddleware(), acceptFriendInvitation);
 
 /**
  * @swagger
- * /api/users/invitation/reject:
- *   put:
+ * /api/users/invitations/{invitationId}/reject:
+ *   patch:
  *     summary: Reject a friend invitation
  *     description: Reject a pending friend invitation
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/RespondInvitationRequest'
+ *     parameters:
+ *       - in: path
+ *         name: invitationId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the invitation to reject
  *     responses:
  *       200:
  *         description: Invitation rejected successfully
@@ -597,12 +599,16 @@ userRouter.put('/invitation/accept', authMiddleware(), acceptFriendInvitation);
  *       500:
  *         description: Server error
  */
-userRouter.put('/invitation/reject', authMiddleware(), rejectFriendInvitation);
+userRouter.patch(
+	'/invitations/:invitationId/reject',
+	authMiddleware(),
+	rejectFriendInvitation,
+);
 
 // --------------------- FRIENDS ROUTES ---------------------
 /**
  * @swagger
- * /api/users/friends/{id}:
+ * /api/users/{id}/friends:
  *   get:
  *     summary: Get user's friend list
  *     description: Retrieve list of friends for a specific user. Use "me" as ID to get your own friend list (requires authentication).
@@ -631,26 +637,27 @@ userRouter.put('/invitation/reject', authMiddleware(), rejectFriendInvitation);
  *         description: Server error
  */
 userRouter.get(
-	'/friends/:id',
+	'/:id/friends',
 	authMiddleware({ optionalAuth: true }),
 	getFriendList,
 );
 
 /**
  * @swagger
- * /api/users/friends/:
+ * /api/users/friends/{userId}:
  *   post:
  *     summary: Add a friend
  *     description: Add a user to the friend list
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/AddFriendRequest'
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the user to add as friend
  *     responses:
  *       200:
  *         description: Friend added successfully
@@ -667,11 +674,11 @@ userRouter.get(
  *       500:
  *         description: Server error
  */
-userRouter.post('/friends/', authMiddleware(), addFriend);
+userRouter.post('/friends/:userId', authMiddleware(), addFriend);
 
 /**
  * @swagger
- * /api/users/friends/:
+ * /api/users/friends/{userId}:
  *   delete:
  *     summary: Delete a friend
  *     description: Remove a user from the friend list
@@ -679,8 +686,8 @@ userRouter.post('/friends/', authMiddleware(), addFriend);
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: query
- *         name: friendId
+ *       - in: path
+ *         name: userId
  *         schema:
  *           type: string
  *         required: true
@@ -701,12 +708,12 @@ userRouter.post('/friends/', authMiddleware(), addFriend);
  *       500:
  *         description: Server error
  */
-userRouter.delete('/friends/', authMiddleware(), deleteFriend);
+userRouter.delete('/friends/:userId', authMiddleware(), deleteFriend);
 
 // --------------------- BLOCK LIST ROUTES ---------------------
 /**
  * @swagger
- * /api/users/block/{id}:
+ * /api/users/{id}/blocks:
  *   get:
  *     summary: Get user's block list
  *     description: Retrieve list of blocked users for a specific user. Use "me" as ID to get your own block list (requires authentication).
@@ -735,26 +742,27 @@ userRouter.delete('/friends/', authMiddleware(), deleteFriend);
  *         description: Server error
  */
 userRouter.get(
-	'/block/:id',
+	'/:id/blocks',
 	authMiddleware({ optionalAuth: true }),
 	getBlockList,
 );
 
 /**
  * @swagger
- * /api/users/block/:
+ * /api/users/blocks/{userId}:
  *   post:
  *     summary: Block a user
  *     description: Block a user to prevent them from interacting with you
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/BlockUserRequest'
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the user to block
  *     responses:
  *       200:
  *         description: User blocked successfully
@@ -771,11 +779,11 @@ userRouter.get(
  *       500:
  *         description: Server error
  */
-userRouter.post('/block/', authMiddleware(), blockUser);
+userRouter.post('/blocks/:userId', authMiddleware(), blockUser);
 
 /**
  * @swagger
- * /api/users/block/:
+ * /api/users/blocks/{userId}:
  *   delete:
  *     summary: Unblock a user
  *     description: Remove a user from your block list
@@ -783,7 +791,7 @@ userRouter.post('/block/', authMiddleware(), blockUser);
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: userId
  *         schema:
  *           type: string
@@ -815,7 +823,7 @@ userRouter.post('/block/', authMiddleware(), blockUser);
  *       500:
  *         description: Server error
  */
-userRouter.delete('/block/', authMiddleware(), unBlockUser);
+userRouter.delete('/blocks/:userId', authMiddleware(), unBlockUser);
 
 // --------------------- PASSWORD RESET ROUTE ---------------------
 /**
@@ -849,7 +857,7 @@ userRouter.delete('/block/', authMiddleware(), unBlockUser);
  *       500:
  *         description: Server error
  */
-userRouter.post('/reset-password/', authMiddleware(), resetPassword);
+userRouter.post('/reset-password', authMiddleware(), resetPassword);
 
 // --------------------- USER PROFILE ROUTES ---------------------
 /**
