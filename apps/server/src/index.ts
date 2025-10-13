@@ -8,6 +8,7 @@ import { specs } from './configs/swagger.config';
 import { userRouter } from './routes/user';
 import { messageRouter } from './routes/message';
 import { chatRouter } from './routes/chat';
+import { friendRouter } from './routes/friend';
 
 dotenv.config();
 
@@ -66,6 +67,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api/users', userRouter);
 app.use('/api/chats', chatRouter);
 app.use('/api/messages', messageRouter);
+app.use('/api/friends', friendRouter);
 
 // Start server
 const PORT = process.env.PORT || 3000;
