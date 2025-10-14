@@ -1,4 +1,16 @@
 {
 	"title": "Bảng tin",
-	"content": "Bảng tin sẽ hiển thị ở đây"
+	"composer": {
+		"placeholder": "Hôm nay bạn thế nào?"
+	},
+	"actions": {
+		"photo": "Ảnh",
+		"video": "Video",
+		"album": "Album",
+		"memory": "Kỷ niệm",
+		"like": "Thả tim",
+		"comment": "Bình luận"
+	}
+,
+	"empty": "Chưa có bài viết nào!"
 }
