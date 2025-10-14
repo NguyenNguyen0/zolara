@@ -1,4 +1,16 @@
 {
 	"title": "Newsfeed",
-	"content": "Newsfeed will appear here"
+	"composer": {
+		"placeholder": "How are you today?"
+	},
+	"actions": {
+		"photo": "Photo",
+		"video": "Video",
+		"album": "Album",
+		"memory": "Memory",
+		"like": "Like",
+		"comment": "Comment"
+	}
+,
+	"empty": "There are no posts yet!"
 }

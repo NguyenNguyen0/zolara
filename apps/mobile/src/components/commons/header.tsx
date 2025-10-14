@@ -116,11 +116,13 @@ export default function Header({
 									placeholder={t('search')}
 									inputStyle={{
 										borderRadius: 10,
-										backgroundColor: 'white',
+										backgroundColor: 'transparent',
 										borderWidth: 0,
 										paddingVertical: 10,
+										color: "white"
 									}}
 									clear
+									placeholderTextColor='white'
 								/>
 							</View>
 						)}
