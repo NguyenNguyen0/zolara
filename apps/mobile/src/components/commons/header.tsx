@@ -1,59 +1,41 @@
 import { APP_COLOR } from '@/src/utils/constants';
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, StatusBar, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, StatusBar, TouchableOpacity, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import ShareInput from '@/src/components/input/share.input';
 import { useTheme } from '@/src/hooks/useTheme';
-import debounce from 'debounce';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface HeaderProps {
+	title: string;
 	showSearch?: boolean;
-	showBack?: boolean;
-	showSearchInput?: boolean;
 	showQRScanner?: boolean;
 	showAdd?: boolean;
 	showAddPerson?: boolean;
 	showAddPost?: boolean;
 	showSettings?: boolean;
+	showMenu?: boolean;
 }
 
 export default function Header({
+	title,
 	showSearch = false,
-	showBack = false,
-	showSearchInput = true,
 	showQRScanner = false,
 	showAdd = false,
 	showAddPerson = false,
 	showAddPost = false,
 	showSettings = false,
+	showMenu = false,
 }: HeaderProps) {
-	const [search, setSearch] = useState<string>('');
-	const { t } = useTranslation('header');
 	const { isDark } = useTheme();
 
-	const debouncedSearch = useMemo(
-		() =>
-			debounce((text: string) => {
-				if (!text) return;
-				console.log('fake log search:', text);
-			}, 1000),
-		[],
-	);
-
-	useEffect(() => {
-		return () => {
-			debouncedSearch.clear();
-		};
-	}, [debouncedSearch]);
-
-	const hasLeftIcons = showSearch || showBack;
 	const hasRightIcons =
+		showSearch ||
 		showQRScanner ||
 		showAdd ||
 		showAddPerson ||
 		showAddPost ||
-		showSettings;
+		showSettings ||
+		showMenu;
 
 	return (
 		<>
@@ -71,74 +53,39 @@ export default function Header({
 				}}
 			>
 				<View className="mx-3 my-4">
-					<View className="flex-row items-center justify-between gap-2">
-						{hasLeftIcons && (
-							<View className="flex-row">
+					<View className="flex-row items-center justify-between">
+						{/* Title - Left Side */}
+						<Text className="text-white text-2xl font-bold flex-1">
+							{title}
+						</Text>
+
+						{/* Icons - Right Side */}
+						{hasRightIcons && (
+							<View className="flex-row gap-1">
 								{showSearch && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Click here')
+											console.log('Search clicked')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="search"
-											size={24}
+											size={26}
 											color="white"
 										/>
 									</TouchableOpacity>
 								)}
-								{showBack && (
-									<TouchableOpacity
-										onPress={() =>
-											console.log('Click here')
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
-									>
-										<MaterialIcons
-											name="chevron-left"
-											size={24}
-											color="white"
-										/>
-									</TouchableOpacity>
-								)}
-							</View>
-						)}
-
-						{showSearchInput && (
-							<View className="flex-1">
-								<ShareInput
-									value={search}
-									onTextChange={(text) => {
-										setSearch(text);
-										debouncedSearch(text);
-									}}
-									placeholder={t('search')}
-									inputStyle={{
-										borderRadius: 10,
-										backgroundColor: 'transparent',
-										borderWidth: 0,
-										paddingVertical: 10,
-										color: "white"
-									}}
-									clear
-									placeholderTextColor='white'
-								/>
-							</View>
-						)}
-
-						{hasRightIcons && (
-							<View className="flex-row">
 								{showQRScanner && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Click here')
+											console.log('QR Scanner clicked')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="qr-code-scanner"
-											size={24}
+											size={26}
 											color="white"
 										/>
 									</TouchableOpacity>
@@ -146,13 +93,13 @@ export default function Header({
 								{showAdd && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Click here')
+											console.log('Add clicked')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="add"
-											size={24}
+											size={26}
 											color="white"
 										/>
 									</TouchableOpacity>
@@ -160,13 +107,13 @@ export default function Header({
 								{showAddPerson && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Click here')
+											console.log('Add person clicked')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="person-add-alt-1"
-											size={24}
+											size={26}
 											color="white"
 										/>
 									</TouchableOpacity>
@@ -174,13 +121,13 @@ export default function Header({
 								{showAddPost && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Click here')
+											console.log('Add post clicked')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="post-add"
-											size={24}
+											size={26}
 											color="white"
 										/>
 									</TouchableOpacity>
@@ -188,13 +135,27 @@ export default function Header({
 								{showSettings && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Click here')
+											console.log('Settings clicked')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="settings"
-											size={24}
+											size={26}
+											color="white"
+										/>
+									</TouchableOpacity>
+								)}
+								{showMenu && (
+									<TouchableOpacity
+										onPress={() =>
+											console.log('Menu clicked')
+										}
+										className="w-10 h-10 rounded-full items-center justify-center"
+									>
+										<MaterialIcons
+											name="more-vert"
+											size={26}
 											color="white"
 										/>
 									</TouchableOpacity>

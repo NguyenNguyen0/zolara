@@ -1,9 +1,11 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import React, { useMemo, useState } from 'react';
 import FeatherIcon from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ContactItem from '@/src/components/item/contact.item';
 import Header from '@/src/components/commons/header';
-import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/src/hooks/useTheme';
 
 const CONTACTS = [
 	{
@@ -49,6 +51,18 @@ const CONTACTS = [
 ];
 
 export default function Contact() {
+	const { t } = useTranslation('contact');
+	const { isDark } = useTheme();
+	const [refreshing, setRefreshing] = useState(false);
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		// Simulate API call
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 1000);
+	}, []);
+
 	const sections = useMemo(() => {
 		const sectionsMap = CONTACTS.reduce(
 			(acc: Record<string, typeof CONTACTS>, item) => {
@@ -76,10 +90,17 @@ export default function Contact() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<Header showSearch showAddPerson />
+			<Header title={t('header')} showSearch showAddPerson />
 			<ScrollView
 				className="flex-1"
 				contentContainerStyle={{ paddingBottom: 24 }}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor={isDark ? '#fff' : '#000'}
+					/>
+				}
 			>
 				<View className="bg-light-mode dark:bg-dark-mode">
 					<View className="px-6">

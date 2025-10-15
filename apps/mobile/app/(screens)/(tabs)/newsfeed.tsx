@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View, RefreshControl } from 'react-native';
 import Composer from '@/src/components/item/composer';
 import PostItemComponent, { Post } from '@/src/components/item/post.item';
 import { useTranslation } from 'react-i18next';
@@ -47,6 +47,15 @@ export default function Newsfeed() {
 	const { t } = useTranslation('newsfeed');
 	const { isDark } = useTheme();
 	const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		// Simulate API call
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 1000);
+	}, []);
 
 	const handleCreate = (text?: string, images?: string[]) => {
 		const newPost: Post = {
@@ -64,12 +73,19 @@ export default function Newsfeed() {
 
 	return (
 		<SafeAreaView edges={['top']} className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<Header showSearch showAddPost />
+			<Header title={t('header')} showSearch showAddPost />
 			<FlatList
 				data={posts}
 				keyExtractor={(item) => item.id}
 				renderItem={({ item }) => <PostItemComponent item={item} />}
 				ListHeaderComponent={<Composer onCreate={handleCreate} currentUserAvatar={INITIAL_POSTS[0].authorAvatar} />}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor={isDark ? '#fff' : '#000'}
+					/>
+				}
 				ListEmptyComponent={
 					<View className="px-4 py-8">
 						<Text className="text-center text-gray-500 dark:text-gray-400">
