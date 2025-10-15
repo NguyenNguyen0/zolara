@@ -8,6 +8,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MessageItem from '@/src/components/item/convervation.item';
 import Header from '@/src/components/commons/header';
+import { useTranslation } from 'react-i18next';
 
 const DATA_MOCKS = [
 	{
@@ -123,6 +124,7 @@ const DATA_MOCKS = [
 ];
 
 export default function MessageTab() {
+	const { t } = useTranslation('conversations');
 	// const [currentPage, setCurrentPage] = useState<number>(1);
 	// const [pageSize, setPageSize] = useState<number>(5);
 	// TODO: Xoá sau này dùng redux thay thế
@@ -155,7 +157,7 @@ export default function MessageTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<Header showSearch showQRScanner showAdd />
+			<Header title={t('header')} showSearch showQRScanner showAdd />
 			<FlatList
 				data={data}
 				keyExtractor={(item) => item.id}

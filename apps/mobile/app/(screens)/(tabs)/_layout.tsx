@@ -38,7 +38,7 @@ const getIconsWithBadge = (routeName: string, focused: boolean, size: number) =>
 	let showDot = false;
 
 	switch (routeName) {
-		case 'convervations':
+		case 'conversation':
 			iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
 			badgeCount = notificationData.messages;
 			break;
@@ -110,7 +110,7 @@ const TabLayout = () => {
 				),
 			})}
 		>
-			<Tabs.Screen name="convervations" options={{ title: t('messages') }} />
+			<Tabs.Screen name="conversation" options={{ title: t('messages') }} />
 			<Tabs.Screen name="contact" options={{ title: t('contacts') }} />
 			<Tabs.Screen name="newsfeed" options={{ title: t('newsfeed') }} />
 			<Tabs.Screen

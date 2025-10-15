@@ -1,5 +1,6 @@
 {
 	"title": "Newsfeed",
+	"header": "Newsfeed",
 	"composer": {
 		"placeholder": "How are you today?"
 	},

@@ -1,4 +1,27 @@
 {
 	"title": "Thông báo",
-	"content": "Thông báo sẽ hiển thị ở đây"
+	"header": "Thông báo",
+	"content": "Thông báo sẽ hiển thị ở đây",
+	"new": "Mới",
+	"earlier": "Trước đó",
+	"types": {
+		"login": "Phát hiện đăng nhập mới",
+		"add_friend": "đã gửi lời mời kết bạn",
+		"comment": "đã bình luận bài viết của bạn",
+		"invite_group": "đã mời bạn vào nhóm chat",
+		"like": "đã thích bài viết của bạn",
+		"birthday": "có sinh nhật hôm nay"
+	},
+	"actions": {
+		"confirm": "Xác nhận",
+		"delete": "Xóa",
+		"view": "Xem"
+	},
+	"time": {
+		"just_now": "Vừa xong",
+		"minutes_ago": "{{count}} phút",
+		"hours_ago": "{{count}} giờ",
+		"days_ago": "{{count}} ngày",
+		"weeks_ago": "{{count}} tuần"
+	}
 }

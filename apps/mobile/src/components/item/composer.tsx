@@ -40,7 +40,7 @@ const Composer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 
 	return (
 		<View className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-			<View className="flex-row gap-3">
+			<View className="flex-row gap-3 items-center">
 				<Avatar uri={currentUserAvatar} />
 				<View className="flex-1">
 					<TextInput
@@ -50,7 +50,7 @@ const Composer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 						placeholderTextColor="#9ca3af"
 						multiline
 						textAlignVertical="top"
-						className="min-h-[40px] max-h-[120px] px-4 py-8 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+						className="min-h-[40px] max-h-[120px] px-4 py-8 rounded-2xl bg-secondary-light dark:bg-secondary-dark text-dark-mode dark:text-light-mode"
 					/>
 					{images.length > 0 && (
 						<View className="mt-3 flex-row flex-wrap gap-2">
