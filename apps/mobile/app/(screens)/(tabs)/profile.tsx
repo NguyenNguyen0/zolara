@@ -1,42 +1,37 @@
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-	View,
-	Text,
-	Image,
-	TouchableOpacity,
 	FlatList,
 	RefreshControl,
 	StatusBar,
 	ListRenderItem,
+	ActivityIndicator,
+	View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
-import Header from '@/src/components/commons/header';
 import { APP_COLOR } from '@/src/utils/constants';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import PostItem, { Post } from '@/src/components/item/post.item';
 import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
+import ProfileUser from '@/src/components/ui/profile.user';
+import ProfileEmpty from '@/src/components/ui/profile.empty';
 
 export default function Profile() {
 	const { t } = useTranslation('profile');
 	const { isDark } = useTheme();
 	const [refreshing, setRefreshing] = useState(false);
-	const [imageModalVisible, setImageModalVisible] = useState(false);
-	const [selectedImages, setSelectedImages] = useState<string[]>([]);
-	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
+	const [coverModalVisible, setCoverModalVisible] = useState(false);
+	const [actualCoverImage, setActualCoverImage] = useState<string>('');
 
-	// Mock user data - replace with real data
 	const user = {
-		name: 'Nguyen Van Minh',
-		bio: t('bio'),
-		website: 'nvminh162.id.vn',
+		name: 'Tokuda',
+		bio: 'Not bio yet',
 		avatar: 'https://i.pravatar.cc/200?img=1',
 		coverImage:
 			'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
 	};
 
-	// Mock posts data - replace with real data from API
 	const [posts, setPosts] = useState<Post[]>([
 		{
 			id: '1',
@@ -87,122 +82,48 @@ export default function Profile() {
 		}, 1000);
 	}, []);
 
-	// Handle image press
-	const handleImagePress = (images: string[], index: number = 0) => {
-		setSelectedImages(images);
-		setSelectedImageIndex(index);
-		setImageModalVisible(true);
+	const handleLoadMore = () => {
+		if (!isLoadingMore) {
+			setIsLoadingMore(true);
+			// Simulate API call to load more posts
+			setTimeout(() => {
+				setIsLoadingMore(false);
+			}, 2000);
+		}
+	};
+
+	// Handle image press - receive the actual displayed image URI
+	const handleCoverPress = (imageUri: string) => {
+		setActualCoverImage(imageUri);
+		setCoverModalVisible(true);
 	};
 
 	// Render header component
 	const renderHeader = () => (
-		<>
-			{/* Cover Image with Avatar */}
-			<View className="relative">
-				{/* Cover Image */}
-				<TouchableOpacity
-					activeOpacity={0.9}
-					onPress={() => handleImagePress([user.coverImage], 0)}
-				>
-					<Image
-						source={{ uri: user.coverImage }}
-						className="w-full h-48"
-						resizeMode="cover"
-					/>
-				</TouchableOpacity>
-
-				{/* Avatar - positioned to overlap cover */}
-				<View className="absolute -bottom-16 left-1/2 -ml-20">
-					<View className="relative">
-						<TouchableOpacity
-							activeOpacity={0.9}
-							onPress={() => handleImagePress([user.avatar], 0)}
-						>
-							<Image
-								source={{ uri: user.avatar }}
-								className="w-40 h-40 rounded-full border-4 border-light-mode dark:border-dark-mode"
-							/>
-						</TouchableOpacity>
-						{/* Camera button on avatar */}
-						<TouchableOpacity
-							className="absolute bottom-2 right-2 bg-primary rounded-full p-2"
-							activeOpacity={0.8}
-						>
-							<MaterialIcons
-								name="camera-alt"
-								size={20}
-								color="white"
-							/>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</View>
-
-			{/* Profile Info */}
-			<View className="mt-20 px-4">
-				{/* Name */}
-				<Text className="text-2xl font-bold text-center text-dark-mode dark:text-light-mode">
-					{user.name}
-				</Text>
-
-				{/* Bio */}
-				<Text className="text-base text-center text-gray-600 dark:text-gray-400 mt-1">
-					{user.bio}
-				</Text>
-
-				{/* Website */}
-				<View className="flex-row items-center justify-center mt-2">
-					<Text className="text-sm text-blue-600 dark:text-blue-400 font-medium">
-						{user.website}
-					</Text>
-				</View>
-			</View>
-
-			{/* Divider */}
-			<View className="mt-6 border-t-8 border-gray-200 dark:border-gray-800" />
-		</>
+		<ProfileUser user={user} onCoverPress={handleCoverPress} />
 	);
 
 	// Render empty state
-	const renderEmpty = () => (
-		<View className="px-4 mt-8 items-center pb-8">
-			{/* Icon Illustration */}
-			<View className="relative mb-6">
-				<View className="bg-gray-100 dark:bg-gray-800 rounded-3xl p-8 items-center justify-center">
-					<Ionicons
-						name="document-text-outline"
-						size={64}
-						color={isDark ? '#6b7280' : '#9ca3af'}
-					/>
-				</View>
-			</View>
-
-			{/* Title */}
-			<Text className="text-xl font-bold text-center text-dark-mode dark:text-light-mode mb-3">
-				{t('emptyState.title', { name: user.name.split(' ')[0] })}
-			</Text>
-
-			{/* Subtitle */}
-			<Text className="text-sm text-center text-gray-600 dark:text-gray-400 mb-6 px-8">
-				{t('emptyState.subtitle')}
-			</Text>
-
-			{/* CTA Button */}
-			<TouchableOpacity
-				className="bg-blue-600 rounded-full px-8 py-4"
-				activeOpacity={0.8}
-			>
-				<Text className="text-white font-semibold text-base">
-					{t('emptyState.button')}
-				</Text>
-			</TouchableOpacity>
-		</View>
-	);
+	const renderEmpty = () => <ProfileEmpty userName={user.name} />;
 
 	// Render post item
 	const renderItem: ListRenderItem<Post> = ({ item }) => (
 		<PostItem item={item} />
 	);
+
+	// Render loading footer
+	const renderFooter = () => {
+		if (!isLoadingMore) return null;
+		return (
+			<View className="py-4 items-center justify-center">
+				<ActivityIndicator
+					size="small"
+					color={APP_COLOR.PRIMARY}
+					animating={true}
+				/>
+			</View>
+		);
+	};
 
 	return (
 		<SafeAreaView
@@ -219,6 +140,9 @@ export default function Profile() {
 				keyExtractor={(item) => item.id}
 				ListHeaderComponent={renderHeader}
 				ListEmptyComponent={renderEmpty}
+				ListFooterComponent={renderFooter}
+				onEndReached={handleLoadMore}
+				onEndReachedThreshold={0.5}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -227,17 +151,14 @@ export default function Profile() {
 					/>
 				}
 				showsVerticalScrollIndicator={false}
-				contentContainerStyle={
-					posts.length === 0 ? undefined : { paddingBottom: 24 }
-				}
 			/>
 
-			{/* Image Preview Modal */}
+			{/* Image Preview Modal - Only for Cover Image */}
 			<ImagePreviewModal
-				visible={imageModalVisible}
-				images={selectedImages}
-				initialIndex={selectedImageIndex}
-				onClose={() => setImageModalVisible(false)}
+				visible={coverModalVisible}
+				images={actualCoverImage ? [actualCoverImage] : []}
+				initialIndex={0}
+				onClose={() => setCoverModalVisible(false)}
 			/>
 		</SafeAreaView>
 	);

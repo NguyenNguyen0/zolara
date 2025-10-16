@@ -4,14 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
 import { APP_COLOR } from '@/src/utils/constants';
-import { Avatar, PostImage } from './post.item';
+import { PostImage } from '../item/post.item';
+import Avatar from './avatar';
 
 type Props = {
 	onCreate: (text?: string, images?: string[]) => void;
 	currentUserAvatar?: string;
 };
 
-const Composer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
+const NewsFeedComposer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 	const { t } = useTranslation('newsfeed');
 	const [text, setText] = useState('');
 	const [images, setImages] = useState<string[]>([]);
@@ -74,6 +75,6 @@ const Composer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 	);
 };
 
-export default Composer;
+export default NewsFeedComposer;
 
 

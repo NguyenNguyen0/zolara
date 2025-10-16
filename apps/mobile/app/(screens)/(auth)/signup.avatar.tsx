@@ -47,7 +47,7 @@ export default function SignUpAvatar() {
 		});
 		// In the future, we will persist the image to backend or storage
 		router.dismissAll();
-		router.navigate('/(screens)/(tabs)/convervations');
+		router.navigate('/(screens)/(tabs)/conversation');
 	};
 
 	return (
@@ -80,8 +80,6 @@ export default function SignUpAvatar() {
 						<ShareAvatar
 							imageUri={imageUri}
 							onImageChange={setImageUri}
-							size={150}
-							placeholderInitials={t('placeholderInitials')}
 						/>
 					</View>
 

@@ -2,7 +2,6 @@
 	"title": "Cá nhân",
 	"header": "Cá nhân",
 	"content": "Nội dung cá nhân sẽ hiển thị ở đây",
-	"bio": "Lập trình viên",
 	"sections": {
 		"setupZStyle": "Thiết lập zStyle",
 		"myPhotos": "Ảnh của tôi",
