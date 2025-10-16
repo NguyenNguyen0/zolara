@@ -4,12 +4,14 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
+import { APP_COLOR } from '@/src/utils/constants';
 import Avatar from '@/src/components/ui/avatar';
 
 export type Post = {
 	id: string;
 	authorName: string;
 	authorAvatar: string;
+	authorVerified?: boolean;
 	createdAt: string;
 	content?: string;
 	images?: string[];
@@ -148,7 +150,12 @@ export const PostItem = ({ item }: { item: Post }) => {
 			<View className="px-4 flex-row items-center gap-3">
 				<Avatar uri={item.authorAvatar} />
 				<View className="flex-1">
-					<Text className="font-semibold text-gray-900 dark:text-gray-100">{item.authorName}</Text>
+					<View className="flex-row items-center">
+						<Text className="font-semibold text-gray-900 dark:text-gray-100">{item.authorName}</Text>
+						{item.authorVerified ? (
+							<Ionicons name="checkmark-circle" size={16} color={APP_COLOR.PRIMARY} style={{ marginLeft: 4 }} />
+						) : null}
+					</View>
 					<Text className="text-xs text-gray-500 dark:text-gray-400">{item.createdAt}</Text>
 				</View>
 				<Ionicons name="ellipsis-horizontal" size={18} color="#9ca3af" />
