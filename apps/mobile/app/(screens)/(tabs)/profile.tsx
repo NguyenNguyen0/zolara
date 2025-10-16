@@ -16,7 +16,7 @@ import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
 import ProfileUser from '@/src/components/ui/profile.user';
 import ProfileEmpty from '@/src/components/ui/profile.empty';
 
-export default function Profile() {
+export default function ProfileTab() {
 	const { t } = useTranslation('profile');
 	const { isDark } = useTheme();
 	const [refreshing, setRefreshing] = useState(false);
@@ -30,6 +30,7 @@ export default function Profile() {
 		avatar: 'https://i.pravatar.cc/200?img=1',
 		coverImage:
 			'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
+		verified: true,
 	};
 
 	const [posts, setPosts] = useState<Post[]>([
@@ -37,6 +38,7 @@ export default function Profile() {
 			id: '1',
 			authorName: user.name,
 			authorAvatar: user.avatar,
+			authorVerified: user.verified,
 			createdAt: '2h ago',
 			content: 'Beautiful day at the office! 🌟',
 			images: [
@@ -50,6 +52,7 @@ export default function Profile() {
 			id: '2',
 			authorName: user.name,
 			authorAvatar: user.avatar,
+			authorVerified: user.verified,
 			createdAt: '5h ago',
 			content: 'Working on some exciting new features! 💻✨',
 			images: [
@@ -62,6 +65,7 @@ export default function Profile() {
 			id: '3',
 			authorName: user.name,
 			authorAvatar: user.avatar,
+			authorVerified: user.verified,
 			createdAt: '1d ago',
 			content: 'Amazing team lunch today! 🍱',
 			images: [
@@ -152,7 +156,6 @@ export default function Profile() {
 				}
 				showsVerticalScrollIndicator={false}
 			/>
-
 			{/* Image Preview Modal - Only for Cover Image */}
 			<ImagePreviewModal
 				visible={coverModalVisible}

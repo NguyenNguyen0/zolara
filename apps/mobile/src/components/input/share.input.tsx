@@ -50,6 +50,7 @@ interface IProps {
 	placeholder?: string;
 	inputStyle?: StyleProp<TextStyle>;
 	placeholderTextColor?: string;
+	autoFocus?: boolean;
 }
 
 const ShareInput = (props: IProps) => {
@@ -69,7 +70,8 @@ const ShareInput = (props: IProps) => {
 		editable = true,
 		placeholder,
 		inputStyle,
-		placeholderTextColor
+		placeholderTextColor,
+		autoFocus = false
 	} = props;
 
 	const borderColor =
@@ -106,6 +108,7 @@ const ShareInput = (props: IProps) => {
 						onChangeText={onTextChange}
 						secureTextEntry={secureTextEntry && !isShowPassword}
 						placeholderTextColor={placeholderTextColor}
+						autoFocus={autoFocus}
 					/>
 					{secureTextEntry && (
 						<View style={styles.iconContainer}>
@@ -123,7 +126,7 @@ const ShareInput = (props: IProps) => {
 								onPress={() => onTextChange && onTextChange('')}
 								name="close-circle"
 								size={20}
-								color={APP_COLOR.LIGHT_MODE}
+								color={APP_COLOR.GRAY_700}
 							/>
 						</View>
 					)}

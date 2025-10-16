@@ -110,7 +110,7 @@ const mockNotifications: NotificationItemProps[] = [
 	},
 ];
 
-export default function Notification() {
+export default function NotificationTab() {
 	const { t } = useTranslation('notification');
 	const { isDark } = useTheme();
 	const [notifications, setNotifications] =

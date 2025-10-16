@@ -3,6 +3,7 @@ import { View, Text, Image, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
+import { router } from 'expo-router';
 
 type Item = {
 	name: string;
@@ -13,12 +14,13 @@ type Item = {
 	unread?: number;
 };
 
-export default function MessageItem({ item }: { item: Item }) {
+export default function ConversationItem({ item }: { item: Item }) {
 	const { name, message, time, avatar, verified, unread } = item;
 	const { isDark } = useTheme();
 
 	return (
 		<Pressable
+			onPress={() => router.navigate('/(screens)/(user)/conversation/[id]')}
 			android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
 			className="px-4"
 			style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}

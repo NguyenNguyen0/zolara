@@ -15,6 +15,7 @@ const INITIAL_POSTS: Post[] = [
 		id: '1',
 		authorName: 'Md Ismail Sojal',
 		authorAvatar: 'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=96&q=80&auto=format&fit=crop&crop=faces',
+		authorVerified: true,
 		createdAt: '1d',
 		content: 'Bro disappeared like it never existed.',
 		images: [],
@@ -25,6 +26,7 @@ const INITIAL_POSTS: Post[] = [
 		id: '2',
 		authorName: 'Alex',
 		authorAvatar: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=96&q=80&auto=format&fit=crop&crop=faces',
+		authorVerified: true,
 		createdAt: '2d',
 		content: 'Weekend hike photos!',
 		images: [
@@ -43,7 +45,7 @@ const INITIAL_POSTS: Post[] = [
 // item components moved to src/components/item
 
 // Main Component
-export default function Newsfeed() {
+export default function NewsfeedTab() {
 	const { t } = useTranslation('newsfeed');
 	const { isDark } = useTheme();
 	const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
@@ -73,6 +75,7 @@ export default function Newsfeed() {
 			id: Date.now().toString(),
 			authorName: 'You',
 			authorAvatar: INITIAL_POSTS[0].authorAvatar,
+			authorVerified: false,
 			createdAt: 'Just now',
 			content: text,
 			images,
@@ -97,7 +100,7 @@ export default function Newsfeed() {
 
 	return (
 		<SafeAreaView edges={['top']} className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<Header title={t('header')} showSearch showAddPost />
+			<Header title={t('header')} showSearch />
 			<FlatList
 				data={posts}
 				keyExtractor={(item) => item.id}
