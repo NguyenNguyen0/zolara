@@ -1,100 +1,93 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image as RNImage } from 'react-native';
+import { Image } from 'expo-image';
+import { MaterialIcons } from '@expo/vector-icons';
+import { ImagePreviewModal } from '../modal/image.preview.modal';
+import { APP_COLOR } from '@/src/utils/constants';
+
+const AVATAR_SIZE = 150;
+const DEFAULT_AVATAR = require('@/src/assets/default/avatar-default.jpg');
 
 interface ShareAvatarProps {
 	imageUri?: string | null;
-	onImageChange: (uri: string | null) => void;
-	size?: number;
-	placeholderInitials?: string;
-	backgroundColor?: string;
-	textColor?: string;
+	onImageChange?: (uri: string | null) => void;
+	showCameraButton?: boolean; // Control camera button visibility
 }
 
 export default function ShareAvatar({
 	imageUri,
 	onImageChange,
-	size = 140,
-	placeholderInitials = 'T',
-	backgroundColor = '#66BB6A',
-	textColor = 'white',
+	showCameraButton = true, // Default show camera button
 }: ShareAvatarProps) {
-	const { t } = useTranslation('signup-avatar');
+	const [imageModalVisible, setImageModalVisible] = useState(false);
+	const [imageError, setImageError] = useState(false);
 
-	const pickImageFromLibrary = async () => {
-		const { status } =
-			await ImagePicker.requestMediaLibraryPermissionsAsync();
-		if (status !== 'granted') {
-			Alert.alert('Permission', t('permissionDenied'));
-			return;
-		}
-		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ['images'],
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 0.9,
-		});
-		if (!result.canceled) {
-			onImageChange(result.assets[0].uri);
-		}
+	// Reset error state when imageUri changes
+	React.useEffect(() => {
+		setImageError(false);
+	}, [imageUri]);
+
+	// Get the actual image source to display
+	const currentImageSource = (imageUri && !imageError)
+		? { uri: imageUri }
+		: DEFAULT_AVATAR;
+
+	// Get preview image URI (use RNImage.resolveAssetSource for default image)
+	const previewImageUri = (imageUri && !imageError)
+		? imageUri 
+		: RNImage.resolveAssetSource(DEFAULT_AVATAR).uri;
+
+	const handleAvatarPress = () => {
+		setImageModalVisible(true);
 	};
 
-	const takePhoto = async () => {
-		const { status } = await ImagePicker.requestCameraPermissionsAsync();
-		if (status !== 'granted') {
-			Alert.alert('Permission', t('permissionDenied'));
-			return;
-		}
-		const result = await ImagePicker.launchCameraAsync({
-			mediaTypes: ['images'],
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 0.9,
-		});
-		if (!result.canceled) {
-			onImageChange(result.assets[0].uri);
-		}
+	const handleCameraPress = () => {
+		console.log('take photo');
 	};
-
-	const avatarPlaceholder = useMemo(
-		() => (
-			<View
-				className="items-center justify-center rounded-full"
-				style={{
-					width: size,
-					height: size,
-					backgroundColor,
-				}}
-			>
-				<Text
-					className="font-bold"
-					style={{
-						color: textColor,
-						fontSize: size * 0.2,
-					}}
-				>
-					{placeholderInitials}
-				</Text>
-			</View>
-		),
-		[size, backgroundColor, textColor, placeholderInitials],
-	);
 
 	return (
-		<TouchableOpacity activeOpacity={0.8} onPress={pickImageFromLibrary}>
-			{imageUri ? (
-				<Image
-					source={{ uri: imageUri }}
-					style={{
-						width: size,
-						height: size,
-						borderRadius: size / 2,
-					}}
-				/>
-			) : (
-				avatarPlaceholder
-			)}
-		</TouchableOpacity>
+		<>
+			<View className="relative">
+				<TouchableOpacity
+					activeOpacity={0.8}
+					onPress={handleAvatarPress}
+				>
+					<Image
+						source={currentImageSource}
+						style={{
+							width: AVATAR_SIZE,
+							height: AVATAR_SIZE,
+							borderRadius: AVATAR_SIZE / 2,
+						}}
+						contentFit="cover"
+						onError={(error) => {
+							console.log('Avatar load error:', error);
+							setImageError(true);
+						}}
+						transition={200}
+					/>
+				</TouchableOpacity>
+
+				{/* Camera button - only show if showCameraButton is true */}
+				{showCameraButton && (
+					<TouchableOpacity
+						className="absolute bottom-2 right-2 rounded-full p-2"
+						style={{ backgroundColor: APP_COLOR.PRIMARY }}
+						activeOpacity={0.8}
+						onPress={handleCameraPress}
+					>
+						<MaterialIcons name="camera-alt" size={24} color="white" />
+					</TouchableOpacity>
+				)}
+			</View>
+
+			{/* Image Preview Modal - always show */}
+			<ImagePreviewModal
+				visible={imageModalVisible}
+				images={[previewImageUri]}
+				initialIndex={0}
+				onClose={() => setImageModalVisible(false)}
+			/>
+		</>
 	);
 }

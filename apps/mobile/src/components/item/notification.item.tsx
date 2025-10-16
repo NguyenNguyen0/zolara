@@ -1,120 +1,143 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
+import Avatar from '../ui/avatar';
+import { APP_COLOR } from '@/src/utils/constants';
 
 export type NotificationType =
 	| 'login'
 	| 'add_friend'
 	| 'comment'
-	| 'invite_group'
+	| 'mention'
 	| 'like'
+	| 'post'
 	| 'birthday';
 
 export interface NotificationItemProps {
 	id: string;
 	type: NotificationType;
-	avatar?: string;
-	userName?: string;
-	message?: string;
+	actor?: {
+		name: string;
+		avatar?: string;
+		verified?: boolean;
+	};
+	content: string;
 	timestamp: string;
 	isRead?: boolean;
-	showActions?: boolean;
-	onConfirm?: () => void;
-	onDelete?: () => void;
 	onPress?: () => void;
 }
 
 const NotificationItem: React.FC<NotificationItemProps> = ({
 	type,
-	avatar,
-	userName,
-	message,
+	actor,
+	content,
 	timestamp,
 	isRead = false,
-	showActions = false,
-	onConfirm,
-	onDelete,
 	onPress,
 }) => {
 	const { t } = useTranslation('notification');
 	const { isDark } = useTheme();
 
 	const getNotificationIcon = () => {
-		const iconColor = isDark ? '#fff' : '#000';
 		const iconSize = 14;
-
 		switch (type) {
 			case 'login':
 				return (
-					<View className="bg-blue-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
+					<View className="bg-blue-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
 						<Ionicons
 							name="shield-checkmark"
 							size={iconSize}
-							color="#fff"
+							color={APP_COLOR.LIGHT_MODE}
 						/>
 					</View>
 				);
 			case 'add_friend':
 				return (
-					<View className="bg-green-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
+					<View className="bg-green-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
 						<Ionicons
 							name="person-add"
 							size={iconSize}
-							color="#fff"
+							color={APP_COLOR.LIGHT_MODE}
 						/>
 					</View>
 				);
 			case 'comment':
 				return (
-					<View className="bg-purple-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
+					<View className="bg-purple-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
 						<Ionicons
 							name="chatbubble"
 							size={iconSize}
-							color="#fff"
+							color={APP_COLOR.LIGHT_MODE}
 						/>
 					</View>
 				);
-			case 'invite_group':
+			case 'mention':
 				return (
-					<View className="bg-orange-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
-						<Ionicons name="people" size={iconSize} color="#fff" />
+					<View className="bg-orange-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
+						<Ionicons name="at" size={iconSize} color={APP_COLOR.LIGHT_MODE} />
 					</View>
 				);
 			case 'like':
 				return (
-					<View className="bg-red-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
-						<Ionicons name="heart" size={iconSize} color="#fff" />
+					<View className="bg-red-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
+						<Ionicons name="heart" size={iconSize} color={APP_COLOR.LIGHT_MODE} />
+					</View>
+				);
+			case 'post':
+				return (
+					<View className="bg-indigo-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
+						<Ionicons name="play-circle" size={iconSize} color={APP_COLOR.LIGHT_MODE} />
 					</View>
 				);
 			case 'birthday':
 				return (
-					<View className="bg-pink-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
-						<Ionicons name="gift" size={iconSize} color="#fff" />
+					<View className="bg-pink-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
+						<Ionicons name="gift" size={iconSize} color={APP_COLOR.LIGHT_MODE} />
 					</View>
 				);
 			default:
 				return (
-					<View className="bg-gray-500 rounded-full p-1.5 border-2 border-light-mode dark:border-dark-mode">
+					<View className="bg-gray-500 rounded-full p-1 border-2 border-light-mode dark:border-dark-mode">
 						<Ionicons
 							name="notifications"
 							size={iconSize}
-							color="#fff"
+							color={APP_COLOR.LIGHT_MODE}
 						/>
 					</View>
 				);
 		}
 	};
 
-	const getNotificationText = () => {
-		if (message) return message;
-
-		const typeText = t(`types.${type}`);
-		if (userName) {
-			return `${userName} ${typeText}`;
+	const renderNotificationText = () => {
+		if (actor) {
+			return (
+				<View className='flex-row flex-wrap items-center'>
+					<Text className="text-sm font-semibold text-gray-900 dark:text-white">
+						{actor.name}
+					</Text>
+					<View className='mx-1'>
+						{actor.verified && (
+						<Ionicons
+							name="checkmark-circle"
+							size={16}
+							color={APP_COLOR.PRIMARY}
+						/>
+					)}
+					</View>
+					<Text className="text-sm text-gray-900 dark:text-white">
+						{content}
+					</Text>
+				</View>
+			);
 		}
-		return typeText;
+
+		return (
+			<Text className="text-sm text-gray-900 dark:text-white">
+				{content}
+			</Text>
+		);
 	};
 
 	return (
@@ -128,20 +151,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 			{/* Avatar with Icon Badge */}
 			<View className="mr-3">
 				<View className="relative">
-					{avatar ? (
-						<Image
-							source={{ uri: avatar }}
-							className="w-14 h-14 rounded-full"
-						/>
-					) : (
-						<View className="w-14 h-14 rounded-full bg-gray-300 dark:bg-gray-600 items-center justify-center">
-							<Ionicons
-								name="person"
-								size={24}
-								color={isDark ? '#9ca3af' : '#6b7280'}
-							/>
-						</View>
-					)}
+					<Avatar uri={actor?.avatar} />
 					{/* Icon Badge */}
 					<View className="absolute -bottom-3 right-0">
 						{getNotificationIcon()}
@@ -151,46 +161,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
 			{/* Content */}
 			<View className="flex-1">
-				<Text
-					className="text-sm text-gray-900 dark:text-white mb-1"
-					numberOfLines={3}
-				>
-					{getNotificationText()}
-				</Text>
+				<View className="mb-1">{renderNotificationText()}</View>
 				<Text className="text-xs text-gray-500 dark:text-gray-400">
 					{timestamp}
 				</Text>
-
-				{/* Action Buttons */}
-				{showActions && (
-					<View className="flex-row mt-3 space-x-2">
-						<TouchableOpacity
-							onPress={onConfirm}
-							className="flex-1 bg-blue-500 rounded-lg py-2 px-4 mr-2"
-							activeOpacity={0.8}
-						>
-							<Text className="text-white text-center font-semibold">
-								{t('actions.confirm')}
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={onDelete}
-							className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-lg py-2 px-4"
-							activeOpacity={0.8}
-						>
-							<Text className="text-gray-700 dark:text-gray-200 text-center font-semibold">
-								{t('actions.delete')}
-							</Text>
-						</TouchableOpacity>
-					</View>
-				)}
 			</View>
 
 			{/* Unread Indicator */}
 			{!isRead && (
-				<View className="ml-2">
-					<View className="w-2 h-2 bg-blue-500 rounded-full" />
-				</View>
+				<View className="w-2 h-2 bg-blue-500 rounded-full" />
 			)}
 		</TouchableOpacity>
 	);

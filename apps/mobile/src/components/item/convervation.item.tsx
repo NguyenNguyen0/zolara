@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/useTheme';
+import { APP_COLOR } from '@/src/utils/constants';
 
 type Item = {
 	name: string;
@@ -30,7 +31,7 @@ export default function MessageItem({ item }: { item: Item }) {
 							{name}
 						</Text>
 						{verified ? (
-							<Ionicons name="checkmark-circle" size={16} color="#0ea5e9" className="ml-1" />
+							<Ionicons name="checkmark-circle" size={16} color={APP_COLOR.PRIMARY} className="ml-1" />
 						) : null}
 					</View>
 					<Text className="text-gray-500 mt-0.5" numberOfLines={1}>

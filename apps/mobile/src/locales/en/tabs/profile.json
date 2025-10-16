@@ -2,7 +2,6 @@
 	"title": "Profile",
 	"header": "Profile",
 	"content": "Profile content will appear here",
-	"bio": "Software Developer",
 	"sections": {
 		"setupZStyle": "Set up zStyle",
 		"myPhotos": "My photos",

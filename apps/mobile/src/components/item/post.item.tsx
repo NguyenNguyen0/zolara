@@ -4,9 +4,7 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
-
-// Local fallback avatar
-const FALLBACK_AVATAR = require('@/src/assets/brand/logo.png');
+import Avatar from '@/src/components/ui/avatar';
 
 export type Post = {
 	id: string;
@@ -17,18 +15,6 @@ export type Post = {
 	images?: string[];
 	reactions: number;
 	comments: number;
-};
-
-export const Avatar = ({ uri, size = 40 }: { uri?: string; size?: number }) => {
-	const [failed, setFailed] = useState(false);
-	return (
-		<Image
-			source={!uri || failed ? FALLBACK_AVATAR : { uri }}
-			style={{ height: size, width: size, borderRadius: size / 2 }}
-			onError={() => setFailed(true)}
-			contentFit="cover"
-		/>
-	);
 };
 
 export const PostImage = ({ uri, style }: { uri: string; style?: any }) => {

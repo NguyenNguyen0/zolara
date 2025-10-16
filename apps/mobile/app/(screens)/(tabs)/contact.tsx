@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator, ListRenderItem } from 'react-native';
 import React, { useMemo, useState } from 'react';
 import FeatherIcon from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,6 +6,18 @@ import ContactItem from '@/src/components/item/contact.item';
 import Header from '@/src/components/commons/header';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
+import { APP_COLOR } from '@/src/utils/constants';
+
+type Contact = {
+	avatar: string;
+	name: string;
+	email: string;
+};
+
+type Section = {
+	letter: string;
+	items: Contact[];
+};
 
 const CONTACTS = [
 	{
@@ -54,6 +66,7 @@ export default function Contact() {
 	const { t } = useTranslation('contact');
 	const { isDark } = useTheme();
 	const [refreshing, setRefreshing] = useState(false);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -63,9 +76,19 @@ export default function Contact() {
 		}, 1000);
 	}, []);
 
+	const handleLoadMore = () => {
+		if (!isLoadingMore) {
+			setIsLoadingMore(true);
+			// Simulate API call to load more contacts
+			setTimeout(() => {
+				setIsLoadingMore(false);
+			}, 2000);
+		}
+	};
+
 	const sections = useMemo(() => {
 		const sectionsMap = CONTACTS.reduce(
-			(acc: Record<string, typeof CONTACTS>, item) => {
+			(acc: Record<string, Contact[]>, item) => {
 				const [lastName] = item.name.split(' ').reverse();
 				return Object.assign(acc, {
 					[lastName[0]]: [...(acc[lastName[0]] || []), item],
@@ -81,8 +104,69 @@ export default function Contact() {
 			.sort((a, b) => a.letter.localeCompare(b.letter));
 	}, []);
 
-	const handleContactPress = (contact: (typeof CONTACTS)[0]) => {
+	const handleContactPress = (contact: Contact) => {
 		console.log('Contact pressed:', contact);
+	};
+
+	// Render header with friend requests and birthdays
+	const renderListHeader = () => (
+		<View className="bg-light-mode dark:bg-dark-mode">
+			<View className="px-6">
+				<TouchableOpacity activeOpacity={0.8} className="border-b border-gray-200 dark:border-gray-700">
+					<View className="py-3.5 flex-row items-center">
+						<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
+							<FeatherIcon name="users" size={18} color="#ffffff" />
+						</View>
+						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Friend requests (99+)</Text>
+						<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
+					</View>
+				</TouchableOpacity>
+
+				<TouchableOpacity activeOpacity={0.8}>
+					<View className="py-3.5 flex-row items-center">
+						<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
+							<FeatherIcon name="gift" size={18} color="#ffffff" />
+						</View>
+						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Birthdays</Text>
+						<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
+					</View>
+				</TouchableOpacity>
+			</View>
+		</View>
+	);
+
+	// Render section (letter + contacts)
+	const renderSection: ListRenderItem<Section> = ({ item }) => (
+		<View className="mt-3 pl-6">
+			<Text className="text-xl font-bold text-dark-mode dark:text-light-mode">
+				{item.letter}
+			</Text>
+			<View className="mt-2">
+				{item.items.map((contact, index) => (
+					<ContactItem
+						key={`${item.letter}-${index}`}
+						img={contact.avatar}
+						name={contact.name}
+						email={contact.email}
+						onPress={() => handleContactPress(contact)}
+					/>
+				))}
+			</View>
+		</View>
+	);
+
+	// Render loading footer
+	const renderFooter = () => {
+		if (!isLoadingMore) return null;
+		return (
+			<View className="py-4 items-center justify-center">
+				<ActivityIndicator
+					size="small"
+					color={APP_COLOR.PRIMARY}
+					animating={true}
+				/>
+			</View>
+		);
 	};
 
 	return (
@@ -91,9 +175,14 @@ export default function Contact() {
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
 			<Header title={t('header')} showSearch showAddPerson />
-			<ScrollView
-				className="flex-1"
-				contentContainerStyle={{ paddingBottom: 24 }}
+			<FlatList
+				data={sections}
+				keyExtractor={(item) => item.letter}
+				renderItem={renderSection}
+				ListHeaderComponent={renderListHeader}
+				ListFooterComponent={renderFooter}
+				onEndReached={handleLoadMore}
+				onEndReachedThreshold={0.5}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -101,54 +190,8 @@ export default function Contact() {
 						tintColor={isDark ? '#fff' : '#000'}
 					/>
 				}
-			>
-				<View className="bg-light-mode dark:bg-dark-mode">
-					<View className="px-6">
-						<TouchableOpacity activeOpacity={0.8} className="border-b border-gray-200 dark:border-gray-700">
-							<View className="py-3.5 flex-row items-center">
-								<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
-									<FeatherIcon name="users" size={18} color="#ffffff" />
-								</View>
-								<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Friend requests (99+)</Text>
-								<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
-							</View>
-						</TouchableOpacity>
-
-						<TouchableOpacity activeOpacity={0.8}>
-							<View className="py-3.5 flex-row items-center">
-								<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
-									<FeatherIcon name="gift" size={18} color="#ffffff" />
-								</View>
-								<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Birthdays</Text>
-								<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
-							</View>
-						</TouchableOpacity>
-					</View>
-				</View>
-
-				{sections.map(({ letter, items }) => (
-					<View key={letter} className="mt-3 pl-6">
-						<Text className="text-xl font-bold text-dark-mode dark:text-light-mode">
-							{letter}
-						</Text>
-						<View className="mt-2">
-							{(items as typeof CONTACTS).map(
-								(contact, index) => (
-									<ContactItem
-										key={index}
-										img={contact.avatar}
-										name={contact.name}
-										email={contact.email}
-										onPress={() =>
-											handleContactPress(contact)
-										}
-									/>
-								),
-							)}
-						</View>
-					</View>
-				))}
-			</ScrollView>
+				showsVerticalScrollIndicator={false}
+			/>
 		</SafeAreaView>
 	);
 }
