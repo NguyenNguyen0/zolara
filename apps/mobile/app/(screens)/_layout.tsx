@@ -2,8 +2,8 @@ import { Stack } from 'expo-router';
 
 export default function ScreenLayout() {
 	return (
-		// <Stack initialRouteName="(auth)/welcome">
-		<Stack initialRouteName="(tabs)">
+		// <Stack initialRouteName="(tabs)">
+		<Stack initialRouteName="(auth)/welcome">
 			<Stack.Screen name="index" options={{ headerShown: false }} />
 			<Stack.Screen name="splash" options={{ headerShown: false }} />
 			<Stack.Screen
@@ -45,27 +45,27 @@ export default function ScreenLayout() {
 			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 			<Stack.Screen
 				name="(user)/conversation/[id]"
-				options={{ headerShown: false, animation: "slide_from_right" }}
+				options={{ headerShown: false, animation: 'slide_from_right' }}
 			/>
 			<Stack.Screen
 				name="(user)/search"
-				options={{ headerShown: false, animation: "fade" }}
+				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
 				name="(user)/qr"
-				options={{ headerShown: false, animation: "fade" }}
+				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
 				name="(user)/conversation/group.create"
-				options={{ headerShown: false, animation: "fade" }}
+				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
 				name="(user)/contact/add.friend"
-				options={{ headerShown: false, animation: "fade" }}
+				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
 				name="(user)/profile/setting"
-				options={{ headerShown: false, animation: "fade" }}
+				options={{ headerShown: false, animation: 'fade' }}
 			/>
 		</Stack>
 	);

@@ -22,7 +22,7 @@ interface HeaderProps {
 	onSearchChange?: (value: string) => void;
 }
 
-export default function Header({
+export default function NavigateHeader({
 	title = "",
 	showBackButton = false,
 	showSearchInput = false,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image as RNImage } from 'react-native';
 import { Image } from 'expo-image';
-import Divider from './divider';
+import DividerSpacing from './divider.spacing';
 import ShareAvatar from '../input/share.avatar';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { APP_COLOR } from '@/src/utils/constants';
@@ -121,7 +121,7 @@ export default function ProfileUser({ user, onCoverPress }: ProfileUserProps) {
 					{user.bio}
 				</Text>
 			</View>
-			<Divider />
+			<DividerSpacing />
 		</>
 	);
 }
