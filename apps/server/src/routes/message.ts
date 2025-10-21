@@ -13,6 +13,8 @@ import {
 
 export const messageRouter = express.Router();
 
+messageRouter.use(authMiddleware())
+
 /**
  * @swagger
  * /api/messages/{chatId}:
@@ -75,7 +77,7 @@ export const messageRouter = express.Router();
  *       500:
  *         description: Internal server error
  */
-messageRouter.get('/:chatId', authMiddleware, getMessages);
+messageRouter.get('/:chatId', getMessages);
 
 /**
  * @swagger
@@ -145,7 +147,7 @@ messageRouter.get('/:chatId', authMiddleware, getMessages);
  *       500:
  *         description: Internal server error
  */
-messageRouter.post('/:chatId', authMiddleware, sendMessage);
+messageRouter.post('/:chatId', sendMessage);
 
 /**
  * @swagger
@@ -206,7 +208,7 @@ messageRouter.post('/:chatId', authMiddleware, sendMessage);
  *       500:
  *         description: Internal server error
  */
-messageRouter.post('/share/:chatId', authMiddleware, shareMessage);
+messageRouter.post('/share/:chatId', shareMessage);
 
 /**
  * @swagger
@@ -249,7 +251,7 @@ messageRouter.post('/share/:chatId', authMiddleware, shareMessage);
  *       500:
  *         description: Internal server error
  */
-messageRouter.put('/:messageId', authMiddleware, recallMessage);
+messageRouter.put('/:messageId', recallMessage);
 
 /**
  * @swagger
@@ -321,7 +323,7 @@ messageRouter.put('/:messageId', authMiddleware, recallMessage);
  *       500:
  *         description: Internal server error
  */
-messageRouter.post('/reaction/:messageId', authMiddleware, addReaction);
+messageRouter.post('/reaction/:messageId', addReaction);
 
 /**
  * @swagger
@@ -373,7 +375,7 @@ messageRouter.post('/reaction/:messageId', authMiddleware, addReaction);
  *       500:
  *         description: Internal server error
  */
-messageRouter.delete('/reaction/:messageId', authMiddleware, removeReaction);
+messageRouter.delete('/reaction/:messageId', removeReaction);
 
 /**
  * @swagger
@@ -424,7 +426,7 @@ messageRouter.delete('/reaction/:messageId', authMiddleware, removeReaction);
  *       500:
  *         description: Internal server error
  */
-messageRouter.put('/pin/:messageId', authMiddleware, pinMessage);
+messageRouter.put('/pin/:messageId', pinMessage);
 
 /**
  * @swagger
@@ -475,4 +477,4 @@ messageRouter.put('/pin/:messageId', authMiddleware, pinMessage);
  *       500:
  *         description: Internal server error
  */
-messageRouter.put('/unpin/:messageId', authMiddleware, unpinMessage);
+messageRouter.put('/unpin/:messageId', unpinMessage);
