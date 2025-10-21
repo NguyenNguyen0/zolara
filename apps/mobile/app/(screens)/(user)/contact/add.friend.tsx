@@ -1,4 +1,4 @@
-import Header from '@/src/components/commons/header';
+import NavigateHeader from '@/src/components/commons/navigate.header';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddFriend() {
@@ -7,7 +7,7 @@ export default function AddFriend() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<Header
+			<NavigateHeader
 				title={'Add friend'}
 				showSearch
 				showQRScanner
