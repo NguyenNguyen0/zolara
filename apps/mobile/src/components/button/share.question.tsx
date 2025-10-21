@@ -7,20 +7,22 @@ interface IProps {
 	linkName: string;
 	path?: string;
 	linkColor?: any;
+	onPress?: () => void;
 }
 
-const ShareQuestionButton = (props: IProps) => {
+const ShareQuestion = (props: IProps) => {
 	const {
 		questionText,
 		linkName: questionBtnName,
 		path,
 		linkColor = APP_COLOR.PRIMARY,
+		onPress,
 	} = props;
 	return (
 		<View className='my-[5px] flex-row gap-[5px]'>
 			<Text className='text-black dark:text-white'>{questionText}</Text>
 			<Link href={path as any}>
-				<Text className='font-bold' style={{ color: linkColor }}>
+				<Text onPress={onPress} className='font-bold' style={{ color: linkColor }}>
 					{questionBtnName}
 				</Text>
 			</Link>
@@ -28,4 +30,4 @@ const ShareQuestionButton = (props: IProps) => {
 	);
 };
 
-export default ShareQuestionButton;
+export default ShareQuestion;

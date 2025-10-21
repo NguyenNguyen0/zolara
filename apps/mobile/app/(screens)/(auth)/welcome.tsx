@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, SafeAreaView, StatusBar } from 'react-native';
+import { View, Image, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import ShareButton from '@/src/components/button/share.button';
 import ThemeToggle from '@/src/components/button/share.theme';
@@ -14,7 +15,12 @@ export default function Welcome() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+			<StatusBar
+				barStyle={isDark ? 'light-content' : 'dark-content'}
+				backgroundColor={
+					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
+				}
+			/>
 
 			{/* Theme & Language Selection */}
 			<View className="absolute top-12 right-6 z-10 flex-row gap-3">
@@ -50,7 +56,11 @@ export default function Welcome() {
 						{/* Create */}
 						<ShareButton
 							title={t('createAccount')}
-							onPress={() => router.navigate('/(screens)/(auth)/signup.email')}
+							onPress={() =>
+								router.navigate(
+									'/(screens)/(auth)/signup.email',
+								)
+							}
 							// isLoading={true}
 						/>
 					</View>

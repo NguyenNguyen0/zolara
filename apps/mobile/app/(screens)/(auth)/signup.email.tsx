@@ -14,7 +14,8 @@ import ShareButton from '@/src/components/button/share.button';
 import ShareRadio from '@/src/components/button/share.radio';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
-import ShareQuestionButton from '@/src/components/button/share.question';
+import ShareQuestion from '@/src/components/button/share.question';
+import ShareBack from '@/src/components/button/share.back';
 
 export default function SignUpEmail() {
 	const { t } = useTranslation('signup-email');
@@ -25,7 +26,10 @@ export default function SignUpEmail() {
 	const [agreeToSocialTerms, setAgreeToSocialTerms] = useState(false);
 
 	const handleNext = () => {
-		// TODO: Implement navigation to next step
+		console.log('Signup Email:', {
+			email,
+			isSignup: 1,
+		});
 		router.navigate({
 			pathname: '/(screens)/(auth)/confirm.password',
 			params: { email, isSignup: 1 },
@@ -39,7 +43,14 @@ export default function SignUpEmail() {
 		<SafeAreaView
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+			<StatusBar
+				barStyle={isDark ? 'light-content' : 'dark-content'}
+				backgroundColor={
+					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
+				}
+			/>
+
+			<ShareBack/>
 
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -61,11 +72,6 @@ export default function SignUpEmail() {
 							onTextChange={setEmail}
 							keyboardType="email-address"
 							placeholder={t('emailPlaceholder')}
-							inputStyle={{
-								backgroundColor: isDark
-									? APP_COLOR.GRAY_200
-									: APP_COLOR.TRANSPARENT,
-							}}
 						/>
 					</View>
 
@@ -109,7 +115,7 @@ export default function SignUpEmail() {
 						disabled={isNextDisabled}
 						buttonStyle={{
 							backgroundColor: isNextDisabled
-								? APP_COLOR.GRAY_300
+								? APP_COLOR.GRAY_200
 								: APP_COLOR.PRIMARY,
 						}}
 						textStyle={{
@@ -119,11 +125,13 @@ export default function SignUpEmail() {
 
 					{/* Login Link */}
 					<View className='flex-row items-center justify-center mt-5'>
-						<ShareQuestionButton
+						<ShareQuestion
 							questionText={t('alreadyHaveAccount')}
 							linkName={t('loginLink')}
-							path="/(auth)/login.email"
-							linkColor={APP_COLOR.PRIMARY}
+							path=""
+							onPress={() => {
+								router.replace('/(screens)/(auth)/login.email');
+							}}
 						/>
 					</View>
 				</View>

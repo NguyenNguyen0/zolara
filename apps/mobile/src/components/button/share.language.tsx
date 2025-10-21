@@ -16,10 +16,10 @@ const LanguageToggle: React.FC = () => {
   return (
     <TouchableOpacity
       onPress={changeLanguage}
-      className="px-3 py-2 rounded-full bg-gray-200 dark:bg-gray-700"
+      className="px-3 py-2 rounded-full bg-secondary-light dark:bg-secondary-dark"
       activeOpacity={0.7}
     >
-      <Text className='font-medium text-sm bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'>
+      <Text className='font-medium text-sm bg-secondary-light text-secondary-dark dark:bg-secondary-dark dark:text-secondary-light'>
         {displayLanguage}
       </Text>
     </TouchableOpacity>

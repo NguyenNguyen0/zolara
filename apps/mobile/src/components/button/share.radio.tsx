@@ -46,7 +46,7 @@ const ShareRadio = (props: IProps) => {
 				)}
 			</View>
 			<View className="flex-1 flex-row flex-wrap items-center">
-				<Text 
+				<Text
 					className="text-sm leading-5"
 					style={{ color: textColor }}
 				>

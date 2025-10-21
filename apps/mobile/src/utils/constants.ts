@@ -8,6 +8,5 @@ export const APP_COLOR = {
 	DARK_MODE: '#1f2937',
 
 	GRAY_200: '#e5e7eb',
-	GRAY_300: "#d1d5db",
 	GRAY_700: '#374151',
 };
