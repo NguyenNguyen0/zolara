@@ -89,7 +89,7 @@ export default function NavigateHeader({
 				}}
 			>
 				<View className="m-4">
-					<View className="flex-row items-center justify-between">
+					<View className="flex-row items-center justify-between gap-2">
 						{/* Icons - Left Side */}
 						{hasLeftIcons && (
 							<View className="flex-row gap-1">

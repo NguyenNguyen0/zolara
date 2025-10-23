@@ -100,7 +100,7 @@ export default function ProfileUser({ user, onCoverPress }: ProfileUserProps) {
 			</View>
 
 			{/* Profile Info */}
-			<View className="mt-20 px-4">
+			<View className="mt-20 px-4 mb-5">
 				{/* Name */}
 				<View className="flex-row items-center justify-center gap-1">
 					<Text className="text-2xl font-bold text-center text-dark-mode dark:text-light-mode">
