@@ -19,7 +19,9 @@ interface HeaderProps {
 	showAddPost?: boolean;
 	showSettings?: boolean;
 	showMenu?: boolean;
+	showSubmit?: boolean;
 	onSearchChange?: (value: string) => void;
+	onSubmit?: () => void;
 }
 
 export default function NavigateHeader({
@@ -32,7 +34,9 @@ export default function NavigateHeader({
 	showAddFriend = false,
 	showSettings = false,
 	showMenu = false,
+	showSubmit = false,
 	onSearchChange,
+	onSubmit,
 }: HeaderProps) {
 	const { isDark } = useTheme();
 	const router = useRouter();
@@ -71,7 +75,8 @@ export default function NavigateHeader({
 		showCreateGroup ||
 		showAddFriend ||
 		showSettings ||
-		showMenu;
+		showMenu ||
+		showSubmit;
 
 	return (
 		<>
@@ -162,24 +167,24 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
-								{showCreateGroup && (
-									<TouchableOpacity
-										onPress={() =>
-											router.navigate('/(screens)/(user)/conversation/group.create')
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
-									>
-										<MaterialIcons
-											name="groups"
-											size={26}
-											color="white"
-										/>
-									</TouchableOpacity>
-								)}
+							{showCreateGroup && (
+								<TouchableOpacity
+									onPress={() =>
+										router.navigate('/(screens)/(user)/group.create')
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
+								>
+									<MaterialIcons
+										name="groups"
+										size={26}
+										color="white"
+									/>
+								</TouchableOpacity>
+							)}
 								{showAddFriend && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/contact/add.friend')
+											router.navigate('/(screens)/(user)/add.friend')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -204,22 +209,34 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
-								{showMenu && (
-									<TouchableOpacity
-										onPress={() =>
-											console.log('Menu clicked: update later')
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
-									>
-										<MaterialIcons
-											name="more-vert"
-											size={26}
-											color="white"
-										/>
-									</TouchableOpacity>
-								)}
-							</View>
-						)}
+							{showMenu && (
+								<TouchableOpacity
+									onPress={() =>
+										console.log('Menu clicked: update later')
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
+								>
+									<MaterialIcons
+										name="more-vert"
+										size={26}
+										color="white"
+									/>
+								</TouchableOpacity>
+							)}
+							{showSubmit && (
+								<TouchableOpacity
+									onPress={onSubmit}
+									className="w-10 h-10 rounded-full items-center justify-center"
+								>
+									<MaterialIcons
+										name="check"
+										size={26}
+										color="white"
+									/>
+								</TouchableOpacity>
+							)}
+						</View>
+					)}
 					</View>
 				</View>
 			</View>

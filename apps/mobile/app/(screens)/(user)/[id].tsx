@@ -17,7 +17,7 @@ import UserInfo from '@/src/components/ui/user.info';
 import UserPostEmpty from '@/src/components/ui/user.post.empty';
 import { MOCK_USER_PROFILE, MOCK_USER_POSTS } from '@/src/mocks/profile';
 
-export default function ProfileTab() {
+export default function ProfileDetail() {
 	const { t } = useTranslation('user');
 	const { isDark } = useTheme();
 	const [refreshing, setRefreshing] = useState(false);

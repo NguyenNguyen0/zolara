@@ -1,20 +1,12 @@
 import NavigateHeader from '@/src/components/commons/navigate.header';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import DividerSpacing from '@/src/components/ui/divider.spacing';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
 import SettingItem from '@/src/components/item/setting.item';
-
-interface SettingItemProps {
-	icon: React.ReactNode;
-	title: string;
-	onPress?: () => void;
-	showArrow?: boolean;
-	showDivider?: boolean;
-}
 
 type SettingItemData = {
 	id: string;
@@ -62,7 +54,7 @@ export default function Setting() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader showBackButton title={'Cài đặt'} showSearch />
+			<NavigateHeader showBackButton title={'Cài đặt'} />
 
 			<ScrollView className="flex-1 bg-gray-100 dark:bg-gray-900">
 				{SETTING_ITEMS.map((item) => (

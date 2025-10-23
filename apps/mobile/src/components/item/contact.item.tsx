@@ -12,6 +12,8 @@ interface ContactItemProps {
 	email: string;
 	verified?: boolean;
 	onPress?: () => void;
+	showRadio?: boolean;
+	isSelected?: boolean;
 }
 
 export default function ContactItem({
@@ -20,6 +22,8 @@ export default function ContactItem({
 	email,
 	verified,
 	onPress,
+	showRadio = false,
+	isSelected = false,
 }: ContactItemProps) {
 	const { isDark } = useTheme();
 
@@ -27,6 +31,21 @@ export default function ContactItem({
 		<View className="border-b border-gray-200 dark:border-gray-700">
 			<TouchableOpacity onPress={onPress} activeOpacity={0.7}>
 				<View className="py-6 flex-row items-center justify-start">
+					{showRadio && (
+						<View className="mr-3">
+							<View
+								className="w-6 h-6 rounded-full border-2 items-center justify-center"
+								style={{
+									borderColor: isSelected ? APP_COLOR.PRIMARY : '#9ca3af',
+									backgroundColor: isSelected ? APP_COLOR.PRIMARY : 'transparent',
+								}}
+							>
+								{isSelected && (
+									<Ionicons name="checkmark" size={16} color="white" />
+								)}
+							</View>
+						</View>
+					)}
 					<Avatar uri={img} />
 					<View className="flex-1 ml-3">
 						<View className="flex-row items-center">
@@ -45,13 +64,15 @@ export default function ContactItem({
 						</Text>
 					</View>
 
-					<View className="pr-4">
-						<FeatherIcon
-							name="chevron-right"
-							size={20}
-							color="#9ca3af"
-						/>
-					</View>
+					{!showRadio && (
+						<View className="pr-4">
+							<FeatherIcon
+								name="chevron-right"
+								size={20}
+								color="#9ca3af"
+							/>
+						</View>
+					)}
 				</View>
 			</TouchableOpacity>
 		</View>

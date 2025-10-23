@@ -77,7 +77,7 @@ export default function UserInfo({ user, onCoverPress }: ProfileUserProps) {
 				<View className="absolute -bottom-16 left-1/2 -ml-[75px] z-10">
 					<ShareAvatar
 						imageUri={user.avatar}
-						showCameraButton={false}
+						showCameraButton={true}
 					/>
 				</View>
 

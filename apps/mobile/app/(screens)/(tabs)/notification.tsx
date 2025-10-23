@@ -88,7 +88,7 @@ export default function NotificationTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader title={t('header')} showSearch showMenu />
+			<NavigateHeader title={t('header')} showSearch />
 			<FlatList
 				data={notifications}
 				renderItem={renderItem}

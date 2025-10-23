@@ -1,5 +1,5 @@
-import NavigateHeader from "@/src/components/commons/navigate.header";
-import { SafeAreaView } from "react-native-safe-area-context";
+import NavigateHeader from '@/src/components/commons/navigate.header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function QR() {
 	return (
@@ -7,12 +7,7 @@ export default function QR() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader
-				title={"QR Scanner"}
-				showSearch
-				showQRScanner
-				showCreateGroup
-			/>
+			<NavigateHeader showBackButton title={'Scann QR'} />
 		</SafeAreaView>
 	);
 }

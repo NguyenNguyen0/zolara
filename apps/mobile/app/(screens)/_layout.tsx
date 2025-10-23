@@ -56,11 +56,11 @@ export default function ScreenLayout() {
 				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
-				name="(user)/conversation/group.create"
+				name="(user)/group.create"
 				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
-				name="(user)/contact/add.friend"
+				name="(user)/add.friend"
 				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
@@ -69,6 +69,10 @@ export default function ScreenLayout() {
 			/>
 			<Stack.Screen
 				name="(user)/[id]"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/friend.request/index"
 				options={{ headerShown: false, animation: 'slide_from_right' }}
 			/>
 		</Stack>

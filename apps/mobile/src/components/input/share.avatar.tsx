@@ -5,19 +5,20 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ImagePreviewModal } from '../modal/image.preview.modal';
 import { APP_COLOR } from '@/src/utils/constants';
 
-const AVATAR_SIZE = 150;
 const DEFAULT_AVATAR = require('@/src/assets/default/avatar-default.jpg');
 
 interface ShareAvatarProps {
 	imageUri?: string | null;
 	onImageChange?: (uri: string | null) => void;
 	showCameraButton?: boolean; // Control camera button visibility
+	size?: number; // Custom avatar size (default: 150)
 }
 
 export default function ShareAvatar({
 	imageUri,
 	onImageChange,
 	showCameraButton = true, // Default show camera button
+	size = 150, // Default avatar size
 }: ShareAvatarProps) {
 	const [imageModalVisible, setImageModalVisible] = useState(false);
 	const [imageError, setImageError] = useState(false);
@@ -45,6 +46,9 @@ export default function ShareAvatar({
 		console.log('take photo');
 	};
 
+	// Calculate icon size based on avatar size
+	const iconSize = Math.max(16, Math.min(24, size / 6));
+
 	return (
 		<>
 			<View className="relative">
@@ -55,9 +59,9 @@ export default function ShareAvatar({
 					<Image
 						source={currentImageSource}
 						style={{
-							width: AVATAR_SIZE,
-							height: AVATAR_SIZE,
-							borderRadius: AVATAR_SIZE / 2,
+							width: size,
+							height: size,
+							borderRadius: size / 2,
 						}}
 						contentFit="cover"
 						onError={(error) => {
@@ -71,12 +75,12 @@ export default function ShareAvatar({
 				{/* Camera button - only show if showCameraButton is true */}
 				{showCameraButton && (
 					<TouchableOpacity
-						className="absolute bottom-2 right-2 rounded-full p-2"
+						className="absolute bottom-1 right-1 rounded-full p-1.5"
 						style={{ backgroundColor: APP_COLOR.PRIMARY }}
 						activeOpacity={0.8}
 						onPress={handleCameraPress}
 					>
-						<MaterialIcons name="camera-alt" size={24} color="white" />
+						<MaterialIcons name="camera-alt" size={iconSize} color="white" />
 					</TouchableOpacity>
 				)}
 			</View>
