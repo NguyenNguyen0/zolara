@@ -22,7 +22,7 @@ interface ProfileUserProps {
 	onCoverPress: (imageUri: string) => void;
 }
 
-export default function ProfileUser({ user, onCoverPress }: ProfileUserProps) {
+export default function UserInfo({ user, onCoverPress }: ProfileUserProps) {
 	const [coverError, setCoverError] = useState(false);
 
 	// Reset error when coverImage changes
@@ -81,17 +81,15 @@ export default function ProfileUser({ user, onCoverPress }: ProfileUserProps) {
 					/>
 				</View>
 
-				{/* Settings Button */}
-				<View className="absolute top-3 right-3 z-10">
+				{/* Back Button */}
+				<View className="absolute top-3 left-3 z-10">
 					<TouchableOpacity
-						onPress={() =>
-							router.navigate('/(screens)/(user)/profile/setting')
-						}
+						onPress={() => router.back()}
 						className="w-10 h-10 items-center justify-center"
 						activeOpacity={0.7}
 					>
 						<MaterialIcons
-							name="settings"
+							name="arrow-back-ios-new"
 							size={26}
 							color="white"
 						/>

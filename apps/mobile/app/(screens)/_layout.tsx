@@ -64,8 +64,12 @@ export default function ScreenLayout() {
 				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
-				name="(user)/profile/setting"
-				options={{ headerShown: false, animation: 'fade' }}
+				name="(user)/setting"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/[id]"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
 			/>
 		</Stack>
 	);

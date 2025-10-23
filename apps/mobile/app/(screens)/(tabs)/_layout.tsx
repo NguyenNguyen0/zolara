@@ -54,7 +54,7 @@ const getIconsWithBadge = (routeName: string, focused: boolean, size: number) =>
 			iconName = focused ? 'notifications' : 'notifications-outline';
 			showDot = notificationData.notifications;
 			break;
-		case 'profile':
+		case 'user':
 			iconName = focused ? 'person' : 'person-outline';
 			showDot = notificationData.profile;
 			break;
@@ -117,7 +117,7 @@ const TabLayout = () => {
 				name="notification"
 				options={{ title: t('notifications') }}
 			/>
-			<Tabs.Screen name="profile" options={{ title: t('profile') }} />
+			<Tabs.Screen name="user" options={{ title: t('profile') }} />
 		</Tabs>
 	);
 };

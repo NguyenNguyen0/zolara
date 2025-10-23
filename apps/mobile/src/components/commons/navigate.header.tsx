@@ -193,7 +193,7 @@ export default function NavigateHeader({
 								{showSettings && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/profile/setting')
+											router.navigate('/(screens)/(user)/setting')
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>

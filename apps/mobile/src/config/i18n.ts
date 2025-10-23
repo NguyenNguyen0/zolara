@@ -61,8 +61,8 @@ import viNewsfeed from '@/src/locales/vi/tabs/newsfeed.json';
 import enNotification from '@/src/locales/en/tabs/notification.json';
 import viNotification from '@/src/locales/vi/tabs/notification.json';
 
-import enProfile from '@/src/locales/en/tabs/profile.json';
-import viProfile from '@/src/locales/vi/tabs/profile.json';
+import enUser from '@/src/locales/en/tabs/user.json';
+import viUser from '@/src/locales/vi/tabs/user.json';
 
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
@@ -117,7 +117,7 @@ i18n.use(LANGUAGE_DETECTOR)
 				conversations: enConversations,
 				newsfeed: enNewsfeed,
 				notification: enNotification,
-				profile: enProfile,
+				user: enUser,
 			},
 			vi: {
 				common: viCommon,
@@ -139,7 +139,7 @@ i18n.use(LANGUAGE_DETECTOR)
 				conversations: viConversations,
 				newsfeed: viNewsfeed,
 				notification: viNotification,
-				profile: viProfile,
+				user: viUser,
 			},
 		},
 
@@ -163,7 +163,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			'conversations',
 			'newsfeed',
 			'notification',
-			'profile',
+			'user',
 		],
 		defaultNS: 'common',
 

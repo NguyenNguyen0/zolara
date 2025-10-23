@@ -26,7 +26,7 @@ export default function ContactItem({
 	return (
 		<View className="border-b border-gray-200 dark:border-gray-700">
 			<TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-				<View className="py-3.5 flex-row items-center justify-start">
+				<View className="py-6 flex-row items-center justify-start">
 					<Avatar uri={img} />
 					<View className="flex-1 ml-3">
 						<View className="flex-row items-center">

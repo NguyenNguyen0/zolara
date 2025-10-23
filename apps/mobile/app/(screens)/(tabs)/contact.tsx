@@ -74,7 +74,8 @@ export default function ContactTab() {
 					</View>
 				</TouchableOpacity>
 
-				<TouchableOpacity activeOpacity={0.8}>
+				{/* TODO: function is planning to develop */}
+				{/* <TouchableOpacity activeOpacity={0.8}>
 					<View className="py-3.5 flex-row items-center">
 						<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
 							<FeatherIcon name="gift" size={18} color="#ffffff" />
@@ -82,7 +83,7 @@ export default function ContactTab() {
 						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Birthdays</Text>
 						<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
 					</View>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 			</View>
 		</View>
 	);
