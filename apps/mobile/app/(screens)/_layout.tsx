@@ -2,8 +2,8 @@ import { Stack } from 'expo-router';
 
 export default function ScreenLayout() {
 	return (
-		// <Stack initialRouteName="(tabs)">
-		<Stack initialRouteName="(auth)/welcome">
+		// <Stack initialRouteName="(auth)/welcome">
+		<Stack initialRouteName="(tabs)">
 			<Stack.Screen name="index" options={{ headerShown: false }} />
 			<Stack.Screen name="splash" options={{ headerShown: false }} />
 			<Stack.Screen

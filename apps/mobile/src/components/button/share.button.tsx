@@ -47,7 +47,7 @@ const ShareButton = (props: IProps) => {
 			disabled={isLoading || disabled}
 		>
 			<View
-				className="flex-row items-center justify-center gap-5 py-[13px] px-[15px] rounded-[25px] bg-secondary-light dark:bg-secondary-dark"
+				className="flex-row items-center justify-center gap-3 py-[13px] px-[15px] rounded-[25px] bg-secondary-light dark:bg-secondary-dark"
 				style={buttonStyle}
 			>
 				{icon}
