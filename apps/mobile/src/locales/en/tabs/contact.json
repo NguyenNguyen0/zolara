@@ -1,7 +1,4 @@
 {
-	"title": "Contacts",
 	"header": "Friends",
-	"content": "Contacts will appear here",
-	"noContacts": "No contacts found",
-	"searchPlaceholder": "Search contacts..."
+	"friendRequests": "Friend requests ({{count}})"
 }

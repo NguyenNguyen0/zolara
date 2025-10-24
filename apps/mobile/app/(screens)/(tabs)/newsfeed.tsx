@@ -38,10 +38,10 @@ export default function NewsfeedTab() {
 	const handleCreate = (text?: string, images?: string[]) => {
 		const newPost: Post = {
 			id: Date.now().toString(),
-			authorName: 'You',
+			authorName: t('you'),
 			authorAvatar: MOCK_POSTS[0].authorAvatar,
 			authorVerified: false,
-			createdAt: 'Just now',
+			createdAt: t('justNow'),
 			content: text,
 			images,
 			reactions: 0,

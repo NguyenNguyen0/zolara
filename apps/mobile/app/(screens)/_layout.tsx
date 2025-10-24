@@ -56,16 +56,45 @@ export default function ScreenLayout() {
 				options={{ headerShown: false, animation: 'fade' }}
 			/>
 			<Stack.Screen
-				name="(user)/conversation/group.create"
-				options={{ headerShown: false, animation: 'fade' }}
+				name="(user)/group.create"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
 			/>
 			<Stack.Screen
-				name="(user)/contact/add.friend"
-				options={{ headerShown: false, animation: 'fade' }}
+				name="(user)/friend.request/add.friend"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
 			/>
 			<Stack.Screen
-				name="(user)/profile/setting"
-				options={{ headerShown: false, animation: 'fade' }}
+				name="(user)/[id]"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/friend.request/index"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/setting/index"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/setting/account.security"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/setting/interface"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/setting/about"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen
+				name="(user)/setting/support"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
+			/>
+			{/* chatbot */}
+			<Stack.Screen
+				name="(user)/chatbot"
+				options={{ headerShown: false, animation: 'slide_from_right' }}
 			/>
 		</Stack>
 	);

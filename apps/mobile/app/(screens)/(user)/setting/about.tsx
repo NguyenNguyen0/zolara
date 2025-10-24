@@ -1,18 +1,16 @@
 import NavigateHeader from '@/src/components/commons/navigate.header';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
-export default function AddFriend() {
+export default function About() {
+	const { t } = useTranslation('about');
+
 	return (
 		<SafeAreaView
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader
-				title={'Add friend'}
-				showSearch
-				showQRScanner
-				showCreateGroup
-			/>
+			<NavigateHeader showBackButton title={t('title')} />
 		</SafeAreaView>
 	);
 }

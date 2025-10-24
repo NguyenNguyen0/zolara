@@ -7,7 +7,6 @@ import {
 	ListRenderItem,
 	ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView as SafeArea } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
 import NavigateHeader from '@/src/components/commons/navigate.header';
@@ -16,6 +15,7 @@ import NotificationItem, {
 } from '@/src/components/item/notification.item';
 import { APP_COLOR } from '@/src/utils/constants';
 import { MOCK_NOTIFICATIONS } from '@/src/mocks/notification';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function NotificationTab() {
 	const { t } = useTranslation('notification');
@@ -84,11 +84,11 @@ export default function NotificationTab() {
 	};
 
 	return (
-		<SafeArea
+		<SafeAreaView
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader title={t('header')} showSearch showMenu />
+			<NavigateHeader title={t('header')} showSearch />
 			<FlatList
 				data={notifications}
 				renderItem={renderItem}
@@ -111,6 +111,6 @@ export default function NotificationTab() {
 					notifications.length === 0 ? { flex: 1 } : undefined
 				}
 			/>
-		</SafeArea>
+		</SafeAreaView>
 	);
 }

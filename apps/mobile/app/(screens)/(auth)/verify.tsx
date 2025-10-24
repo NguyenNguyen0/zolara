@@ -1,28 +1,23 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
-	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import OTPTextView from 'react-native-otp-textinput';
+import { OtpInput } from 'react-native-otp-entry';
 import ShareButton from '@/src/components/button/share.button';
-import OTPInput from '@/src/components/input/share.otp';
 import ShareCountdownButton from '@/src/components/button/share.coutdown';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
 import ShareBack from '@/src/components/button/share.back';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Verify() {
 	const { t } = useTranslation('verify');
 	const router = useRouter();
-	const { isDark } = useTheme();
 	const params = useLocalSearchParams();
-	const otpInput = useRef<OTPTextView>(null);
 	const [otp, setOtp] = useState('');
 
 	const email = params.email as string;
@@ -66,24 +61,14 @@ export default function Verify() {
 		}
 	}, [otp, email, password, isLogin, isSignup, router]);
 
-	const handleResendCode = useCallback(() => {
-		// TODO: Implement resend code logic
-		console.log('Resending OTP code...');
-	}, []);
 
-	const handleOTPChange = useCallback((text: string) => {
-		setOtp(text);
+
+	const handleResendCode = useCallback(() => {
+		console.log('Resending OTP code...');
 	}, []);
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
-
 			<ShareBack/>
 
 			<KeyboardAvoidingView
@@ -114,11 +99,36 @@ export default function Verify() {
 					</View>
 
 					{/* OTP Input */}
-					<OTPInput
-						otp={otp}
-						onOTPChange={handleOTPChange}
-						otpInputRef={otpInput}
-					/>
+					<View className="items-center mb-8">
+						<OtpInput
+							numberOfDigits={6}
+							onTextChange={setOtp}
+							theme={{
+								containerStyle: {
+									flexDirection: 'row',
+									justifyContent: 'center',
+								},
+								pinCodeContainerStyle: {
+									borderWidth: 3,
+									borderRadius: 8,
+									width: 50,
+									height: 50,
+									marginHorizontal: 5,
+									borderColor: APP_COLOR.GRAY_200,
+									backgroundColor: APP_COLOR.LIGHT_MODE,
+								},
+								focusStickStyle: {
+									backgroundColor: APP_COLOR.PRIMARY,
+								},
+								focusedPinCodeContainerStyle: {
+									borderColor: APP_COLOR.PRIMARY,
+								},
+								pinCodeTextStyle: {
+									color: APP_COLOR.DARK_MODE,
+								},
+							}}
+						/>
+					</View>
 
 					{/* Next Button */}
 					<ShareButton

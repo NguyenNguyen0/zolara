@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
 	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
@@ -14,6 +13,7 @@ import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestion from '@/src/components/button/share.question';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUpName() {
 	const { t } = useTranslation('signup-name');
@@ -54,13 +54,6 @@ export default function SignUpName() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
-
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				className="flex-1 px-5 mt-32"

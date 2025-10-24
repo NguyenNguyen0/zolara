@@ -8,8 +8,8 @@ interface ProfileEmptyProps {
 	userName: string;
 }
 
-export default function ProfileEmpty({ userName }: ProfileEmptyProps) {
-	const { t } = useTranslation('profile');
+export default function UserPostEmpty({ userName }: ProfileEmptyProps) {
+	const { t } = useTranslation('user');
 	const { isDark } = useTheme();
 
 	return (

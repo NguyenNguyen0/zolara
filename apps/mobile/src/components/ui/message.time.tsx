@@ -4,7 +4,7 @@ interface TimeStampProps {
 	time: string;
 }
 
-export default function TimeStamp({ time }: TimeStampProps) {
+export default function MessageTime({ time }: TimeStampProps) {
 	return (
 		<View className="items-center my-2">
 			<View className="bg-gray-400 dark:bg-gray-600 px-4 py-1 rounded-full">

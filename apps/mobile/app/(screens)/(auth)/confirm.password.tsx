@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
-	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
@@ -13,13 +11,12 @@ import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import ShareQuestion from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
 import ShareBack from '@/src/components/button/share.back';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ConfirmPassword() {
 	const { t } = useTranslation('confirm-password');
 	const router = useRouter();
-	const { isDark } = useTheme();
 	const params = useLocalSearchParams();
 	const [password, setPassword] = useState('');
 
@@ -46,13 +43,6 @@ export default function ConfirmPassword() {
 		<SafeAreaView
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
-
 			<ShareBack />
 
 			<KeyboardAvoidingView

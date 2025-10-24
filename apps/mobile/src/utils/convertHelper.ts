@@ -1,17 +1,19 @@
-type ConversationType = 'GROUP' | 'FRIEND' | 'STRANGER';
+type ConversationType = 'GROUP' | 'FRIEND' | 'STRANGER' | 'CHATBOT';
 
 /**
  * Map conversation type to header status
  */
 export const getHeaderStatusFromConversationType = (
 	type: ConversationType
-): 'stranger' | 'friend' | 'friend_request' => {
+): 'stranger' | 'friend' | 'friend_request' | 'chatbot' => {
 	switch (type) {
 		case 'GROUP':
 		case 'FRIEND':
 			return 'friend';
 		case 'STRANGER':
 			return 'friend_request';
+		case 'CHATBOT':
+			return 'chatbot';
 		default:
 			return 'stranger';
 	}
@@ -29,6 +31,9 @@ export const getOnlineStatusText = (
 	}
 	if (type === 'FRIEND') {
 		return 'Online Just Now';
+	}
+	if (type === 'CHATBOT') {
+		return 'AI Assistant';
 	}
 	return '';
 };
@@ -62,7 +67,7 @@ export const formatMessageTime = (date: Date): string => {
  * Get status text for conversation header
  */
 export const getStatusText = (
-	status: 'stranger' | 'friend' | 'friend_request',
+	status: 'stranger' | 'friend' | 'friend_request' | 'chatbot',
 	isGroup: boolean,
 	onlineStatus?: string
 ): string => {
@@ -77,6 +82,8 @@ export const getStatusText = (
 			return onlineStatus || 'Online';
 		case 'friend_request':
 			return 'STRANGER';
+		case 'chatbot':
+			return onlineStatus || 'AI Assistant';
 		default:
 			return '';
 	}
@@ -86,7 +93,7 @@ export const getStatusText = (
  * Get status badge color
  */
 export const getStatusColor = (
-	status: 'stranger' | 'friend' | 'friend_request',
+	status: 'stranger' | 'friend' | 'friend_request' | 'chatbot',
 	isGroup: boolean
 ): string => {
 	if (isGroup) {
@@ -99,6 +106,8 @@ export const getStatusColor = (
 			return 'bg-blue-500';
 		case 'friend':
 			return 'bg-green-500';
+		case 'chatbot':
+			return 'bg-purple-500';
 		default:
 			return 'bg-blue-500';
 	}

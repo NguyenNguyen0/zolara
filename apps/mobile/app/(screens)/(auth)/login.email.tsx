@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
-	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
@@ -12,14 +10,13 @@ import { useRouter } from 'expo-router';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestion from '@/src/components/button/share.question';
 import ShareBack from '@/src/components/button/share.back';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginEmail() {
 	const { t } = useTranslation('login-email');
 	const router = useRouter();
-	const { isDark } = useTheme();
 	const [email, setEmail] = useState('');
 
 	const handleNext = () => {
@@ -37,13 +34,6 @@ export default function LoginEmail() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
-
 			<ShareBack/>
 
 			<KeyboardAvoidingView

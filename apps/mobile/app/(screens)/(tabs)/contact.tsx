@@ -1,4 +1,12 @@
-import { View, Text, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator, ListRenderItem } from 'react-native';
+import {
+	View,
+	Text,
+	FlatList,
+	TouchableOpacity,
+	RefreshControl,
+	ActivityIndicator,
+	ListRenderItem,
+} from 'react-native';
 import React, { useMemo, useState } from 'react';
 import FeatherIcon from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { MOCK_CONTACTS, Contact } from '@/src/mocks/contact';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 type Section = {
 	letter: string;
@@ -64,23 +74,25 @@ export default function ContactTab() {
 	const renderListHeader = () => (
 		<View className="bg-light-mode dark:bg-dark-mode">
 			<View className="px-6">
-				<TouchableOpacity activeOpacity={0.8} className="border-b border-gray-200 dark:border-gray-700">
+				<TouchableOpacity
+					onPress={() =>
+						router.navigate('/(screens)/(user)/friend.request')
+					}
+					activeOpacity={0.8}
+					className="border-b border-gray-200 dark:border-gray-700"
+				>
 					<View className="py-3.5 flex-row items-center">
 						<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
-							<FeatherIcon name="users" size={18} color="#ffffff" />
+							<FeatherIcon
+								name="users"
+								size={18}
+								color="#ffffff"
+							/>
 						</View>
-						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Friend requests (99+)</Text>
-						<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
-					</View>
-				</TouchableOpacity>
-
-				<TouchableOpacity activeOpacity={0.8}>
-					<View className="py-3.5 flex-row items-center">
-						<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
-							<FeatherIcon name="gift" size={18} color="#ffffff" />
-						</View>
-						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">Birthdays</Text>
-						<FeatherIcon name="chevron-right" size={20} color="#9ca3af" />
+						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">
+							{t('friendRequests', { count: '99+' })}
+						</Text>
+						<Ionicons name="chevron-forward" size={20} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -127,7 +139,7 @@ export default function ContactTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader title={t('header')} showSearch showAddFriend />
+			<NavigateHeader title={t('header')} showSearch showAddFriend showCreateGroup />
 			<FlatList
 				data={sections}
 				keyExtractor={(item) => item.letter}

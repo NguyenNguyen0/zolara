@@ -45,7 +45,7 @@ export default function ConversationTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader title={t('header')} showSearch showQRScanner showCreateGroup />
+			<NavigateHeader title={t('header')} showSearch showQRScanner showChatbot />
 			<FlatList
 				data={data}
 				keyExtractor={(item) => item.id}

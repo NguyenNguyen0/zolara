@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, Image, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
-import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/useTheme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginSuccess = () => {
 	const { t } = useTranslation('login-success');
@@ -26,17 +27,11 @@ const LoginSuccess = () => {
 			isLogin,
 			isSignup,
 		});
-		// Navigate to main app or next screen
-		router.replace('/(screens)/(tabs)');
+		router.replace('/(screens)/(tabs)/conversation');
 	};
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE}
-			/>
-
 			<View className="flex-1 px-5 mt-32">
 				{/* Title */}
 				<Text className="text-3xl font-bold text-center mb-8 text-dark-mode dark:text-light-mode">
@@ -52,7 +47,7 @@ const LoginSuccess = () => {
 							resizeMode="cover"
 						/>
 						<View className="absolute bottom-1 right-1 rounded-full">
-							<AntDesign name="checkcircle" size={25} style={{ color: '#22c55e' }} />
+							<MaterialIcons name="check-circle" size={25} color="#22c55e" />
 						</View>
 					</View>
 

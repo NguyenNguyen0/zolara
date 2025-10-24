@@ -1,6 +1,6 @@
 import { APP_COLOR } from '@/src/utils/constants';
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StatusBar, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -19,11 +19,14 @@ interface HeaderProps {
 	showAddPost?: boolean;
 	showSettings?: boolean;
 	showMenu?: boolean;
+	showSubmit?: boolean;
+	showChatbot?: boolean;
 	onSearchChange?: (value: string) => void;
+	onSubmit?: () => void;
 }
 
 export default function NavigateHeader({
-	title = "",
+	title = '',
 	showBackButton = false,
 	showSearchInput = false,
 	showSearch = false,
@@ -32,12 +35,17 @@ export default function NavigateHeader({
 	showAddFriend = false,
 	showSettings = false,
 	showMenu = false,
+	showSubmit = false,
+	showChatbot = false,
 	onSearchChange,
+	onSubmit,
 }: HeaderProps) {
 	const { isDark } = useTheme();
 	const router = useRouter();
+	const { t } = useTranslation('header');
 	const [searchValue, setSearchValue] = useState<string>('');
-	const [debouncedSearchValue, setDebouncedSearchValue] = useState<string>('');
+	const [debouncedSearchValue, setDebouncedSearchValue] =
+		useState<string>('');
 
 	// Tạo debounced function với delay 3 giây
 	const debouncedSearch = useCallback(
@@ -47,7 +55,7 @@ export default function NavigateHeader({
 				onSearchChange(value);
 			}
 		}, 1500),
-		[onSearchChange]
+		[onSearchChange],
 	);
 
 	// Cleanup debounce khi component unmount
@@ -71,23 +79,20 @@ export default function NavigateHeader({
 		showCreateGroup ||
 		showAddFriend ||
 		showSettings ||
-		showMenu;
+		showMenu ||
+		showSubmit ||
+		showChatbot;
 
 	return (
-		<>
-			<StatusBar
-				barStyle='light-content'
-				backgroundColor={`${isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY}`}
-			/>
-			<View
-				className={`${isDark ? 'bg-dark-mode' : 'bg-primary'}`}
-				style={{
-					borderBottomColor: isDark
-						? APP_COLOR.GRAY_700
-						: APP_COLOR.GRAY_200,
-					borderBottomWidth: 1,
-				}}
-			>
+		<View
+			className={`${isDark ? 'bg-dark-mode' : 'bg-primary'}`}
+			style={{
+				borderBottomColor: isDark
+					? APP_COLOR.GRAY_700
+					: APP_COLOR.GRAY_200,
+				borderBottomWidth: 1,
+			}}
+		>
 				<View className="m-4">
 					<View className="flex-row items-center justify-between gap-2">
 						{/* Icons - Left Side */}
@@ -114,13 +119,22 @@ export default function NavigateHeader({
 								<ShareInput
 									value={searchValue}
 									onTextChange={handleSearchChange}
-									placeholder="Tìm kiếm..."
+									placeholder={`${t('search')}...`}
 									inputStyle={{
-										backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
+										backgroundColor: isDark
+											? APP_COLOR.DARK_MODE
+											: APP_COLOR.LIGHT_MODE,
 										borderColor: 'transparent',
-										paddingVertical: 10
+										paddingVertical: 10,
+										color: isDark
+											? APP_COLOR.LIGHT_MODE
+											: APP_COLOR.DARK_MODE,
 									}}
-									placeholderTextColor={isDark ? APP_COLOR.GRAY_700 : APP_COLOR.GRAY_700}
+									placeholderTextColor={
+										isDark
+											? APP_COLOR.GRAY_200
+											: APP_COLOR.GRAY_700
+									}
 									clear
 									autoFocus
 								/>
@@ -137,7 +151,9 @@ export default function NavigateHeader({
 								{showSearch && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/search')
+											router.navigate(
+												'/(screens)/(user)/search',
+											)
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -151,7 +167,9 @@ export default function NavigateHeader({
 								{showQRScanner && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/qr')
+											router.navigate(
+												'/(screens)/(user)/qr',
+											)
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -165,7 +183,9 @@ export default function NavigateHeader({
 								{showCreateGroup && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/conversation/group.create')
+											router.navigate(
+												'/(screens)/(user)/group.create',
+											)
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -179,7 +199,9 @@ export default function NavigateHeader({
 								{showAddFriend && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/contact/add.friend')
+											router.navigate(
+												'/(screens)/(user)/friend.request/add.friend',
+											)
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -193,7 +215,9 @@ export default function NavigateHeader({
 								{showSettings && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate('/(screens)/(user)/profile/setting')
+											router.navigate(
+												'/(screens)/(user)/setting',
+											)
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -207,7 +231,9 @@ export default function NavigateHeader({
 								{showMenu && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log('Menu clicked: update later')
+											console.log(
+												'Menu clicked: update later',
+											)
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -218,11 +244,38 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
+								{showSubmit && (
+									<TouchableOpacity
+										onPress={onSubmit}
+										className="w-10 h-10 rounded-full items-center justify-center"
+									>
+										<MaterialIcons
+											name="check"
+											size={26}
+											color="white"
+										/>
+									</TouchableOpacity>
+								)}
+								{showChatbot && (
+									<TouchableOpacity
+										onPress={() =>
+											router.navigate(
+												'/(screens)/(user)/chatbot',
+											)
+										}
+										className="w-10 h-10 rounded-full items-center justify-center"
+									>
+										<MaterialIcons
+											name="child-care"
+											size={26}
+											color="white"
+										/>
+									</TouchableOpacity>
+								)}
 							</View>
 						)}
 					</View>
 				</View>
 			</View>
-		</>
 	);
 }

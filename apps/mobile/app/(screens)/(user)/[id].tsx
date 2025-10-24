@@ -3,23 +3,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
 	FlatList,
 	RefreshControl,
-	StatusBar,
 	ListRenderItem,
 	ActivityIndicator,
 	View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import PostItem, { Post } from '@/src/components/item/post.item';
 import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
-import ProfileUser from '@/src/components/ui/profile.user';
-import ProfileEmpty from '@/src/components/ui/profile.empty';
+import UserInfo from '@/src/components/ui/user.info';
+import UserPostEmpty from '@/src/components/ui/user.post.empty';
 import { MOCK_USER_PROFILE, MOCK_USER_POSTS } from '@/src/mocks/profile';
 
-export default function ProfileTab() {
-	const { t } = useTranslation('profile');
-	const { isDark } = useTheme();
+export default function ProfileDetail() {
+	const { t } = useTranslation('user');
 	const [refreshing, setRefreshing] = useState(false);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
 	const [coverModalVisible, setCoverModalVisible] = useState(false);
@@ -55,11 +52,11 @@ export default function ProfileTab() {
 
 	// Render header component
 	const renderHeader = () => (
-		<ProfileUser user={user} onCoverPress={handleCoverPress} />
+		<UserInfo user={user} onCoverPress={handleCoverPress} />
 	);
 
 	// Render empty state
-	const renderEmpty = () => <ProfileEmpty userName={user.name} />;
+	const renderEmpty = () => <UserPostEmpty userName={user.name} />;
 
 	// Render post item
 	const renderItem: ListRenderItem<Post> = ({ item }) => (
@@ -85,10 +82,6 @@ export default function ProfileTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor={`${isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY}`}
-			/>
 			<FlatList
 				data={posts}
 				renderItem={renderItem}
