@@ -1,20 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import type { User } from 'firebase/auth';
-import { auth } from '../services/firebase';
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  isInitialized: boolean;
-  error: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { mockAdminUser, mockApiDelay } from '../services/mockData';
+import { AuthContext, type User, type AuthContextType } from './AuthContextType';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -27,13 +14,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setIsInitialized(true);
-      console.log('Auth state changed:', user ? 'Authenticated' : 'Not authenticated');
-    });
+    // Check for existing authentication token on app start
+    const checkExistingAuth = async () => {
+      const token = localStorage.getItem('auth_token');
+      const userData = localStorage.getItem('user');
 
-    return () => unsubscribe();
+      if (token && userData) {
+        try {
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+          console.log('Restored user session:', parsedUser.email);
+        } catch (err) {
+          console.error('Failed to parse stored user data:', err);
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('user');
+        }
+      }
+
+      setIsInitialized(true);
+    };
+
+    checkExistingAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -41,37 +42,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user);
-      console.log('Login successful:', userCredential.user.email);
+      // Simulate API delay
+      await mockApiDelay(1000);
+
+      // Mock authentication - in real app, this would be an API call
+      if (email === mockAdminUser.email && password === 'admin123') {
+        const userData = {
+          id: mockAdminUser.id,
+          email: mockAdminUser.email,
+          displayName: mockAdminUser.displayName,
+          role: mockAdminUser.role,
+        };
+
+        // Store auth token and user data
+        localStorage.setItem('auth_token', mockAdminUser.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        setUser(userData);
+        console.log('Login successful:', userData.email);
+      } else {
+        throw new Error('Invalid credentials');
+      }
     } catch (err: unknown) {
       console.error('Login error:', err);
 
-      // Map Firebase error codes to user-friendly messages
       let errorMessage = 'Failed to login. Please try again.';
-      const error = err as { code?: string; message?: string };
+      const error = err as { message?: string };
 
-      switch (error.code) {
-        case 'auth/invalid-email':
-          errorMessage = 'Invalid email address.';
-          break;
-        case 'auth/user-disabled':
-          errorMessage = 'This account has been disabled.';
-          break;
-        case 'auth/user-not-found':
-          errorMessage = 'No account found with this email.';
-          break;
-        case 'auth/wrong-password':
-          errorMessage = 'Incorrect password.';
-          break;
-        case 'auth/invalid-credential':
-          errorMessage = 'Invalid email or password.';
-          break;
-        case 'auth/too-many-requests':
-          errorMessage = 'Too many failed attempts. Please try again later.';
-          break;
-        default:
-          errorMessage = error.message || 'An error occurred during login.';
+      if (error.message === 'Invalid credentials') {
+        errorMessage = 'Invalid email or password.';
+      } else {
+        errorMessage = error.message || 'An error occurred during login.';
       }
 
       setError(errorMessage);
@@ -86,7 +87,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      await signOut(auth);
+      // Simulate API delay
+      await mockApiDelay(500);
+
+      // Clear stored data
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+
       setUser(null);
       console.log('Logout successful');
     } catch (err: unknown) {
