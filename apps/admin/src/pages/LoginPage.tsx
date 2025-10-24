@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
-import { loginUser, clearError, selectAuth } from '../features/auth/authSlice';
-import type { AppDispatch } from '../app/store';
 
 interface LocationState {
   from?: {
@@ -18,17 +16,10 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [formErrors, setFormErrors] = useState<{ email?: string; password?: string }>({});
 
-  const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, isLoading, error } = useSelector(selectAuth);
   const location = useLocation();
+  const { isAuthenticated, isLoading, error, login } = useAuth();
 
-  const state = location.state as LocationState;
-  const from = state?.from?.pathname || '/dashboard';
-
-  useEffect(() => {
-    // Clear any auth errors when component mounts
-    dispatch(clearError());
-  }, [dispatch]);
+  const from = (location.state as LocationState)?.from?.pathname || '/dashboard';
 
   // Redirect if already authenticated
   if (isAuthenticated) {
@@ -62,9 +53,9 @@ export const LoginPage: React.FC = () => {
     }
 
     try {
-      await dispatch(loginUser({ email, password })).unwrap();
+      await login(email, password);
     } catch (error) {
-      // Error is handled by the auth slice
+      // Error is handled by the auth context
       console.error('Login failed:', error);
     }
   };

@@ -1,16 +1,14 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectIsAuthenticated, selectIsInitialized } from '../features/auth/authSlice';
+import { useAuth } from '../hooks/useAuth';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const isInitialized = useSelector(selectIsInitialized);
   const location = useLocation();
+  const { isAuthenticated, isInitialized } = useAuth();
 
   // Show loading while auth is initializing
   if (!isInitialized) {

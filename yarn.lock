@@ -3435,7 +3435,7 @@
   dependencies:
     nanoid "^3.3.11"
 
-"@reduxjs/toolkit@^2.9.0", "@reduxjs/toolkit@^2.9.2":
+"@reduxjs/toolkit@^2.9.0":
   version "2.9.2"
   resolved "https://registry.npmmirror.com/@reduxjs/toolkit/-/toolkit-2.9.2.tgz#6f5ea4f96b2a33b10bfb1b9b5237e09bd61f9564"
   integrity sha512-ZAYu/NXkl/OhqTz7rfPaAhY0+e8Fr15jqNxte/2exKUxvHyQ/hcqmdekiN1f+Lcw3pE+34FCgX+26zcUE3duCg==

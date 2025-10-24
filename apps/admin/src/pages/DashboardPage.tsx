@@ -1,34 +1,56 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useDashboard } from '../hooks/useDashboard';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
-import { logoutUser, selectUser } from '../features/auth/authSlice';
-import { fetchAllStats, selectStats } from '../features/stats/statsSlice';
-import type { AppDispatch } from '../app/store';
 import { LogOut, Users, MessageSquare, Phone, Activity } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector(selectUser);
-  const { userStats, messageStats, agoraStats, isLoading, lastUpdated } = useSelector(selectStats);
+  const { user, logout } = useAuth();
+  const {
+    userStats,
+    messageStats,
+    agoraStats,
+    isLoading,
+    lastUpdated,
+    refreshStats
+  } = useDashboard();
 
+  // Load stats on mount
   useEffect(() => {
-    // Fetch stats on component mount
-    dispatch(fetchAllStats());
-  }, [dispatch]);
+    refreshStats();
+  }, [refreshStats]);
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
-  const formatLastUpdated = (dateString: string | null) => {
-    if (!dateString) return 'Never';
-    const date = new Date(dateString);
+  const handleRefreshStats = async () => {
+    try {
+      await refreshStats();
+    } catch (error) {
+      console.error('Failed to refresh stats:', error);
+    }
+  };
+
+  const formatLastUpdated = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins === 1) return '1 minute ago';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours === 1) return '1 hour ago';
+    if (diffHours < 24) return `${diffHours} hours ago`;
+
     return date.toLocaleString();
-  };
-
-  const handleRefreshStats = () => {
-    dispatch(fetchAllStats());
   };
 
   return (

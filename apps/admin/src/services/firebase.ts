@@ -1,7 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { initializeAuth, browserLocalPersistence, connectAuthEmulator } from 'firebase/auth';
+import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 // Debug environment variables
 console.log('🔍 Environment check:', {
@@ -33,11 +32,9 @@ const isDevelopment = import.meta.env.DEV;
 console.log('🔧 Emulator Settings:', { useEmulator, isDevelopment });
 
 // Initialize services with emulator configuration
-const auth = initializeAuth(app, {
-	persistence: browserLocalPersistence
-});
-const db = getFirestore(app);
-const storage = getStorage(app);
+export default app;
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 // Connect to emulators immediately after initialization
 if (isDevelopment && useEmulator) {
@@ -58,18 +55,7 @@ if (isDevelopment && useEmulator) {
     console.warn('⚠️ Firestore Emulator connection failed:', error);
   }
 
-  try {
-    connectStorageEmulator(storage, 'localhost', 9199);
-    console.log('✅ Storage Emulator connected at localhost:9199');
-  } catch (error) {
-    console.warn('⚠️ Storage Emulator connection failed:', error);
-  }
-
   console.log('🎛️ Emulator UI: http://localhost:4000');
 } else {
   console.log('🌐 Using production Firebase');
 }
-
-// Export the services
-export { auth, db, storage };
-export default app;
