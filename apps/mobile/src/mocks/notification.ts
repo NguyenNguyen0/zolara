@@ -70,7 +70,7 @@ export const MOCK_NOTIFICATIONS: NotificationItemProps[] = [
 		id: '6',
 		type: 'mention',
 		actor: {
-			name: 'Nhon Nguyen',
+			name: 'Long Nguyen',
 			avatar: 'https://i.pravatar.cc/150?img=6',
 			verified: true,
 		},

@@ -2,15 +2,17 @@ import { View, FlatList, Alert } from 'react-native';
 import { useState } from 'react';
 import { MOCK_FRIEND_REQUESTS_RECEIVED, FriendRequest } from '@/src/mocks/friend.request';
 import FriendReceiveItem from '@/src/components/item/friend.receive.item';
+import { useTranslation } from 'react-i18next';
 
 export default function FriendReceive() {
+	const { t } = useTranslation('friend-request');
 	const [requests, setRequests] = useState<FriendRequest[]>(MOCK_FRIEND_REQUESTS_RECEIVED);
 
 	const handleAccept = (request: FriendRequest) => {
 		console.log('=== ACCEPT FRIEND REQUEST ===');
 		console.log('Request ID:', request.id);
 		console.log('User:', request.name);
-		Alert.alert('Thành công', `Đã chấp nhận lời mời kết bạn từ ${request.name}`);
+		Alert.alert(t('acceptSuccess'), t('acceptMessage', { name: request.name }));
 		setRequests(requests.filter(r => r.id !== request.id));
 	};
 
@@ -18,7 +20,7 @@ export default function FriendReceive() {
 		console.log('=== REJECT FRIEND REQUEST ===');
 		console.log('Request ID:', request.id);
 		console.log('User:', request.name);
-		Alert.alert('Đã từ chối', `Đã từ chối lời mời kết bạn từ ${request.name}`);
+		Alert.alert(t('rejectSuccess'), t('rejectMessage', { name: request.name }));
 		setRequests(requests.filter(r => r.id !== request.id));
 	};
 

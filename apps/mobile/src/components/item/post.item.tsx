@@ -32,7 +32,7 @@ export const PostItem = ({ item }: { item: Post }) => {
 	return (
 		<View className="py-3">
 			{/* Header */}
-			<View className="px-4 flex-row items-center gap-3">
+			<View className="p-4 flex-row items-center gap-3">
 				<Avatar uri={item.authorAvatar} />
 				<View className="flex-1">
 					<View className="flex-row items-center">
@@ -62,7 +62,7 @@ export const PostItem = ({ item }: { item: Post }) => {
 					</View>
 					<Text className="ml-1 text-xs text-gray-500 dark:text-gray-400">{item.reactions.toLocaleString()}</Text>
 				</View>
-				<Text className="text-xs text-gray-500 dark:text-gray-400">{item.comments} comments</Text>
+				<Text className="text-xs text-gray-500 dark:text-gray-400">{item.comments} {t('comments')}</Text>
 			</View>
 
 			{/* Actions */}

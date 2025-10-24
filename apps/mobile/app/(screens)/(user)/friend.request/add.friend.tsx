@@ -7,9 +7,11 @@ import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 export default function AddFriend() {
 	const { isDark } = useTheme();
+	const { t } = useTranslation('add-friend');
 	const [email, setEmail] = useState('');
 
 	const handleAddFriend = () => {
@@ -26,7 +28,7 @@ export default function AddFriend() {
 		>
 			<NavigateHeader
 				showBackButton
-				title={'Thêm bạn'}
+				title={t('title')}
 				showQRScanner
 			/>
 
@@ -35,14 +37,14 @@ export default function AddFriend() {
 					{/* Email Input Section */}
 					<View className="mb-6">
 						<Text className={`text-base font-semibold mb-3 ${isDark ? 'text-light-mode' : 'text-dark-mode'}`}>
-							Tìm kiếm bạn bè qua email
+							{t('searchTitle')}
 						</Text>
 						<View className="flex-row items-center gap-2">
 							<View className="flex-1">
 								<ShareInput
 									value={email}
 									onTextChange={setEmail}
-									placeholder="Nhập email"
+									placeholder={t('emailPlaceholder')}
 									keyboardType="email-address"
 									inputStyle={{
 										backgroundColor: isDark ? APP_COLOR.GRAY_800 : APP_COLOR.GRAY_100,
@@ -66,7 +68,7 @@ export default function AddFriend() {
 					{/* Info Text */}
 					<View className="mt-4">
 						<Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-							Nhập địa chỉ email của người bạn muốn kết bạn. Chúng tôi sẽ gửi lời mời kết bạn đến họ.
+							{t('infoText')}
 						</Text>
 					</View>
 				</View>

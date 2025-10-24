@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
 	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
+	ScrollView,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +13,10 @@ import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareDatePicker from '@/src/components/input/share.datepicker';
-import ShareDropdown from '@/src/components/input/share.dropdown';
 import ShareBack from '@/src/components/button/share.back';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import SharePicker, { PickerItem } from '@/src/components/input/share.picker';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function SignUpDetail() {
 	const { t } = useTranslation('signup-detail');
@@ -31,14 +33,15 @@ export default function SignUpDetail() {
 	const isSignup = params.isSignup === '1';
 
 	const [birthday, setBirthday] = useState('');
-	const [gender, setGender] = useState('other');
-
-	// Gender options data
-	const genderOptions = [
-		{ label: tGender('male'), value: 'male' },
-		{ label: tGender('female'), value: 'female' },
-		{ label: tGender('other'), value: 'other' },
-	];
+	
+	// Gender dropdown state
+	const [openGender, setOpenGender] = useState(false);
+	const [genderItems, setGenderItems] = useState<PickerItem[]>([
+		{ label: tGender('other'), value: 'other', icon: <></> },
+		{ label: tGender('male'), value: 'male', icon: <MaterialIcons name="male" size={24} color="black" /> },
+		{ label: tGender('female'), value: 'female', icon: <MaterialIcons name="female" size={24} color="black" /> },
+	]);
+	const [gender, setGender] = useState<string | null>(genderItems[0].value); // Set default to first item
 
 	const handleContinue = () => {
 		console.log('Signup Detail - Continue:', {
@@ -49,9 +52,9 @@ export default function SignUpDetail() {
 			birthday,
 			gender,
 			isLogin,
-			isSignup
+			isSignup,
 		});
-		
+
 		router.navigate({
 			pathname: '/(screens)/(auth)/signup.avatar',
 			params: {
@@ -62,13 +65,13 @@ export default function SignUpDetail() {
 				birthday,
 				gender,
 				isLogin: isLogin ? 1 : 0,
-				isSignup: isSignup ? 1 : 0
+				isSignup: isSignup ? 1 : 0,
 			},
 		});
 	};
 
-	const isNextDisabled = !birthday.trim() || !gender.trim();
-	const [date, setDate] = React.useState(new Date());
+	const isNextDisabled = !birthday.trim() || !gender;
+	const [date, setDate] = useState(new Date());
 
 	const formatDate = (d: Date) => {
 		try {
@@ -83,35 +86,37 @@ export default function SignUpDetail() {
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
-
 			<ShareBack />
 
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				className="flex-1 px-5"
+				className="flex-1"
 			>
-				<View>
-					<Text className="text-3xl font-bold text-center mb-10 text-light-mode dark:text-dark-mode">
+				<ScrollView
+					className="flex-1 px-5"
+					showsVerticalScrollIndicator={false}
+					keyboardShouldPersistTaps="handled"
+				>
+					<Text className="text-3xl font-bold text-center mb-10 mt-5 text-dark-mode dark:text-light-mode">
 						{t('title')}
 					</Text>
 
+					{/* Gender Dropdown */}
 					<View className="mb-8">
-						<ShareDropdown
-							data={genderOptions}
+						<SharePicker
+							open={openGender}
 							value={gender}
-							onChange={setGender}
+							items={genderItems}
+							setOpen={setOpenGender}
+							setValue={setGender}
+							setItems={setGenderItems}
 							placeholder={tGender('placeholder')}
-							search={false}
+							zIndex={2000}
 						/>
 					</View>
 
-					<View className="mb-8">
+					{/* Birthday Picker */}
+					<View className="mb-8" style={{ zIndex: 1 }}>
 						<ShareDatePicker
 							value={date}
 							onChange={(d) => {
@@ -137,7 +142,10 @@ export default function SignUpDetail() {
 								: APP_COLOR.LIGHT_MODE,
 						}}
 					/>
-				</View>
+
+					{/* Add spacing for dropdown to expand */}
+					<View style={{ height: 200 }} />
+				</ScrollView>
 			</KeyboardAvoidingView>
 		</SafeAreaView>
 	);

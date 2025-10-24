@@ -7,9 +7,11 @@ import FriendReceive from './friend.receive';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { MOCK_FRIEND_REQUESTS_RECEIVED, MOCK_FRIEND_REQUESTS_SENT } from '@/src/mocks/friend.request';
+import { useTranslation } from 'react-i18next';
 
 export default function FriendRequest() {
 	const { isDark } = useTheme();
+	const { t } = useTranslation('friend-request');
 	const [activeTab, setActiveTab] = useState<'received' | 'sent'>('received');
 
 	return (
@@ -19,7 +21,7 @@ export default function FriendRequest() {
 		>
 			<NavigateHeader
 				showBackButton
-				title={'Lời mời kết bạn'}
+				title={t('title')}
 				showQRScanner
 			/>
 
@@ -43,7 +45,7 @@ export default function FriendRequest() {
 									: 'text-gray-600'
 						}`}
 					>
-						Đã nhận {MOCK_FRIEND_REQUESTS_RECEIVED.length}
+						{t('received')} {MOCK_FRIEND_REQUESTS_RECEIVED.length}
 					</Text>
 				</TouchableOpacity>
 
@@ -65,7 +67,7 @@ export default function FriendRequest() {
 									: 'text-gray-600'
 						}`}
 					>
-						Đã gửi {MOCK_FRIEND_REQUESTS_SENT.length}
+						{t('sent')} {MOCK_FRIEND_REQUESTS_SENT.length}
 					</Text>
 				</TouchableOpacity>
 			</View>

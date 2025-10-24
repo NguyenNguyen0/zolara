@@ -8,7 +8,7 @@ type PostImageProps = {
 	style?: any;
 };
 
-const PostImage = memo(({ uri, style }: PostImageProps) => {
+export const PostImage = memo(({ uri, style }: PostImageProps) => {
 	const [failed, setFailed] = useState(false);
 
 	const handleError = useCallback(() => setFailed(true), []);

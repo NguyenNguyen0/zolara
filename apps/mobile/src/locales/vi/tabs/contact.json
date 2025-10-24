@@ -1,7 +1,4 @@
 {
-	"title": "Danh bạ",
 	"header": "Bạn bè",
-	"content": "Danh bạ sẽ hiển thị ở đây",
-	"noContacts": "Không tìm thấy danh bạ",
-	"searchPlaceholder": "Tìm kiếm danh bạ..."
+	"friendRequests": "Lời mời kết bạn ({{count}})"
 }

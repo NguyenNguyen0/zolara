@@ -81,6 +81,7 @@ const TabLayout = () => {
 	
 	return (
 		<Tabs
+			initialRouteName='conversation'
 			screenOptions={({ route }) => ({
 				headerShown: false,
 				tabBarStyle: {

@@ -1,15 +1,5 @@
 {
-	"title": "Profile",
-	"header": "Profile",
-	"content": "Profile content will appear here",
-	"sections": {
-		"setupZStyle": "Set up zStyle",
-		"myPhotos": "My photos",
-		"storyArchive": "Story archive"
-	},
-	"emptyState": {
-		"title": "Hello {{name}}, anything interesting today?",
-		"subtitle": "This is your personal timeline - Let's fill it up with lots of joys and memories.",
-		"button": "Share your first thought"
-	}
+	"header": "You",
+	"accountSecurity": "Account & Security",
+	"chatbotAI": "Zolara AI Assistant"
 }

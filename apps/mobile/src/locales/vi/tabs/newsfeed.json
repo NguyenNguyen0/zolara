@@ -1,8 +1,8 @@
 {
-	"title": "Bảng tin",
 	"header": "Bảng tin",
 	"composer": {
-		"placeholder": "Hôm nay bạn thế nào?"
+		"placeholder": "Hôm nay bạn thế nào?",
+		"post": "Đăng"
 	},
 	"actions": {
 		"photo": "Ảnh",
@@ -11,7 +11,9 @@
 		"memory": "Kỷ niệm",
 		"like": "Thả tim",
 		"comment": "Bình luận"
-	}
-,
-	"empty": "Chưa có bài viết nào!"
+	},
+	"empty": "Chưa có bài viết nào!",
+	"you": "Bạn",
+	"justNow": "Vừa xong",
+	"comments": "bình luận"
 }

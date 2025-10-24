@@ -29,10 +29,15 @@ const ShareRadio = (props: IProps) => {
 		<TouchableOpacity
 			className="flex-row items-start mb-4"
 			onPress={onRadioPress}
+			activeOpacity={0.7}
 		>
 			<View
-				className="w-5 h-5 border-2 mr-3 items-center justify-center"
+				className="mr-3 items-center justify-center"
 				style={{
+					width: 20,
+					height: 20,
+					borderWidth: 2,
+					borderRadius: 4,
 					borderColor: isChecked ? radioColor : '#ccc',
 					backgroundColor: isChecked ? radioColor : 'transparent',
 				}}
@@ -40,7 +45,7 @@ const ShareRadio = (props: IProps) => {
 				{isChecked && (
 					<Ionicons
 						name="checkmark"
-						size={12}
+						size={14}
 						color="white"
 					/>
 				)}
@@ -55,7 +60,7 @@ const ShareRadio = (props: IProps) => {
 				{linkPath && linkText && (
 					<Link href={linkPath as any}>
 						<Text
-							className="text-sm font-bold underline ml-1"
+							className="text-sm font-bold underline"
 							style={{ color: linkColor }}
 						>
 							{linkText}

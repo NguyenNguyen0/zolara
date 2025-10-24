@@ -9,9 +9,11 @@ import ShareInput from '@/src/components/input/share.input';
 import Avatar from '@/src/components/ui/avatar';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
+import { useTranslation } from 'react-i18next';
 
 export default function GroupCreate() {
 	const { isDark } = useTheme();
+	const { t } = useTranslation('group-create');
 	const [selectedContacts, setSelectedContacts] = useState<Contact[]>([]);
 	const [groupName, setGroupName] = useState('');
 	const [groupAvatar, setGroupAvatar] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export default function GroupCreate() {
 		>
 			<NavigateHeader
 				showBackButton
-				title={'Nhóm mới'}
+				title={t('title')}
 				showSubmit={selectedContacts.length >= 3}
 				onSubmit={handleCreateGroup}
 				showQRScanner
@@ -71,7 +73,7 @@ export default function GroupCreate() {
 							<ShareInput
 								value={groupName}
 								onTextChange={setGroupName}
-								placeholder="Tên nhóm"
+								placeholder={t('groupNamePlaceholder')}
 								inputStyle={{
 									backgroundColor: isDark ? APP_COLOR.GRAY_800 : APP_COLOR.GRAY_100,
 									borderColor: isDark ? APP_COLOR.GRAY_700 : APP_COLOR.GRAY_300,
@@ -106,7 +108,7 @@ export default function GroupCreate() {
 				{selectedContacts.length > 0 && (
 					<View className="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
 						<Text className={`text-sm font-medium mb-3 ${isDark ? 'text-light-mode' : 'text-gray-600'}`}>
-							Đã chọn: {selectedContacts.length}
+							{t('selected', { count: selectedContacts.length })}
 						</Text>
 						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 							<View className="flex-row gap-3">

@@ -5,6 +5,7 @@ import { APP_COLOR } from '@/src/utils/constants';
 import Avatar from '../ui/avatar';
 import { FriendRequest } from '@/src/mocks/friend.request';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 interface FriendSentItemProps {
 	request: FriendRequest;
@@ -18,6 +19,7 @@ export default function FriendSentItem({
 	onPress,
 }: FriendSentItemProps) {
 	const { isDark } = useTheme();
+	const { t } = useTranslation('friend-request');
 
 	return (
 		<View className="border-b border-gray-200 dark:border-gray-700">
@@ -52,19 +54,19 @@ export default function FriendSentItem({
 						)}
 					</View>
 
-					<TouchableOpacity
-						onPress={(e) => {
-							e.stopPropagation();
-							onRecall(request);
-						}}
-						activeOpacity={0.8}
-						className="px-4 py-2 rounded-lg"
-						style={{ backgroundColor: isDark ? APP_COLOR.GRAY_700 : APP_COLOR.GRAY_200 }}
-					>
-						<Text className={`text-sm font-medium ${isDark ? 'text-light-mode' : 'text-dark-mode'}`}>
-							Thu hồi
-						</Text>
-					</TouchableOpacity>
+				<TouchableOpacity
+					onPress={(e) => {
+						e.stopPropagation();
+						onRecall(request);
+					}}
+					activeOpacity={0.8}
+					className="px-4 py-2 rounded-lg"
+					style={{ backgroundColor: isDark ? APP_COLOR.GRAY_700 : APP_COLOR.GRAY_200 }}
+				>
+					<Text className={`text-sm font-medium ${isDark ? 'text-light-mode' : 'text-dark-mode'}`}>
+						{t('recall')}
+					</Text>
+				</TouchableOpacity>
 				</View>
 			</TouchableOpacity>
 		</View>

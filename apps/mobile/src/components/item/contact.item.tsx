@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import FeatherIcon from '@expo/vector-icons/Feather';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
@@ -28,8 +27,8 @@ export default function ContactItem({
 	const { isDark } = useTheme();
 
 	return (
-		<View className="border-b border-gray-200 dark:border-gray-700">
-			<TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+		<View className="border-b border-secondary-light dark:border-secondary-dark">
+			<TouchableOpacity onPress={onPress}>
 				<View className="py-6 flex-row items-center justify-start">
 					{showRadio && (
 						<View className="mr-3">
@@ -66,11 +65,7 @@ export default function ContactItem({
 
 					{!showRadio && (
 						<View className="pr-4">
-							<FeatherIcon
-								name="chevron-right"
-								size={20}
-								color="#9ca3af"
-							/>
+							<Ionicons name="chevron-forward" size={20} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />
 						</View>
 					)}
 				</View>

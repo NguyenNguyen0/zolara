@@ -1,8 +1,8 @@
 {
-	"title": "Newsfeed",
 	"header": "Newsfeed",
 	"composer": {
-		"placeholder": "How are you today?"
+		"placeholder": "How are you today?",
+		"post": "Post"
 	},
 	"actions": {
 		"photo": "Photo",
@@ -11,7 +11,9 @@
 		"memory": "Memory",
 		"like": "Like",
 		"comment": "Comment"
-	}
-,
-	"empty": "There are no posts yet!"
+	},
+	"empty": "There are no posts yet!",
+	"you": "You",
+	"justNow": "Just now",
+	"comments": "comments"
 }

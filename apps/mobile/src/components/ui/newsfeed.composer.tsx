@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from 'react-i18next';
 import { APP_COLOR } from '@/src/utils/constants';
-import { PostImage } from '../item/post.item';
+import { PostImage } from './image.grid';
 import Avatar from './avatar';
 
 type Props = {
@@ -63,14 +63,14 @@ const NewsFeedComposer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 				</View>
 			</View>
 
-			<View className="flex-row items-center justify-end gap-3 mt-3">
-				<TouchableOpacity onPress={pickImages}>
-					<Ionicons name="image-outline" size={22} color={APP_COLOR.PRIMARY} />
-				</TouchableOpacity>
-				<TouchableOpacity onPress={submit} className="px-4 py-2 rounded-full bg-blue-500">
-					<Text className="text-white text-sm font-medium">Post</Text>
-				</TouchableOpacity>
-			</View>
+		<View className="flex-row items-center justify-end gap-3 mt-3">
+			<TouchableOpacity onPress={pickImages}>
+				<Ionicons name="image-outline" size={22} color={APP_COLOR.PRIMARY} />
+			</TouchableOpacity>
+			<TouchableOpacity onPress={submit} className="px-4 py-2 rounded-full bg-blue-500">
+				<Text className="text-white text-sm font-medium">{t('composer.post')}</Text>
+			</TouchableOpacity>
+		</View>
 		</View>
 	);
 };

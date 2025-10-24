@@ -48,11 +48,13 @@ export default function Search() {
 		/>
 	);
 
+	const { t: tSearch } = useTranslation('search');
+
 	// Render empty state
 	const renderEmptyState = () => (
 		<View className="flex-1 items-center justify-center py-20">
 			<Text className="text-lg text-gray-500 dark:text-gray-400">
-				{searchQuery ? 'Không tìm thấy kết quả' : 'Không có liên hệ'}
+				{searchQuery ? tSearch('noResults') : tSearch('noContacts')}
 			</Text>
 		</View>
 	);

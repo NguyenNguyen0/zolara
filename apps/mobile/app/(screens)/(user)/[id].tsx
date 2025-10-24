@@ -3,13 +3,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
 	FlatList,
 	RefreshControl,
-	StatusBar,
 	ListRenderItem,
 	ActivityIndicator,
 	View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import PostItem, { Post } from '@/src/components/item/post.item';
 import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
@@ -19,7 +17,6 @@ import { MOCK_USER_PROFILE, MOCK_USER_POSTS } from '@/src/mocks/profile';
 
 export default function ProfileDetail() {
 	const { t } = useTranslation('user');
-	const { isDark } = useTheme();
 	const [refreshing, setRefreshing] = useState(false);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
 	const [coverModalVisible, setCoverModalVisible] = useState(false);
@@ -85,10 +82,6 @@ export default function ProfileDetail() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor={`${isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY}`}
-			/>
 			<FlatList
 				data={posts}
 				renderItem={renderItem}

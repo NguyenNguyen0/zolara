@@ -17,6 +17,7 @@ import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { MOCK_CONTACTS, Contact } from '@/src/mocks/contact';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 type Section = {
 	letter: string;
@@ -89,13 +90,9 @@ export default function ContactTab() {
 							/>
 						</View>
 						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">
-							Friend requests (99+)
+							{t('friendRequests', { count: '99+' })}
 						</Text>
-						<FeatherIcon
-							name="chevron-right"
-							size={20}
-							color="#9ca3af"
-						/>
+						<Ionicons name="chevron-forward" size={20} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -142,7 +139,7 @@ export default function ContactTab() {
 			edges={['top']}
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<NavigateHeader title={t('header')} showSearch showAddFriend />
+			<NavigateHeader title={t('header')} showSearch showAddFriend showCreateGroup />
 			<FlatList
 				data={sections}
 				keyExtractor={(item) => item.letter}

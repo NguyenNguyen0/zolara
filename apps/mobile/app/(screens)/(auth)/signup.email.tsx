@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
-	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
@@ -11,19 +9,15 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
-import ShareRadio from '@/src/components/button/share.radio';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestion from '@/src/components/button/share.question';
 import ShareBack from '@/src/components/button/share.back';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUpEmail() {
 	const { t } = useTranslation('signup-email');
 	const router = useRouter();
-	const { isDark } = useTheme();
 	const [email, setEmail] = useState('');
-	const [agreeToTerms, setAgreeToTerms] = useState(false);
-	const [agreeToSocialTerms, setAgreeToSocialTerms] = useState(false);
 
 	const handleNext = () => {
 		console.log('Signup Email:', {
@@ -37,19 +31,12 @@ export default function SignUpEmail() {
 	};
 
 	const isNextDisabled =
-		!email.trim() || !agreeToTerms || !agreeToSocialTerms;
+		!email.trim();
 
 	return (
 		<SafeAreaView
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
-
 			<ShareBack/>
 
 			<KeyboardAvoidingView
@@ -72,39 +59,6 @@ export default function SignUpEmail() {
 							onTextChange={setEmail}
 							keyboardType="email-address"
 							placeholder={t('emailPlaceholder')}
-						/>
-					</View>
-
-					{/* Terms of Service Checkboxes */}
-					<View className="mb-6">
-						{/* Terms of Service */}
-						<ShareRadio
-							isChecked={agreeToTerms}
-							onRadioPress={() => setAgreeToTerms(!agreeToTerms)}
-							questionText={t('termsOfService')}
-							linkText={t('termsOfServiceLink')}
-							linkPath="/terms-of-service"
-							questionColor={
-								isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE
-							}
-							linkColor={APP_COLOR.PRIMARY}
-							radioColor={APP_COLOR.PRIMARY}
-						/>
-
-						{/* Social Terms of Service */}
-						<ShareRadio
-							isChecked={agreeToSocialTerms}
-							onRadioPress={() =>
-								setAgreeToSocialTerms(!agreeToSocialTerms)
-							}
-							questionText={t('socialTermsOfService')}
-							linkText={t('socialTermsOfServiceLink')}
-							linkPath="/social-terms-of-service"
-							questionColor={
-								isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE
-							}
-							linkColor={APP_COLOR.PRIMARY}
-							radioColor={APP_COLOR.PRIMARY}
 						/>
 					</View>
 

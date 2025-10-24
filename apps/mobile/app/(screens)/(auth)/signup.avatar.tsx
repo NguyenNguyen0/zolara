@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	SafeAreaView,
 	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
@@ -15,6 +14,7 @@ import ShareQuestion from '@/src/components/button/share.question';
 import ShareAvatar from '@/src/components/input/share.avatar';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUpAvatar() {
 	const router = useRouter();
@@ -45,21 +45,14 @@ export default function SignUpAvatar() {
 			isLogin,
 			isSignup
 		});
-		// In the future, we will persist the image to backend or storage
 		router.dismissAll();
-		router.navigate('/(screens)/(tabs)/conversation');
+		router.replace('/(screens)/(tabs)/conversation');
 	};
 
 	return (
 		<SafeAreaView
 			className="flex-1 bg-light-mode dark:bg-dark-mode"
 		>
-			<StatusBar
-				barStyle={isDark ? 'light-content' : 'dark-content'}
-				backgroundColor={
-					isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE
-				}
-			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				className="flex-1 px-5 mt-32"
@@ -85,20 +78,12 @@ export default function SignUpAvatar() {
 
 					<View className="mb-4">
 						<ShareButton
-							title={t('updateButton')}
+							title={t('nextButton')}
 							onPress={continueNext}
 							buttonStyle={{
 								backgroundColor: APP_COLOR.PRIMARY,
 							}}
 							textStyle={{ color: APP_COLOR.LIGHT_MODE }}
-						/>
-					</View>
-
-					<View className="flex-row items-center justify-center">
-						<ShareQuestion
-							questionText={''}
-							linkName={t('skipButton')}
-							path="/(screens)/(tabs)"
 						/>
 					</View>
 				</View>

@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import { useColorScheme as useNativeWindColorScheme } from 'nativewind';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +20,7 @@ export const useTheme = () => {
 	const isDark = useSelector((state: RootState) => selectIsDark(state));
 	const deviceColorScheme = useColorScheme();
 	const { setColorScheme } = useNativeWindColorScheme();
+	const isInitialized = useRef(false);
 
 	// Load theme from storage on mount (chỉ chạy một lần)
 	useEffect(() => {
@@ -43,6 +44,7 @@ export const useTheme = () => {
 							systemTheme: currentSystemTheme,
 						}),
 					);
+					isInitialized.current = true;
 				}
 			} catch (error) {
 				console.log('Error loading theme:', error);
@@ -57,12 +59,14 @@ export const useTheme = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Sync device color scheme with store (sau khi đã load theme)
+	// Sync device color scheme with store (chỉ sau khi đã initialize)
 	useEffect(() => {
-		if (deviceColorScheme && deviceColorScheme !== systemTheme) {
+		// Chỉ update nếu đã initialize và deviceColorScheme thực sự khác
+		if (isInitialized.current && deviceColorScheme && deviceColorScheme !== systemTheme) {
 			dispatch(setSystemTheme(deviceColorScheme));
 		}
-	}, [deviceColorScheme, systemTheme, dispatch]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [deviceColorScheme]);
 
 	// Sync NativeWind color scheme with theme state
 	useEffect(() => {

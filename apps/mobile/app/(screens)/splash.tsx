@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, Animated, Easing } from 'react-native';
+import { View, Text, Image, Animated, Easing, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useTranslation } from 'react-i18next';
 
 export default function SplashScreen() {
@@ -42,7 +41,7 @@ export default function SplashScreen() {
 
   return (
     <View className="flex-1 items-center justify-center bg-primary">
-      <StatusBar style="light" translucent />
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
       <Animated.View
         style={{ transform: [{ scale }] }}
         className="items-center"

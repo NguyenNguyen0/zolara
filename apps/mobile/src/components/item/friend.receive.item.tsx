@@ -5,6 +5,7 @@ import { APP_COLOR } from '@/src/utils/constants';
 import Avatar from '../ui/avatar';
 import { FriendRequest } from '@/src/mocks/friend.request';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 interface FriendReceiveItemProps {
 	request: FriendRequest;
@@ -20,6 +21,7 @@ export default function FriendReceiveItem({
 	onPress,
 }: FriendReceiveItemProps) {
 	const { isDark } = useTheme();
+	const { t } = useTranslation('friend-request');
 
 	return (
 		<View className="border-b border-gray-200 dark:border-gray-700">
@@ -65,7 +67,7 @@ export default function FriendReceiveItem({
 							style={{ backgroundColor: isDark ? APP_COLOR.GRAY_700 : APP_COLOR.GRAY_200 }}
 						>
 							<Text className={`text-sm font-medium ${isDark ? 'text-light-mode' : 'text-dark-mode'}`}>
-								Từ chối
+								{t('reject')}
 							</Text>
 						</TouchableOpacity>
 
@@ -79,7 +81,7 @@ export default function FriendReceiveItem({
 							style={{ backgroundColor: APP_COLOR.PRIMARY }}
 						>
 							<Text className="text-sm font-medium text-white">
-								Đồng ý
+								{t('accept')}
 							</Text>
 						</TouchableOpacity>
 					</View>

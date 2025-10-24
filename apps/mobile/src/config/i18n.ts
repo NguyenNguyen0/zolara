@@ -6,6 +6,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import enCommon from '@/src/locales/en/commons/common.json';
 import viCommon from '@/src/locales/vi/commons/common.json';
 
+import enLanguage from '@/src/locales/en/commons/language.json';
+import viLanguage from '@/src/locales/vi/commons/language.json';
+
+// Import translation files
+import enTheme from '@/src/locales/en/commons/theme.json';
+import viTheme from '@/src/locales/vi/commons/theme.json';
+
+import enInterface from '@/src/locales/en/commons/interface.json';
+import viInterface from '@/src/locales/vi/commons/interface.json';
+
 import enHeader from '@/src/locales/en/commons/header.json';
 import viHeader from '@/src/locales/vi/commons/header.json';
 
@@ -64,6 +74,39 @@ import viNotification from '@/src/locales/vi/tabs/notification.json';
 import enUser from '@/src/locales/en/tabs/user.json';
 import viUser from '@/src/locales/vi/tabs/user.json';
 
+import enSetting from '@/src/locales/en/user/setting.json';
+import viSetting from '@/src/locales/vi/user/setting.json';
+
+import enMessageHeader from '@/src/locales/en/commons/message-header.json';
+import viMessageHeader from '@/src/locales/vi/commons/message-header.json';
+
+import enFriendRequest from '@/src/locales/en/user/friend-request.json';
+import viFriendRequest from '@/src/locales/vi/user/friend-request.json';
+
+import enAddFriend from '@/src/locales/en/user/add-friend.json';
+import viAddFriend from '@/src/locales/vi/user/add-friend.json';
+
+import enGroupCreate from '@/src/locales/en/user/group-create.json';
+import viGroupCreate from '@/src/locales/vi/user/group-create.json';
+
+import enSearch from '@/src/locales/en/user/search.json';
+import viSearch from '@/src/locales/vi/user/search.json';
+
+import enQR from '@/src/locales/en/user/qr.json';
+import viQR from '@/src/locales/vi/user/qr.json';
+
+import enConversation from '@/src/locales/en/user/conversation.json';
+import viConversation from '@/src/locales/vi/user/conversation.json';
+
+import enAbout from '@/src/locales/en/user/about.json';
+import viAbout from '@/src/locales/vi/user/about.json';
+
+import enAccountSecurity from '@/src/locales/en/user/account-security.json';
+import viAccountSecurity from '@/src/locales/vi/user/account-security.json';
+
+import enSupport from '@/src/locales/en/user/support.json';
+import viSupport from '@/src/locales/vi/user/support.json';
+
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
 	async: true,
@@ -97,74 +140,116 @@ i18n.use(LANGUAGE_DETECTOR)
 		debug: __DEV__,
 
 		resources: {
-			en: {
-				common: enCommon,
-				header: enHeader,
-				'signup-avatar': enSignupAvatar,
-				splash: enSplash,
-				welcome: enWelcome,
-				'login-email': enLoginEmail,
-				'confirm-password': enConfirmPassword,
-				verify: enVerify,
-				'signup-email': enSignupEmail,
-				'not-found': enNotFound,
-				'login-success': enLoginSuccess,
-				'signup-name': enSignupName,
-				'signup-detail': enSignupDetail,
-				gender: enGender,
-				tabs: enTabs,
-				contact: enContact,
-				conversations: enConversations,
-				newsfeed: enNewsfeed,
-				notification: enNotification,
-				user: enUser,
-			},
-			vi: {
-				common: viCommon,
-				header: viHeader,
-				'signup-avatar': viSignupAvatar,
-				splash: viSplash,
-				welcome: viWelcome,
-				'login-email': viLoginEmail,
-				'confirm-password': viConfirmPassword,
-				verify: viVerify,
-				'signup-email': viSignupEmail,
-				'not-found': viNotFound,
-				'login-success': viLoginSuccess,
-				'signup-name': viSignupName,
-				'signup-detail': viSignupDetail,
-				gender: viGender,
-				tabs: viTabs,
-				contact: viContact,
-				conversations: viConversations,
-				newsfeed: viNewsfeed,
-				notification: viNotification,
-				user: viUser,
-			},
+		en: {
+			common: enCommon,
+			language: enLanguage,
+			theme: enTheme,
+			interface: enInterface,
+			header: enHeader,
+			'signup-avatar': enSignupAvatar,
+			splash: enSplash,
+			welcome: enWelcome,
+			'login-email': enLoginEmail,
+			'confirm-password': enConfirmPassword,
+			verify: enVerify,
+			'signup-email': enSignupEmail,
+			'not-found': enNotFound,
+			'login-success': enLoginSuccess,
+			'signup-name': enSignupName,
+			'signup-detail': enSignupDetail,
+			gender: enGender,
+			tabs: enTabs,
+			contact: enContact,
+			conversations: enConversations,
+			newsfeed: enNewsfeed,
+			notification: enNotification,
+			user: enUser,
+			setting: enSetting,
+			'message-header': enMessageHeader,
+			'friend-request': enFriendRequest,
+			'add-friend': enAddFriend,
+			'group-create': enGroupCreate,
+			search: enSearch,
+			qr: enQR,
+			conversation: enConversation,
+			about: enAbout,
+			'account-security': enAccountSecurity,
+			support: enSupport,
+		},
+		vi: {
+			common: viCommon,
+			language: viLanguage,
+			theme: viTheme,
+			interface: viInterface,
+			header: viHeader,
+			'signup-avatar': viSignupAvatar,
+			splash: viSplash,
+			welcome: viWelcome,
+			'login-email': viLoginEmail,
+			'confirm-password': viConfirmPassword,
+			verify: viVerify,
+			'signup-email': viSignupEmail,
+			'not-found': viNotFound,
+			'login-success': viLoginSuccess,
+			'signup-name': viSignupName,
+			'signup-detail': viSignupDetail,
+			gender: viGender,
+			tabs: viTabs,
+			contact: viContact,
+			conversations: viConversations,
+			newsfeed: viNewsfeed,
+			notification: viNotification,
+			user: viUser,
+			setting: viSetting,
+			'message-header': viMessageHeader,
+			'friend-request': viFriendRequest,
+			'add-friend': viAddFriend,
+			'group-create': viGroupCreate,
+			search: viSearch,
+			qr: viQR,
+			conversation: viConversation,
+			about: viAbout,
+			'account-security': viAccountSecurity,
+			support: viSupport,
+		},
 		},
 
-		ns: [
-			'common',
-			'header',
-			'welcome',
-			'splash',
-			'login-email',
-			'confirm-password',
-			'verify',
-			'signup-email',
-			'not-found',
-			'login-success',
-			'signup-name',
-			'signup-detail',
-			'gender',
-			'signup-avatar',
-			'tabs',
-			'contact',
-			'conversations',
-			'newsfeed',
-			'notification',
-			'user',
-		],
+	ns: [
+		'common',
+		'language',
+		'theme',
+		'interface',
+		'header',
+		'welcome',
+		'splash',
+		'login-email',
+		'confirm-password',
+		'verify',
+		'signup-email',
+		'not-found',
+		'login-success',
+		'signup-name',
+		'signup-detail',
+		'gender',
+		'signup-avatar',
+		'tabs',
+		'contact',
+		'conversations',
+		'newsfeed',
+		'notification',
+		'user',
+		'setting',
+		'message-header',
+		'friend-request',
+		'add-friend',
+		'group-create',
+		'search',
+		'qr',
+		'conversation',
+		'about',
+		'account-security',
+		'support',
+	],
 		defaultNS: 'common',
 
 		interpolation: {
