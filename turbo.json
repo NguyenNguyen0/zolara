@@ -7,6 +7,18 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
+    "build:dev": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "app.config.js", "eas.json"]
+    },
+    "build:preview": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "app.config.js", "eas.json"]
+    },
+    "build:production": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "app.config.js", "eas.json"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },
