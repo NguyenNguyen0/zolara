@@ -1,69 +1,210 @@
-# React + TypeScript + Vite
+# Zolara Admin Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based admin dashboard for managing the Zolara messaging application. This app has been migrated from Firebase/Agora to use axios for API calls with mock data for preview purposes.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 Mock authentication system
+- 📊 Dashboard with user, message, and call statistics
+- � Interactive charts and analytics (Chart.js)
+- �📱 Responsive design with Tailwind CSS
+- 🎨 Modern UI components
+- 🔄 Real-time data refresh capability
+- 🚀 Mock data for preview and testing
 
-## Expanding the ESLint configuration
+## Technology Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Build Tool**: Vite
+- **Charts**: Chart.js with react-chartjs-2
+- **Icons**: Lucide React
+- **UI Components**: Custom components with Radix UI
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Quick Start
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+1. Navigate to the admin directory:
+   ```bash
+   cd apps/admin
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Copy environment configuration:
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser and navigate to `http://localhost:5173`
+
+### Login Credentials (Mock Data)
+
+- **Email**: `admin@zolara.com`
+- **Password**: `admin123`
+
+## Environment Configuration
+
+The app uses the following environment variables:
+
+```env
+# Backend API Configuration
+VITE_API_BASE_URL=http://localhost:3000/api
+
+# Environment Configuration
+VITE_NODE_ENV=development
+
+# Development Settings
+VITE_USE_MOCK_DATA=true
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Basic UI components (Button, Card, Input, Charts)
+│   └── ProtectedRoute.tsx
+├── contexts/           # React contexts
+│   ├── AuthContext.tsx     # Authentication state management
+│   └── DashboardContext.tsx # Dashboard data management
+├── hooks/              # Custom React hooks
+│   ├── useAuth.ts
+│   └── useDashboard.ts
+├── lib/                # Utility functions
+│   ├── utils.ts
+│   └── constants.ts    # Color constants and UI configuration
+├── pages/              # Page components
+│   ├── LoginPage.tsx
+│   └── DashboardPage.tsx
+└── services/           # API and data services
+    ├── api.ts          # Axios configuration
+    └── mockData.ts     # Mock data for preview (includes chart data)
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## Mock Data
+
+The application currently uses mock data for preview purposes. The mock data includes:
+
+### User Statistics
+- Total users: Randomly generated
+- Active users: Users with 'online' status
+- New users today/this week: Based on creation dates
+
+### Message Statistics
+- Total messages: Collection of mock messages
+- Messages today/this week: Filtered by date
+
+### Call Statistics
+- Active calls: Random number (1-10)
+- Total calls: Random number (100-600)
+- Average call duration: Random duration (5-15 minutes)
+- Current session stats: Optional real-time call data
+
+### Chart Data
+- **User Growth**: 7 months of user registration and activity trends
+- **Message Activity**: 7 days of message volume with regular and group messages
+- **Call Distribution**: Percentage breakdown of different call types
+- **Performance Metrics**: 4 weeks of system response time and uptime data
+
+## Integration with Backend
+
+When the backend API is ready, you can:
+
+1. Update `VITE_API_BASE_URL` in `.env` to point to your backend
+2. Set `VITE_USE_MOCK_DATA=false` to use real API calls
+3. Update the API endpoints in `src/services/api.ts`
+
+### Expected API Endpoints
+
+The app expects the following API structure:
+
+```
+POST /api/auth/login       # Authentication
+POST /api/auth/logout      # Logout
+GET  /api/users/stats      # User statistics
+GET  /api/messages/stats   # Message statistics
+GET  /api/calls/stats      # Call statistics
+```
+
+## Authentication Flow
+
+1. User enters credentials on login page
+2. App sends POST request to `/api/auth/login`
+3. On success, stores JWT token and user data
+4. Protected routes check for valid token
+5. Token is automatically added to API requests via interceptor
+
+## Dashboard Features
+
+### Overview Cards
+- Total Users with active count
+- New Users Today with weekly count
+- Total Messages with daily count
+- Active Calls with total count
+
+### Analytics & Charts
+- **User Growth Trend**: Line chart showing new users and active users over time
+- **Message Activity**: Bar chart displaying daily message volume breakdown
+- **Call Distribution**: Doughnut chart showing breakdown of call types (voice, video, group, conference)
+- **Performance Metrics**: Dual-axis line chart tracking response time and system uptime
+
+### Detailed Statistics
+- User Activity breakdown
+- Communication stats (messages and calls)
+- Real-time session statistics (when available)
+
+### Real-time Updates
+- Manual refresh button
+- Automatic data refresh capability
+- Loading states and error handling
+- Dynamic chart data updates
+
+## Deployment
+
+1. Build the application:
+   ```bash
+   npm run build
+   ```
+
+2. The built files will be in the `dist/` directory
+
+3. Deploy the `dist/` directory to your hosting service
+
+## Notes
+
+- This app is part of the Zolara monorepo
+- Firebase and Agora dependencies have been completely removed
+- All authentication and data fetching now uses axios with mock data
+- The app is ready for backend integration when APIs are available
+- Mock data provides realistic preview functionality
+
+## Future Enhancements
+
+- User management interface
+- Message moderation tools
+- Advanced analytics and reporting
+- Real-time notifications
+- System configuration panel

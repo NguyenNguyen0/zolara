@@ -1,16 +1,39 @@
-import type { User } from "@repo/types"
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, DashboardProvider } from './contexts';
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
 
-
+// Main App component
 function App() {
-  const [user, setUser] = useState<User>();
   return (
-    <>
-      <h1 className="text-3xl text-red-400">Hello Admin App</h1>
-      <h2>{JSON.stringify(user)}</h2>
-      <button onClick={() => {setUser({id: "1", name: "nguyen", email: "n@gmail.com"})}}>Show User</button>
-    </>
-  )
+    <AuthProvider>
+      <DashboardProvider>
+        <Router>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<LoginPage />} />
+
+            {/* Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+            {/* Catch all - redirect to dashboard */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </Router>
+      </DashboardProvider>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
