@@ -12,6 +12,7 @@ module.exports = function (api) {
                 {
                     alias: {
                         "@": ".",
+						"@repo/types": "../../packages/types"
                     },
                 },
             ],
