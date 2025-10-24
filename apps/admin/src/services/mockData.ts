@@ -188,3 +188,73 @@ export const mockAdminUser = {
   role: 'admin',
   token: 'mock_jwt_token_12345',
 };
+
+// Chart data interfaces
+export interface ChartData {
+  userGrowth: {
+    labels: string[];
+    newUsers: number[];
+    activeUsers: number[];
+  };
+  messageActivity: {
+    labels: string[];
+    messages: number[];
+    groupMessages: number[];
+  };
+  callDistribution: {
+    voiceCalls: number;
+    videoCalls: number;
+    groupCalls: number;
+    conferenceCalls: number;
+  };
+  performanceMetrics: {
+    labels: string[];
+    responseTime: number[];
+    uptime: number[];
+  };
+}
+
+// Generate mock chart data
+export const generateMockChartData = (): ChartData => {
+  // User growth data (last 7 months)
+  const userGrowthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
+  const newUsers = userGrowthLabels.map(() => Math.floor(Math.random() * 100) + 20);
+  const activeUsers = userGrowthLabels.map(() => Math.floor(Math.random() * 80) + 10);
+
+  // Message activity data (last 7 days)
+  const messageActivityLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const messages = messageActivityLabels.map(() => Math.floor(Math.random() * 4000) + 1000);
+  const groupMessages = messageActivityLabels.map(() => Math.floor(Math.random() * 2000) + 500);
+
+  // Call distribution percentages
+  const callDistribution = {
+    voiceCalls: Math.floor(Math.random() * 20) + 30, // 30-50%
+    videoCalls: Math.floor(Math.random() * 15) + 25, // 25-40%
+    groupCalls: Math.floor(Math.random() * 10) + 15, // 15-25%
+    conferenceCalls: Math.floor(Math.random() * 10) + 5,  // 5-15%
+  };
+
+  // Performance metrics data (last 4 weeks)
+  const performanceLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+  const responseTime = performanceLabels.map(() => Math.floor(Math.random() * 100) + 100); // 100-200ms
+  const uptime = performanceLabels.map(() => +(99.5 + Math.random() * 0.5).toFixed(1)); // 99.5-100%
+
+  return {
+    userGrowth: {
+      labels: userGrowthLabels,
+      newUsers,
+      activeUsers,
+    },
+    messageActivity: {
+      labels: messageActivityLabels,
+      messages,
+      groupMessages,
+    },
+    callDistribution,
+    performanceMetrics: {
+      labels: performanceLabels,
+      responseTime,
+      uptime,
+    },
+  };
+};

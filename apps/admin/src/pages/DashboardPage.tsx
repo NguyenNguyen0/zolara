@@ -3,6 +3,12 @@ import { useAuth } from '../hooks/useAuth';
 import { useDashboard } from '../hooks/useDashboard';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
+import {
+  UserGrowthChart,
+  MessageActivityChart,
+  CallDistributionChart,
+  PerformanceMetricsChart
+} from '../components/ui/Charts';
 import { LogOut, Users, MessageSquare, Phone, Activity } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -227,6 +233,24 @@ export const DashboardPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Charts Section */}
+        <div className="mt-8">
+          <div className="mb-4">
+            <h2 className="text-lg font-medium text-gray-900">Analytics & Trends</h2>
+            <p className="text-sm text-gray-500">Visual insights and performance metrics</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <UserGrowthChart />
+            <MessageActivityChart />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <CallDistributionChart />
+            <PerformanceMetricsChart />
+          </div>
         </div>
 
         {/* Current Session Stats (if available) */}

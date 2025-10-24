@@ -4,10 +4,12 @@ import {
   calculateUserStats,
   calculateMessageStats,
   calculateCallStats,
+  generateMockChartData,
   mockApiDelay,
   type UserStats,
   type MessageStats,
-  type CallStats
+  type CallStats,
+  type ChartData
 } from '../services/mockData';
 import { DashboardContext, type DashboardContextType } from './DashboardContextType';
 
@@ -35,6 +37,30 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({ children }
     averageCallDuration: 0,
   });
 
+  const [chartData, setChartData] = useState<ChartData>({
+    userGrowth: {
+      labels: [],
+      newUsers: [],
+      activeUsers: [],
+    },
+    messageActivity: {
+      labels: [],
+      messages: [],
+      groupMessages: [],
+    },
+    callDistribution: {
+      voiceCalls: 0,
+      videoCalls: 0,
+      groupCalls: 0,
+      conferenceCalls: 0,
+    },
+    performanceMetrics: {
+      labels: [],
+      responseTime: [],
+      uptime: [],
+    },
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -51,10 +77,12 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({ children }
       const userStatsData = calculateUserStats();
       const messageStatsData = calculateMessageStats();
       const callStatsData = calculateCallStats();
+      const chartDataData = generateMockChartData();
 
       setUserStats(userStatsData);
       setMessageStats(messageStatsData);
       setCallStats(callStatsData);
+      setChartData(chartDataData);
       setLastUpdated(new Date());
 
       console.log('Stats refreshed successfully with mock data');
@@ -71,6 +99,7 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({ children }
     userStats,
     messageStats,
     callStats,
+    chartData,
     isLoading,
     lastUpdated,
     error,

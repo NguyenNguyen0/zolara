@@ -6,7 +6,8 @@ A React-based admin dashboard for managing the Zolara messaging application. Thi
 
 - 🔐 Mock authentication system
 - 📊 Dashboard with user, message, and call statistics
-- 📱 Responsive design with Tailwind CSS
+- � Interactive charts and analytics (Chart.js)
+- �📱 Responsive design with Tailwind CSS
 - 🎨 Modern UI components
 - 🔄 Real-time data refresh capability
 - 🚀 Mock data for preview and testing
@@ -77,7 +78,7 @@ VITE_USE_MOCK_DATA=true
 ```
 src/
 ├── components/          # Reusable UI components
-│   ├── ui/             # Basic UI components (Button, Card, Input)
+│   ├── ui/             # Basic UI components (Button, Card, Input, Charts)
 │   └── ProtectedRoute.tsx
 ├── contexts/           # React contexts
 │   ├── AuthContext.tsx     # Authentication state management
@@ -86,13 +87,14 @@ src/
 │   ├── useAuth.ts
 │   └── useDashboard.ts
 ├── lib/                # Utility functions
-│   └── utils.ts
+│   ├── utils.ts
+│   └── constants.ts    # Color constants and UI configuration
 ├── pages/              # Page components
 │   ├── LoginPage.tsx
 │   └── DashboardPage.tsx
 └── services/           # API and data services
     ├── api.ts          # Axios configuration
-    └── mockData.ts     # Mock data for preview
+    └── mockData.ts     # Mock data for preview (includes chart data)
 ```
 
 ## Available Scripts
@@ -120,6 +122,12 @@ The application currently uses mock data for preview purposes. The mock data inc
 - Total calls: Random number (100-600)
 - Average call duration: Random duration (5-15 minutes)
 - Current session stats: Optional real-time call data
+
+### Chart Data
+- **User Growth**: 7 months of user registration and activity trends
+- **Message Activity**: 7 days of message volume with regular and group messages
+- **Call Distribution**: Percentage breakdown of different call types
+- **Performance Metrics**: 4 weeks of system response time and uptime data
 
 ## Integration with Backend
 
@@ -157,6 +165,12 @@ GET  /api/calls/stats      # Call statistics
 - Total Messages with daily count
 - Active Calls with total count
 
+### Analytics & Charts
+- **User Growth Trend**: Line chart showing new users and active users over time
+- **Message Activity**: Bar chart displaying daily message volume breakdown
+- **Call Distribution**: Doughnut chart showing breakdown of call types (voice, video, group, conference)
+- **Performance Metrics**: Dual-axis line chart tracking response time and system uptime
+
 ### Detailed Statistics
 - User Activity breakdown
 - Communication stats (messages and calls)
@@ -166,6 +180,7 @@ GET  /api/calls/stats      # Call statistics
 - Manual refresh button
 - Automatic data refresh capability
 - Loading states and error handling
+- Dynamic chart data updates
 
 ## Deployment
 
