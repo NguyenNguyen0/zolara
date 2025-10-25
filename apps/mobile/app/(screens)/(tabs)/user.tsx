@@ -1,6 +1,6 @@
 import NavigateHeader from '@/src/components/commons/navigate.header';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SettingItem from '@/src/components/item/setting.item';
 import { APP_COLOR } from '@/src/utils/constants';
@@ -25,14 +25,18 @@ export default function UserTab() {
 			id: 'account',
 			iconName: 'shield-checkmark-outline',
 			title: t('accountSecurity'),
-			onPress: () => router.navigate('/(user)/setting/account.security'),
+			onPress: () => {
+				// router.navigate('/(user)/setting/account.security');
+				// TODO:
+				Alert.alert("In development mode!")
+			},
 		},
 		{
 			id: 'chatbot',
 			iconName: 'chatbubble-ellipses-outline',
 			title: t('chatbotAI'),
 			onPress: () => router.navigate('/(user)/chatbot'),
-		}
+		},
 	];
 
 	return (
@@ -64,7 +68,11 @@ export default function UserTab() {
 							<Ionicons
 								name={item.iconName}
 								size={24}
-								color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE}
+								color={
+									isDark
+										? APP_COLOR.LIGHT_MODE
+										: APP_COLOR.DARK_MODE
+								}
 							/>
 						}
 						title={item.title}

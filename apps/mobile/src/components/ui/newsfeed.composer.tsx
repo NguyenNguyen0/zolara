@@ -18,11 +18,8 @@ const NewsFeedComposer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 	const [images, setImages] = useState<string[]>([]);
 
 	const pickImages = async () => {
-		// Backward/forward compatible mediaTypes to avoid deprecation warnings
-		const mediaType = (ImagePicker as any)?.MediaType?.image ?? (ImagePicker as any)?.MediaTypeOptions?.Images;
 		const res = await ImagePicker.launchImageLibraryAsync({
-			// New API prefers ImagePicker.MediaType or an array of it
-			mediaTypes: mediaType,
+			mediaTypes: ['images'],
 			allowsMultipleSelection: true,
 			quality: 0.8,
 			selectionLimit: 9,
@@ -67,7 +64,7 @@ const NewsFeedComposer: React.FC<Props> = ({ onCreate, currentUserAvatar }) => {
 			<TouchableOpacity onPress={pickImages}>
 				<Ionicons name="image-outline" size={22} color={APP_COLOR.PRIMARY} />
 			</TouchableOpacity>
-			<TouchableOpacity onPress={submit} className="px-4 py-2 rounded-full bg-blue-500">
+			<TouchableOpacity onPress={submit} className="px-4 py-2 rounded-full bg-primary">
 				<Text className="text-white text-sm font-medium">{t('composer.post')}</Text>
 			</TouchableOpacity>
 		</View>

@@ -4,7 +4,5 @@
 	"namePlaceholder": "Nhập tên của bạn",
 	"continueButton": "Tiếp tục",
 	"rule1": "Dài từ 2 đến 40 ký tự",
-	"rule2": "Không chứa số",
-	"rule3": "Cần tuân thủ",
-	"rule3Link": "quy định đặt tên Zolara"
+	"rule2": "Không chứa số"
 }

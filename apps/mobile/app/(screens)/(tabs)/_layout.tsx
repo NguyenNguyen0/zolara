@@ -78,7 +78,7 @@ const TabLayout = () => {
 	const insets = useSafeAreaInsets();
 	const { t } = useTranslation('tabs');
 	const { isDark } = useTheme();
-	
+
 	return (
 		<Tabs
 			initialRouteName='conversation'
@@ -96,7 +96,6 @@ const TabLayout = () => {
 				},
 				tabBarLabelStyle: { 
 					paddingBottom: 5,
-					color: isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.GRAY_700,
 				},
 				tabBarActiveTintColor: APP_COLOR.PRIMARY,
 				tabBarInactiveTintColor: isDark ? '#9CA3AF' : '#6B7280',
