@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
+import logoSrc from '../assets/logo.png';
 
 interface LocationState {
   from?: {
@@ -64,6 +65,9 @@ export const LoginPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <img src={logoSrc} alt="Zolara Logo" className="h-16 w-auto" />
+          </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             Admin Dashboard
           </h2>

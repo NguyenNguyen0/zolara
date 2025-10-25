@@ -10,6 +10,7 @@ import {
   PerformanceMetricsChart
 } from '../components/ui/Charts';
 import { LogOut, Users, MessageSquare, Phone, Activity } from 'lucide-react';
+import logoSrc from '../assets/logo.png';
 
 export const DashboardPage: React.FC = () => {
   const { user, logout } = useAuth();
@@ -65,9 +66,12 @@ export const DashboardPage: React.FC = () => {
       <header className="bg-white shadow-sm border-b border-primary/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-primary/80">Welcome back, {user?.email}</p>
+            <div className="flex items-center space-x-4">
+              <img src={logoSrc} alt="Zolara Logo" className="h-8 w-auto" />
+              <div>
+                <h1 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
+                <p className="text-sm text-primary/80">Welcome back, {user?.email}</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Button
@@ -305,7 +309,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black/10 bg-opacity-10 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <div className="flex items-center space-x-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
