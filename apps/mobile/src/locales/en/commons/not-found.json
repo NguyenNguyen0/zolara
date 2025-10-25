@@ -1,8 +1,8 @@
 {
 	"title": "Page not found",
 	"errorCode": "404",
-	"subtitle": "Oops! Page does not exist",
-	"description": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable.",
+	"subtitle": "Where are you now?",
+	"description": "The page you are looking for is currently unavailable!",
 	"buttons": {
 		"goHome": "Go to Home",
 		"goBack": "Go Back"

@@ -28,7 +28,7 @@ export default function ContactItem({
 
 	return (
 		<View className="border-b border-secondary-light dark:border-secondary-dark">
-			<TouchableOpacity onPress={onPress}>
+			<TouchableOpacity onPress={onPress} activeOpacity={1}>
 				<View className="py-6 flex-row items-center justify-start">
 					{showRadio && (
 						<View className="mr-3">

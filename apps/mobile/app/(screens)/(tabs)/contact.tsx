@@ -68,6 +68,7 @@ export default function ContactTab() {
 
 	const handleContactPress = (contact: Contact) => {
 		console.log('Contact pressed:', contact);
+		router.navigate('/(screens)/(user)/conversation/[id]');
 	};
 
 	// Render header with friend requests and birthdays
@@ -82,15 +83,15 @@ export default function ContactTab() {
 					className="border-b border-gray-200 dark:border-gray-700"
 				>
 					<View className="py-3.5 flex-row items-center">
-						<View className="w-10 h-10 rounded-xl bg-blue-500 items-center justify-center">
+						<View className="w-10 h-10 rounded-xl bg-primary items-center justify-center">
 							<FeatherIcon
 								name="users"
 								size={18}
-								color="#ffffff"
+								color={APP_COLOR.LIGHT_MODE}
 							/>
 						</View>
 						<Text className="ml-3 text-base font-semibold text-dark-mode dark:text-light-mode flex-1">
-							{t('friendRequests', { count: '99+' })}
+							{t('friendRequests', { count: 99 })}
 						</Text>
 						<Ionicons name="chevron-forward" size={20} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />
 					</View>

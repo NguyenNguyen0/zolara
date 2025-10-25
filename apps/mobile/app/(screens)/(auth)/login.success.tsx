@@ -4,15 +4,11 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '@/src/hooks/useTheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginSuccess = () => {
 	const { t } = useTranslation('login-success');
 	const params = useLocalSearchParams();
-	const { isDark } = useTheme();
-
 	const email = params.email as string;
 	const password = params.password as string;
 	const otp = params.otp as string;
@@ -43,12 +39,9 @@ const LoginSuccess = () => {
 					<View className="relative mb-5">
 						<Image
 							source={require('@/src/assets/brand/logo.png')}
-							className="w-36 h-36 rounded-full"
-							resizeMode="cover"
+							className="w-40 h-40"
+							resizeMode='contain'
 						/>
-						<View className="absolute bottom-1 right-1 rounded-full">
-							<MaterialIcons name="check-circle" size={25} color="#22c55e" />
-						</View>
 					</View>
 
 					<Text className="text-2xl font-semibold mb-2 text-center text-secondary-dark dark:text-secondary-light">

@@ -6,6 +6,7 @@ import NavigateHeader from '@/src/components/commons/navigate.header';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
 import { MOCK_CONTACTS, Contact } from '@/src/mocks/contact';
+import { router } from 'expo-router';
 
 export default function Search() {
 	const { t } = useTranslation('contact');
@@ -15,6 +16,7 @@ export default function Search() {
 
 	const handleContactPress = (contact: Contact) => {
 		console.log('Contact pressed:', contact);
+		router.replace("/(screens)/(user)/conversation/[id]")
 	};
 
 	const handleSearch = (searchValue: string) => {

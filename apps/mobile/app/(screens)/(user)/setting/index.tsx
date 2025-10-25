@@ -1,6 +1,6 @@
 import NavigateHeader from '@/src/components/commons/navigate.header';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/useTheme';
 import ShareButton from '@/src/components/button/share.button';
@@ -25,7 +25,11 @@ export default function Setting() {
 			id: 'account',
 			iconName: 'shield-checkmark-outline',
 			title: t('accountSecurity'),
-			onPress: () => router.navigate('/(user)/setting/account.security'),
+			onPress: () => {
+				// router.navigate('/(user)/setting/account.security');
+				// TODO:
+				Alert.alert('In development mode!');
+			},
 		},
 		{
 			id: 'language',
@@ -37,7 +41,11 @@ export default function Setting() {
 			id: 'about',
 			iconName: 'information-circle-outline',
 			title: t('aboutZolara'),
-			onPress: () => router.navigate('/(user)/setting/about'),
+			onPress: () => {
+				// router.navigate('/(user)/setting/about');
+				// TODO:
+				Alert.alert('In development mode!');
+			},
 		},
 		{
 			id: 'chatbot',
@@ -49,7 +57,11 @@ export default function Setting() {
 			id: 'support',
 			iconName: 'help-circle-outline',
 			title: t('contactSupport'),
-			onPress: () => router.navigate('/(user)/setting/support'),
+			onPress: () => {
+				// router.navigate('/(user)/setting/support');
+				// TODO:
+				Alert.alert("In development mode!")
+			},
 		},
 	];
 
@@ -68,7 +80,11 @@ export default function Setting() {
 							<Ionicons
 								name={item.iconName}
 								size={24}
-								color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE}
+								color={
+									isDark
+										? APP_COLOR.LIGHT_MODE
+										: APP_COLOR.DARK_MODE
+								}
 							/>
 						}
 						title={item.title}
@@ -76,14 +92,24 @@ export default function Setting() {
 					/>
 				))}
 
-			{/* Đăng xuất */}
-			<View className="px-4 py-4">
-				<ShareButton
-					title={t('logout')}
-					onPress={() => router.replace('/(auth)/welcome')}
-					icon={<MaterialIcons name="logout" size={24} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />}
-				/>
-			</View>
+				{/* Đăng xuất */}
+				<View className="px-4 py-4">
+					<ShareButton
+						title={t('logout')}
+						onPress={() => router.replace('/(auth)/welcome')}
+						icon={
+							<MaterialIcons
+								name="logout"
+								size={24}
+								color={
+									isDark
+										? APP_COLOR.LIGHT_MODE
+										: APP_COLOR.DARK_MODE
+								}
+							/>
+						}
+					/>
+				</View>
 
 				<View className="h-8" />
 			</ScrollView>

@@ -103,13 +103,13 @@ export const MOCK_GROUP_CHAT: Conversation = {
 
 export const MOCK_FRIEND_CHAT: Conversation = {
 	id: '2',
-	name: 'Nguyễn A Minh',
+	name: 'Nguyễn Văn Minh',
 	type: 'FRIEND',
 	members: [
 		{
 			id: '5',
-			name: 'Nguyễn A Minh',
-			avatar: 'https://i.pravatar.cc/150?img=15',
+			name: 'Nguyễn Văn Minh',
+			avatar: 'https://avatars.githubusercontent.com/u/121565657?v=4',
 		},
 		{
 			id: '4',
