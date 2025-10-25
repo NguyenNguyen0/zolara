@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, Text, View, RefreshControl, ActivityIndicator } from 'react-native';
+import { FlatList, Text, View, RefreshControl, ActivityIndicator, StatusBar } from 'react-native';
 import NewsFeedComposer from '@/src/components/ui/newsfeed.composer';
 import PostItemComponent, { Post } from '@/src/components/item/post.item';
 import { useTranslation } from 'react-i18next';
@@ -65,6 +65,10 @@ export default function NewsfeedTab() {
 
 	return (
 		<SafeAreaView edges={['top']} className="flex-1 bg-light-mode dark:bg-dark-mode">
+			<StatusBar
+				barStyle={"light-content"}
+				backgroundColor={isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY}
+			/>
 			<NavigateHeader title={t('header')} showSearch />
 			<FlatList
 				data={posts}

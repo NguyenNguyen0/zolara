@@ -1,5 +1,5 @@
 export const APP_COLOR = {
-	PRIMARY: '#2563eb', // BLUE
+	PRIMARY: '#8B5CF6', // like discord
 	SECONDARY: '',
 	TRANSPARENT: 'transparent',
 	// Theme Light

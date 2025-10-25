@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
 	View,
 	Text,
-	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
@@ -11,14 +10,14 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
+// import { useTheme } from '@/src/hooks/useTheme';
 import ShareQuestion from '@/src/components/button/share.question';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUpName() {
 	const { t } = useTranslation('signup-name');
 	const router = useRouter();
-	const { isDark } = useTheme();
+	// const { isDark } = useTheme();
 	const params = useLocalSearchParams();
 	const [name, setName] = useState('');
 
@@ -85,17 +84,12 @@ export default function SignUpName() {
 						<ShareQuestion
 							questionText={`• ${t('rule1')}`}
 							linkName={''}
-							path="/(auth)/login.email"
+							path="#"
 						/>
 						<ShareQuestion
 							questionText={`• ${t('rule2')}`}
 							linkName={''}
-							path="/(auth)/login.email"
-						/>
-						<ShareQuestion
-							questionText={`• ${t('rule3')}`}
-							linkName={t('rule3Link')}
-							path="/name-rules"
+							path="#"
 						/>
 					</View>
 

@@ -1,6 +1,6 @@
 import { APP_COLOR } from '@/src/utils/constants';
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/src/hooks/useTheme';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -167,9 +167,11 @@ export default function NavigateHeader({
 								{showQRScanner && (
 									<TouchableOpacity
 										onPress={() =>
-											router.navigate(
-												'/(screens)/(user)/qr',
-											)
+											// router.navigate(
+											// 	'/(screens)/(user)/qr',
+											// )
+											// TODO:
+											Alert.alert("In development mode!")
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>
@@ -231,9 +233,8 @@ export default function NavigateHeader({
 								{showMenu && (
 									<TouchableOpacity
 										onPress={() =>
-											console.log(
-												'Menu clicked: update later',
-											)
+											// TODO:
+											Alert.alert("In development mode!")
 										}
 										className="w-10 h-10 rounded-full items-center justify-center"
 									>

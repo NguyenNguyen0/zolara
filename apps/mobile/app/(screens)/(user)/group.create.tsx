@@ -10,6 +10,7 @@ import Avatar from '@/src/components/ui/avatar';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { useTranslation } from 'react-i18next';
+import { router } from 'expo-router';
 
 export default function GroupCreate() {
 	const { isDark } = useTheme();
@@ -41,6 +42,7 @@ export default function GroupCreate() {
 			name: c.name,
 			email: c.email,
 		})));
+		router.replace("/(screens)/(tabs)/conversation")
 	};
 
 	return (

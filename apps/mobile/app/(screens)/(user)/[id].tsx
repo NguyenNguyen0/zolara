@@ -9,13 +9,15 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { APP_COLOR } from '@/src/utils/constants';
-import PostItem, { Post } from '@/src/components/item/post.item';
+import { PostItem, Post } from '@/src/components/item/post.item';
 import { ImagePreviewModal } from '@/src/components/modal/image.preview.modal';
 import UserInfo from '@/src/components/ui/user.info';
 import UserPostEmpty from '@/src/components/ui/user.post.empty';
 import { MOCK_USER_PROFILE, MOCK_USER_POSTS } from '@/src/mocks/profile';
+import { useTheme } from '@/src/hooks/useTheme';
 
 export default function ProfileDetail() {
+	const { isDark } = useTheme();
 	const { t } = useTranslation('user');
 	const [refreshing, setRefreshing] = useState(false);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);

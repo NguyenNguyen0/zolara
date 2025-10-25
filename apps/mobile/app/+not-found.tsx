@@ -1,15 +1,14 @@
 import { Stack, useRouter } from 'expo-router';
-import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, Image, Dimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
+
+const { width } = Dimensions.get('window');
 
 export default function NotFoundScreen() {
 	const router = useRouter();
 	const { t } = useTranslation('not-found');
-	const { isDark } = useTheme();
 
 	const handleGoHome = () => {
 		router.replace('/');
@@ -27,20 +26,19 @@ export default function NotFoundScreen() {
 		<>
 			<Stack.Screen options={{ title: t('title') }} />
 			<View
-				className="flex-1 justify-center items-center p-5 bg-light-mode dark:bg-dark-mode"
+				className="flex-1 items-center bg-light-mode dark:bg-dark-mode"
 			>
-				<View className="mb-5">
-					<Ionicons
-						name="sad-outline"
-						size={120}
-						color={
-							isDark ? APP_COLOR.GRAY_200 : APP_COLOR.GRAY_700
-						}
+				<View className="w-full mb-5">
+					<Image
+						source={require('@/src/assets/default/404.gif')}
+						style={{ width: width, height: width * 0.8 }}
+						resizeMode="contain"
 					/>
 				</View>
 
 				<Text
-					className="text-7xl font-black mb-2.5 text-center text-dark-mode dark:text-light-mode"
+					className="text-6xl font-black mb-2.5 text-center"
+					style={{ color: APP_COLOR.GRAY_400 }}
 				>
 					{t('errorCode')}
 				</Text>
@@ -50,7 +48,7 @@ export default function NotFoundScreen() {
 					{t('subtitle')}
 				</Text>
 				<Text
-					className="text-base text-center leading-6 max-w-xs mb-10 dark:text-light-mode text-dark-mode"
+					className="text-base text-center leading-6 max-w-xs mb-5 dark:text-light-mode text-dark-mode"
 				>
 					{t('description')}
 				</Text>
