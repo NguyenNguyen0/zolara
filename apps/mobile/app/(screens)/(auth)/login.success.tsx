@@ -11,7 +11,6 @@ const LoginSuccess = () => {
 	const params = useLocalSearchParams();
 	const email = params.email as string;
 	const password = params.password as string;
-	const otp = params.otp as string;
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
@@ -19,7 +18,6 @@ const LoginSuccess = () => {
 		console.log('Login Success - Submit:', {
 			email,
 			password,
-			otp,
 			isLogin,
 			isSignup,
 		});

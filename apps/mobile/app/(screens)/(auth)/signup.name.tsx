@@ -23,7 +23,6 @@ export default function SignUpName() {
 
 	const email = params.email as string;
 	const password = params.password as string;
-	const otp = params.otp as string;
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
@@ -34,7 +33,6 @@ export default function SignUpName() {
 				name,
 				email,
 				password,
-				otp,
 				isLogin: isLogin ? 1 : 0,
 				isSignup: isSignup ? 1 : 0,
 			},

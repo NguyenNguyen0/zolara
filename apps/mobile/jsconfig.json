@@ -2,6 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      // why we need this? => https://stackoverflow.com/questions/79602687/react-native-expo-firebase-auth-component-auth-has-not-been-registered-yet
+      "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"],
       "@/*": ["./*"]
     }
   },

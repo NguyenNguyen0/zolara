@@ -18,10 +18,11 @@ export default function ScreenLayout() {
 				name="(auth)/confirm.password"
 				options={{ headerShown: false }}
 			/>
-			<Stack.Screen
+			{/* not use */}
+			{/* <Stack.Screen
 				name="(auth)/verify"
 				options={{ headerShown: false }}
-			/>
+			/> */}
 			<Stack.Screen
 				name="(auth)/login.success"
 				options={{ headerShown: false }}

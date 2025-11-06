@@ -1,8 +1,12 @@
 import { initializeApp } from 'firebase/app';
-import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import Constants from 'expo-constants';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { Platform } from 'react-native';
+
+//@ts-ignore
+import { connectAuthEmulator, getReactNativePersistence, initializeAuth } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const env = Constants.expoConfig?.extra || {};
 
@@ -14,13 +18,16 @@ const firebaseConfig = {
 	storageBucket: env.FIREBASE_STORAGE_BUCKET,
 	messagingSenderId: env.FIREBASE_MESSAGING_SENDER_ID,
 	appId: env.FIREBASE_APP_ID,
+	measurementId: env.FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
 
-export default app;
-export const auth = getAuth(app);
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 // using emulator if run with development mode
 if (__DEV__) {
