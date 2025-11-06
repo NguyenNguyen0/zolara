@@ -25,7 +25,6 @@ export default function SignUpAvatar() {
 	const name = params.name as string;
 	const email = params.email as string;
 	const password = params.password as string;
-	const otp = params.otp as string;
 	const birthday = params.birthday as string;
 	const gender = params.gender as string;
 	const isLogin = params.isLogin === '1';
@@ -38,7 +37,6 @@ export default function SignUpAvatar() {
 			name,
 			email,
 			password,
-			otp,
 			birthday,
 			gender,
 			imageUri: imageUri ? imageUri : 'none',
