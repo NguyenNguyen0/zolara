@@ -3,6 +3,9 @@
 	"compilerOptions": {
 		"strict": true,
 		"skipLibCheck": true,
+		// "types": [],
+		// "typeRoots": ["./node_modules/@types"],
+		// "moduleResolution": "bundler",
 		"paths": {
 			"@/*": [
 				"./*",
@@ -20,6 +23,8 @@
 		"nativewind-env.d.ts"
 	],
 	"exclude": [
-		"node_modules/@types/uuid"
+		"node_modules/@types/uuid",
+		"node_modules/**/uuid",
+		"**/node_modules/@types/uuid"
 	]
 }

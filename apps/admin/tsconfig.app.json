@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
+		"typeRoots": ["./node_modules/@types"],
+		"types": [],
 		"paths": {
 			"@/*": [
 				"./src/*"
@@ -33,5 +34,10 @@
 	},
 	"include": [
 		"src"
+	],
+	"exclude": [
+		"node_modules/@types/uuid",
+		"node_modules/**/uuid",
+		"**/node_modules/@types/uuid"
 	]
 }

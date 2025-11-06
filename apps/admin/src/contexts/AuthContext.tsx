@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { mockAdminUser, mockApiDelay } from '../services/mockData';
+import { FirebaseAuthService } from '../services/authService';
+import { AnalyticsService } from '../services/analyticsService';
 import { AuthContext, type User, type AuthContextType } from './AuthContextType';
 
 interface AuthProviderProps {
@@ -14,27 +15,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for existing authentication token on app start
-    const checkExistingAuth = async () => {
-      const token = localStorage.getItem('auth_token');
-      const userData = localStorage.getItem('user');
-
-      if (token && userData) {
-        try {
-          const parsedUser = JSON.parse(userData);
-          setUser(parsedUser);
-          console.log('Restored user session:', parsedUser.email);
-        } catch (err) {
-          console.error('Failed to parse stored user data:', err);
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('user');
-        }
+    // Listen to Firebase auth state changes
+    const unsubscribe = FirebaseAuthService.onAuthStateChanged((firebaseUser) => {
+      if (firebaseUser) {
+        const userData: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email || '',
+          displayName: firebaseUser.displayName || 'Admin User',
+          role: firebaseUser.role,
+        };
+        setUser(userData);
+        console.log('User authenticated:', userData.email);
+      } else {
+        setUser(null);
+        console.log('User logged out');
       }
-
       setIsInitialized(true);
-    };
+    });
 
-    checkExistingAuth();
+    // Cleanup listener on component unmount
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -42,40 +42,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      // Simulate API delay
-      await mockApiDelay(1000);
+      const firebaseUser = await FirebaseAuthService.signIn(email, password);
 
-      // Mock authentication - in real app, this would be an API call
-      if (email === mockAdminUser.email && password === 'admin123') {
-        const userData = {
-          id: mockAdminUser.id,
-          email: mockAdminUser.email,
-          displayName: mockAdminUser.displayName,
-          role: mockAdminUser.role,
-        };
+      // Log analytics event
+      AnalyticsService.logAdminLogin('email');
 
-        // Store auth token and user data
-        localStorage.setItem('auth_token', mockAdminUser.token);
-        localStorage.setItem('user', JSON.stringify(userData));
+      const userData: User = {
+        id: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        displayName: firebaseUser.displayName || 'Admin User',
+        role: firebaseUser.role,
+      };
 
-        setUser(userData);
-        console.log('Login successful:', userData.email);
-      } else {
-        throw new Error('Invalid credentials');
-      }
+      setUser(userData);
+      console.log('Login successful:', userData.email);
     } catch (err: unknown) {
       console.error('Login error:', err);
-
-      let errorMessage = 'Failed to login. Please try again.';
-      const error = err as { message?: string };
-
-      if (error.message === 'Invalid credentials') {
-        errorMessage = 'Invalid email or password.';
-      } else {
-        errorMessage = error.message || 'An error occurred during login.';
-      }
-
-      setError(errorMessage);
+      const error = err as Error;
+      setError(error.message);
       throw err;
     } finally {
       setIsLoading(false);
@@ -87,19 +71,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      // Simulate API delay
-      await mockApiDelay(500);
+      await FirebaseAuthService.signOut();
 
-      // Clear stored data
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user');
+      // Log analytics event
+      AnalyticsService.logAdminLogout();
 
       setUser(null);
       console.log('Logout successful');
     } catch (err: unknown) {
-      const error = err as { message?: string };
+      const error = err as Error;
       console.error('Logout error:', err);
-      setError(error.message || 'Failed to logout. Please try again.');
+      setError(error.message);
       throw err;
     } finally {
       setIsLoading(false);

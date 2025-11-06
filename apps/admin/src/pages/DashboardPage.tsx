@@ -1,15 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useDashboard } from '../hooks/useDashboard';
+import { AnalyticsService, type AnalyticsData } from '../services/analyticsService';
+import { FirebaseAuthService } from '../services/authService';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
+import { AnalyticsDashboard } from '../components/ui/AnalyticsDashboard';
 import {
   UserGrowthChart,
   MessageActivityChart,
   CallDistributionChart,
   PerformanceMetricsChart
 } from '../components/ui/Charts';
-import { LogOut, Users, MessageSquare, Phone, Activity } from 'lucide-react';
+import { LogOut, Users, MessageSquare, Phone, Activity, UserPlus, BarChart3 } from 'lucide-react';
 import logoSrc from '../assets/logo.png';
 
 export const DashboardPage: React.FC = () => {
@@ -23,10 +26,32 @@ export const DashboardPage: React.FC = () => {
     refreshStats
   } = useDashboard();
 
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [realtimeData, setRealtimeData] = useState<{
+    activeUsers: number;
+    currentPageViews: number;
+    topActivePages: Array<{ page: string; activeUsers: number }>;
+  } | null>(null);
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+
   // Load stats on mount
   useEffect(() => {
     refreshStats();
+    loadAnalyticsData();
   }, [refreshStats]);
+
+  const loadAnalyticsData = async () => {
+    try {
+      const [analytics, realtime] = await Promise.all([
+        AnalyticsService.getAnalyticsData(),
+        AnalyticsService.getRealtimeData()
+      ]);
+      setAnalyticsData(analytics);
+      setRealtimeData(realtime);
+    } catch (error) {
+      console.error('Failed to load analytics data:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -39,8 +64,26 @@ export const DashboardPage: React.FC = () => {
   const handleRefreshStats = async () => {
     try {
       await refreshStats();
+      await loadAnalyticsData();
     } catch (error) {
       console.error('Failed to refresh stats:', error);
+    }
+  };
+
+  const createDemoUser = async () => {
+    setIsCreatingUser(true);
+    try {
+      await FirebaseAuthService.createAdminUser(
+        'demo@zolara.com',
+        'demo123',
+        'Demo Admin'
+      );
+      alert('Demo admin user created successfully!\nEmail: demo@zolara.com\nPassword: demo123');
+    } catch (error) {
+      console.error('Failed to create demo user:', error);
+      alert('Failed to create demo user. User might already exist.');
+    } finally {
+      setIsCreatingUser(false);
     }
   };
 
@@ -74,6 +117,15 @@ export const DashboardPage: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                onClick={createDemoUser}
+                disabled={isCreatingUser}
+                className="border-green-200 text-green-600 hover:bg-green-50"
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                {isCreatingUser ? 'Creating...' : 'Create Demo User'}
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleRefreshStats}
@@ -278,6 +330,23 @@ export const DashboardPage: React.FC = () => {
             <PerformanceMetricsChart />
           </div>
         </div>
+
+        {/* Firebase Analytics Section */}
+        {analyticsData && realtimeData && (
+          <div className="mt-8">
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-4 h-4 text-white" />
+                </div>
+                <h2 className="text-lg font-medium text-gray-900">Firebase Analytics</h2>
+              </div>
+              <p className="text-sm text-gray-500">Real-time analytics and user behavior insights</p>
+              <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mt-2"></div>
+            </div>
+            <AnalyticsDashboard analyticsData={analyticsData} realtimeData={realtimeData} />
+          </div>
+        )}
 
         {/* Current Session Stats (if available) */}
         {callStats.currentSessionStats && (

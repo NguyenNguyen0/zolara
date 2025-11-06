@@ -1,20 +1,22 @@
 # Zolara Admin Dashboard
 
-A React-based admin dashboard for managing the Zolara messaging application. This app has been migrated from Firebase/Agora to use axios for API calls with mock data for preview purposes.
+A React-based admin dashboard for managing the Zolara messaging application, now integrated with Firebase Authentication and Analytics for real user management and analytics tracking.
 
 ## Features
 
-- 🔐 Mock authentication system
-- 📊 Dashboard with user, message, and call statistics
-- � Interactive charts and analytics (Chart.js)
-- �📱 Responsive design with Tailwind CSS
-- 🎨 Modern UI components
-- 🔄 Real-time data refresh capability
-- 🚀 Mock data for preview and testing
+- 🔐 **Firebase Authentication** - Secure admin login system
+- 📊 **Firebase Analytics** - Real-time user behavior tracking
+- 📈 **Analytics Dashboard** - Live metrics and user insights
+- 🔄 **Real-time Data** - Live user activity monitoring
+- 📱 **Responsive Design** - Works on desktop and mobile
+- 🎨 **Modern UI** - Clean interface with Tailwind CSS
+- 🚀 **Demo User Creation** - Easy setup for testing
 
 ## Technology Stack
 
 - **Frontend**: React 19, TypeScript
+- **Authentication**: Firebase Auth
+- **Analytics**: Firebase Analytics
 - **Styling**: Tailwind CSS
 - **HTTP Client**: Axios
 - **Build Tool**: Vite
@@ -28,6 +30,7 @@ A React-based admin dashboard for managing the Zolara messaging application. Thi
 
 - Node.js 18+
 - npm or yarn
+- Firebase project (see setup guide below)
 
 ### Installation
 
@@ -46,17 +49,22 @@ A React-based admin dashboard for managing the Zolara messaging application. Thi
    cp .env.example .env
    ```
 
-4. Start the development server:
+4. **Set up Firebase** (required):
+   - See [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) for detailed instructions
+   - Update `.env` with your Firebase configuration
+
+5. Start the development server:
    ```bash
    npm run dev
    ```
 
-5. Open your browser and navigate to `http://localhost:5173`
+6. Open your browser and navigate to `http://localhost:5173`
 
-### Login Credentials (Mock Data)
+### Authentication Setup
 
-- **Email**: `admin@zolara.com`
-- **Password**: `admin123`
+1. **Create Firebase Project**: Follow the [Firebase Setup Guide](./FIREBASE_SETUP.md)
+2. **Create Admin User**: Use the "Create Demo User" button in the dashboard
+3. **Login**: Use your Firebase user credentials
 
 ## Environment Configuration
 
@@ -65,6 +73,19 @@ The app uses the following environment variables:
 ```env
 # Backend API Configuration
 VITE_API_BASE_URL=http://localhost:3000/api
+
+# Environment
+VITE_NODE_ENV=development
+VITE_USE_MOCK_DATA=false
+
+# Firebase Configuration (Required)
+VITE_FIREBASE_API_KEY=your-api-key-here
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+VITE_FIREBASE_MEASUREMENT_ID=your-measurement-id
 
 # Environment Configuration
 VITE_NODE_ENV=development

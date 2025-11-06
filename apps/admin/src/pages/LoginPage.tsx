@@ -148,7 +148,9 @@ export const LoginPage: React.FC = () => {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Demo credentials: admin@demo.com / password123
+                Use Firebase Authentication to sign in.
+                <br />
+                Create a demo user from the dashboard if needed.
               </p>
             </div>
           </CardContent>
