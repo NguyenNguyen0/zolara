@@ -4,5 +4,10 @@
     "paths": {
       "@/*": ["./*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules/@types/uuid",
+    "node_modules/**/uuid",
+    "**/node_modules/@types/uuid"
+  ]
 }
