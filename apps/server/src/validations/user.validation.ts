@@ -5,19 +5,18 @@ export const updateUserSchema = Yup.object().shape({
 	firstName: Yup.string(),
 	lastName: Yup.string(),
 	bio: Yup.string(),
-	dob: Yup.string().nullable(),
+	dob: Yup.date().nullable(),
 	gender: Yup.string().oneOf(['male', 'female', 'other', 'prefer_not_to_say']).nullable(),
 	avatar: Yup.string().url('Invalid avatar URL').nullable(),
-	enable: Yup.boolean(),
-	active: Yup.boolean(),
+	isLocked: Yup.boolean(),
 });
 
 export const updateRoleSchema = Yup.object().shape({
 	roleId: Yup.string().required('roleId is required'),
 });
 
-export const toggleActiveSchema = Yup.object().shape({
-	active: Yup.boolean().required('Active status is required'),
+export const toggleLockSchema = Yup.object().shape({
+	isLocked: Yup.boolean().required('Locked status is required'),
 });
 
 export { validateRequest };

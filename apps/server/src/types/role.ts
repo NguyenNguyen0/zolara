@@ -4,9 +4,9 @@ export interface Role {
 	description: string; // Vietnamese description
 	permissionIds?: string[]; // Array of permission IDs
 	active?: boolean;
-	createdAt?: string;
+	createdAt?: Date;
 	createdBy?: string;
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 
@@ -16,10 +16,10 @@ export interface RoleDocument extends Role {
 	description: string;
 	permissionIds: string[];
 	active: boolean;
-	createdAt: string;
+	createdAt: Date;
 	createdBy: string;
 	// Optional fields (only present when updated)
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 

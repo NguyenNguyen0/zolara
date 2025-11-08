@@ -5,7 +5,7 @@ import {
 	updateUser,
 	deleteUser,
 	updateRole,
-	toggleActive,
+	toggleLock,
 } from '../controllers/user.controller';
 import { verifyAuth, requireAdmin } from '../middlewares/auth.middleware';
 
@@ -15,7 +15,7 @@ const router = Router();
  * @swagger
  * /api/users:
  *   get:
- *     summary: Lấy danh sách users (Admin only)
+ *     summary: Get list of users (Admin only)
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -25,21 +25,21 @@ const router = Router();
  *         schema:
  *           type: integer
  *           default: 1
- *         description: Số trang
+ *         description: Page number
  *       - in: query
  *         name: pageSize
  *         schema:
  *           type: integer
  *           default: 20
- *         description: Số lượng items mỗi trang
+ *         description: Number of items per page
  *       - in: query
- *         name: active
+ *         name: isLocked
  *         schema:
  *           type: boolean
- *         description: Lọc theo trạng thái active
+ *         description: Filter by locked status
  *     responses:
  *       200:
- *         description: Danh sách users
+ *         description: List of users
  *         content:
  *           application/json:
  *             schema:
@@ -56,7 +56,7 @@ const router = Router();
  *                 traceId:
  *                   type: string
  *       403:
- *         description: Không có quyền truy cập
+ *         description: Access denied
  *         content:
  *           application/json:
  *             schema:
@@ -68,7 +68,7 @@ router.get('/', verifyAuth, requireAdmin, getUsers);
  * @swagger
  * /api/users/{id}:
  *   get:
- *     summary: Lấy thông tin user theo ID
+ *     summary: Get user information by ID
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -81,7 +81,7 @@ router.get('/', verifyAuth, requireAdmin, getUsers);
  *         description: User ID
  *     responses:
  *       200:
- *         description: Thông tin user
+ *         description: User information
  *         content:
  *           application/json:
  *             schema:
@@ -92,7 +92,7 @@ router.get('/', verifyAuth, requireAdmin, getUsers);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: User không tồn tại
+ *         description: User not found
  *         content:
  *           application/json:
  *             schema:
@@ -104,7 +104,7 @@ router.get('/:id', verifyAuth, getUserById);
  * @swagger
  * /api/users/{id}:
  *   put:
- *     summary: Cập nhật user (Admin hoặc chính mình)
+ *     summary: Update user (Admin or self)
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -123,7 +123,7 @@ router.get('/:id', verifyAuth, getUserById);
  *             $ref: '#/components/schemas/UserUpdateRequest'
  *     responses:
  *       200:
- *         description: Cập nhật thành công
+ *         description: Update successful
  *         content:
  *           application/json:
  *             schema:
@@ -134,13 +134,13 @@ router.get('/:id', verifyAuth, getUserById);
  *                 traceId:
  *                   type: string
  *       403:
- *         description: Không có quyền cập nhật
+ *         description: Update permission denied
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User không tồn tại
+ *         description: User not found
  *         content:
  *           application/json:
  *             schema:
@@ -152,7 +152,7 @@ router.put('/:id', verifyAuth, updateUser);
  * @swagger
  * /api/users/{id}:
  *   delete:
- *     summary: Xóa user (Admin only)
+ *     summary: Delete user (Admin only)
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -165,15 +165,15 @@ router.put('/:id', verifyAuth, updateUser);
  *         description: User ID
  *     responses:
  *       204:
- *         description: Xóa thành công
+ *         description: Delete successful
  *       403:
- *         description: Không có quyền xóa
+ *         description: Delete permission denied
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User không tồn tại
+ *         description: User not found
  *         content:
  *           application/json:
  *             schema:
@@ -185,7 +185,7 @@ router.delete('/:id', verifyAuth, requireAdmin, deleteUser);
  * @swagger
  * /api/users/{id}/role:
  *   patch:
- *     summary: Cập nhật role của user (Admin only)
+ *     summary: Update user role (Admin only)
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -204,7 +204,7 @@ router.delete('/:id', verifyAuth, requireAdmin, deleteUser);
  *             $ref: '#/components/schemas/UpdateRoleRequest'
  *     responses:
  *       200:
- *         description: Cập nhật role thành công
+ *         description: Role updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -215,13 +215,13 @@ router.delete('/:id', verifyAuth, requireAdmin, deleteUser);
  *                 traceId:
  *                   type: string
  *       403:
- *         description: Không có quyền
+ *         description: Permission denied
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User hoặc Role không tồn tại
+ *         description: User or Role not found
  *         content:
  *           application/json:
  *             schema:
@@ -231,9 +231,9 @@ router.patch('/:id/role', verifyAuth, requireAdmin, updateRole);
 
 /**
  * @swagger
- * /api/users/{id}/active:
+ * /api/users/{id}/locked:
  *   patch:
- *     summary: Khoá/mở khóa tài khoản user (Admin only)
+ *     summary: Lock/unlock user account (Admin only)
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -249,10 +249,10 @@ router.patch('/:id/role', verifyAuth, requireAdmin, updateRole);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ToggleActiveRequest'
+ *             $ref: '#/components/schemas/ToggleLockRequest'
  *     responses:
  *       200:
- *         description: Cập nhật trạng thái thành công
+ *         description: Status updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -263,18 +263,18 @@ router.patch('/:id/role', verifyAuth, requireAdmin, updateRole);
  *                 traceId:
  *                   type: string
  *       403:
- *         description: Không có quyền
+ *         description: Permission denied
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: User không tồn tại
+ *         description: User not found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.patch('/:id/active', verifyAuth, requireAdmin, toggleActive);
+router.patch('/:id/locked', verifyAuth, requireAdmin, toggleLock);
 
 export default router;

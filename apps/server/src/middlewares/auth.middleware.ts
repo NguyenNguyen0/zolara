@@ -86,10 +86,10 @@ export const verifyAuth = async (
 			}
 		}
 
-		// Check if user is active (unless admin)
-		if (userData?.active === false && roleName !== 'ADMIN') {
+		// Check if user is locked (unless admin)
+		if (userData?.isLocked === true && roleName !== 'ADMIN') {
 			return next(
-				new AppError('Account is deactivated', 403, 'ACCOUNT_DEACTIVATED'),
+				new AppError('Account is locked', 403, 'ACCOUNT_LOCKED'),
 			);
 		}
 

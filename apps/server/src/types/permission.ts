@@ -5,9 +5,9 @@ export interface Permission {
 	module: string; // USER, AUTH, ACCESS-CONTROLLER
 	name: string; // Vietnamese name, e.g., "Lấy danh sách User"
 	active?: boolean;
-	createdAt?: string;
+	createdAt?: Date;
 	createdBy?: string;
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 
@@ -18,10 +18,10 @@ export interface PermissionDocument extends Permission {
 	module: string;
 	name: string;
 	active: boolean;
-	createdAt: string;
+	createdAt: Date;
 	createdBy: string;
 	// Optional fields (only present when updated)
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 
@@ -46,7 +46,7 @@ export interface RolePermission {
 	id?: string;
 	roleId: string;
 	permissionId: string;
-	createdAt?: string;
+	createdAt?: Date;
 	createdBy?: string;
 }
 

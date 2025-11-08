@@ -270,9 +270,9 @@
 									"description": "Items per page (default: 20)"
 								},
 								{
-									"key": "active",
+									"key": "isLocked",
 									"value": "",
-									"description": "Filter by active status (true/false), leave empty for all",
+									"description": "Filter by locked status (true/false), leave empty for all",
 									"disabled": true
 								}
 							]
@@ -431,7 +431,7 @@
 					"response": []
 				},
 				{
-					"name": "Toggle User Active Status",
+					"name": "Toggle User Lock Status",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -452,7 +452,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"active\": false\n}",
+							"raw": "{\n    \"isLocked\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -460,7 +460,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/users/{{userId}}/active",
+							"raw": "{{baseUrl}}/api/users/{{userId}}/locked",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -468,10 +468,10 @@
 								"api",
 								"users",
 								"{{userId}}",
-								"active"
+								"locked"
 							]
 						},
-						"description": "Toggle user active status to lock/unlock account (Admin only). Set active: true to activate, false to deactivate"
+						"description": "Toggle user lock status to lock/unlock account (Admin only). Set isLocked: true to lock, false to unlock"
 					},
 					"response": []
 				}

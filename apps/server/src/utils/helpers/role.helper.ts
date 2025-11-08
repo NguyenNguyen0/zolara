@@ -1,4 +1,5 @@
-import { db } from '../configs/firebase';
+import { db } from '../../configs/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export interface RoleInfo {
 	roleId: string | null;
@@ -11,9 +12,9 @@ export interface PopulatedRole {
 	description: string;
 	permissionIds: string[];
 	active: boolean;
-	createdAt: string;
+	createdAt: Date;
 	createdBy: string;
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 
@@ -60,6 +61,25 @@ export const getRoleInfoFromUser = async (userId: string): Promise<RoleInfo> => 
 };
 
 /**
+ * Convert Firestore Timestamp to Date
+ */
+const timestampToDate = (timestamp: any): Date => {
+	if (timestamp instanceof Timestamp) {
+		return timestamp.toDate();
+	}
+	if (timestamp?.toDate && typeof timestamp.toDate === 'function') {
+		return timestamp.toDate();
+	}
+	if (timestamp instanceof Date) {
+		return timestamp;
+	}
+	if (typeof timestamp === 'string') {
+		return new Date(timestamp);
+	}
+	return new Date();
+};
+
+/**
  * Populate role object from roleId
  */
 export const populateRole = async (roleId: string | null | undefined): Promise<PopulatedRole | null> => {
@@ -70,9 +90,15 @@ export const populateRole = async (roleId: string | null | undefined): Promise<P
 	try {
 		const roleDoc = await db.collection('roles').doc(roleId).get();
 		if (roleDoc.exists) {
+			const roleData = roleDoc.data();
+			if (!roleData) return null;
+			
 			return {
 				id: roleDoc.id,
-				...roleDoc.data(),
+				...roleData,
+				// Convert Timestamp to Date objects
+				createdAt: timestampToDate(roleData.createdAt),
+				updatedAt: roleData.updatedAt ? timestampToDate(roleData.updatedAt) : undefined,
 			} as PopulatedRole;
 		}
 	} catch (error) {

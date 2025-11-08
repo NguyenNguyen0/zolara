@@ -14,7 +14,7 @@ const router = Router();
  * @swagger
  * /api/permissions:
  *   get:
- *     summary: Lấy danh sách permissions (Admin only)
+ *     summary: Get list of permissions (Admin only)
  *     tags: [Permissions]
  *     security:
  *       - BearerAuth: []
@@ -23,15 +23,15 @@ const router = Router();
  *         name: module
  *         schema:
  *           type: string
- *         description: Lọc theo module (USER, AUTH, ACCESS-CONTROLLER)
+ *         description: Filter by module (USER, AUTH, ACCESS-CONTROLLER)
  *       - in: query
  *         name: active
  *         schema:
  *           type: boolean
- *         description: Lọc theo trạng thái active
+ *         description: Filter by active status
  *     responses:
  *       200:
- *         description: Danh sách permissions
+ *         description: List of permissions
  *         content:
  *           application/json:
  *             schema:
@@ -44,7 +44,7 @@ const router = Router();
  *                 traceId:
  *                   type: string
  *       403:
- *         description: Không có quyền truy cập
+ *         description: Access denied
  *         content:
  *           application/json:
  *             schema:
@@ -56,7 +56,7 @@ router.get('/', verifyAuth, requireAdmin, getPermissions);
  * @swagger
  * /api/permissions/{id}:
  *   get:
- *     summary: Lấy thông tin permission theo ID (Admin only)
+ *     summary: Get permission information by ID (Admin only)
  *     tags: [Permissions]
  *     security:
  *       - BearerAuth: []
@@ -69,7 +69,7 @@ router.get('/', verifyAuth, requireAdmin, getPermissions);
  *         description: Permission ID
  *     responses:
  *       200:
- *         description: Thông tin permission
+ *         description: Permission information
  *         content:
  *           application/json:
  *             schema:
@@ -80,7 +80,7 @@ router.get('/', verifyAuth, requireAdmin, getPermissions);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: Permission không tồn tại
+ *         description: Permission not found
  *         content:
  *           application/json:
  *             schema:
@@ -92,7 +92,7 @@ router.get('/:id', verifyAuth, requireAdmin, getPermissionById);
  * @swagger
  * /api/permissions:
  *   post:
- *     summary: Tạo permission mới (Admin only)
+ *     summary: Create new permission (Admin only)
  *     tags: [Permissions]
  *     security:
  *       - BearerAuth: []
@@ -104,7 +104,7 @@ router.get('/:id', verifyAuth, requireAdmin, getPermissionById);
  *             $ref: '#/components/schemas/PermissionCreateRequest'
  *     responses:
  *       201:
- *         description: Tạo permission thành công
+ *         description: Permission created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -115,7 +115,7 @@ router.get('/:id', verifyAuth, requireAdmin, getPermissionById);
  *                 traceId:
  *                   type: string
  *       409:
- *         description: Permission đã tồn tại
+ *         description: Permission already exists
  *         content:
  *           application/json:
  *             schema:
@@ -127,7 +127,7 @@ router.post('/', verifyAuth, requireAdmin, createPermission);
  * @swagger
  * /api/permissions/{id}:
  *   put:
- *     summary: Cập nhật permission (Admin only)
+ *     summary: Update permission (Admin only)
  *     tags: [Permissions]
  *     security:
  *       - BearerAuth: []
@@ -146,7 +146,7 @@ router.post('/', verifyAuth, requireAdmin, createPermission);
  *             $ref: '#/components/schemas/PermissionUpdateRequest'
  *     responses:
  *       200:
- *         description: Cập nhật thành công
+ *         description: Update successful
  *         content:
  *           application/json:
  *             schema:
@@ -157,7 +157,7 @@ router.post('/', verifyAuth, requireAdmin, createPermission);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: Permission không tồn tại
+ *         description: Permission not found
  *         content:
  *           application/json:
  *             schema:
@@ -169,7 +169,7 @@ router.put('/:id', verifyAuth, requireAdmin, updatePermission);
  * @swagger
  * /api/permissions/{id}:
  *   delete:
- *     summary: Xóa permission (Admin only)
+ *     summary: Delete permission (Admin only)
  *     tags: [Permissions]
  *     security:
  *       - BearerAuth: []
@@ -182,15 +182,15 @@ router.put('/:id', verifyAuth, requireAdmin, updatePermission);
  *         description: Permission ID
  *     responses:
  *       204:
- *         description: Xóa thành công
+ *         description: Delete successful
  *       403:
- *         description: Permission đang được sử dụng bởi role
+ *         description: Permission is in use by roles
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: Permission không tồn tại
+ *         description: Permission not found
  *         content:
  *           application/json:
  *             schema:

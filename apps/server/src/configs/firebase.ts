@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import path from 'path';
 import fs from 'fs';
 import chalk from 'chalk';
-import { validateConfig } from '../utils/config.helper';
+import { validateConfig } from '../utils/helpers';
 
 // Validate configuration and get service account file path
 const serviceAccountPath = validateConfig();

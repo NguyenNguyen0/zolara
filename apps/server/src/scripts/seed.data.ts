@@ -1,5 +1,6 @@
 import { auth, db } from '../configs/firebase';
 import { Permission, Role } from '../types';
+import { Timestamp } from 'firebase-admin/firestore';
 
 // Permission data based on the API table
 const permissions: Omit<Permission, 'id' | 'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy'>[] = [
@@ -81,7 +82,6 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 	try {
 		console.log('🌱 Starting to seed permissions, roles, and admin users...');
 
-		const now = new Date().toISOString();
 		const createdBy = adminUserId || 'system';
 
 		// Step 1: Seed Permissions
@@ -104,7 +104,7 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 				const docRef = db.collection('permissions').doc();
 				await docRef.set({
 					...permission,
-					createdAt: now,
+					createdAt: Timestamp.fromDate(new Date()),
 					createdBy,
 					// Note: updatedAt and updatedBy are NOT included in creation
 				});
@@ -144,7 +144,7 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 				await docRef.set({
 					...role,
 					permissionIds: rolePermissionIds,
-					createdAt: now,
+					createdAt: Timestamp.fromDate(new Date()),
 					createdBy,
 					// Note: updatedAt and updatedBy are NOT included in creation
 				});
@@ -189,20 +189,19 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 					if (!userDoc.exists) {
 						// Create user profile in Firestore with ADMIN roleId
 						// Note: id is document ID, not a field in the document
+						const nowDate = new Date();
 						const userProfile = {
 							email: userRecord.email,
 							firstName: '',
 							lastName: '',
-							enable: true,
-							active: true,
-							isOnline: false,
-							lastSeen: new Date().toISOString(),
-							createdAt: new Date().toISOString(),
+							isLocked: false,
+							isActive: false,
+							lastActivity: Timestamp.fromDate(nowDate),
+							createdAt: Timestamp.fromDate(nowDate),
 							createdBy: 'system',
 							roleId: adminRoleId, // Set roleId instead of role name
 							dob: null,
 							gender: null,
-							typingTo: null,
 							bio: null,
 							avatar: null,
 							// Note: updatedAt and updatedBy are NOT included in creation
@@ -220,7 +219,7 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 						if (existingData?.roleId !== adminRoleId) {
 							await db.collection('users').doc(userRecord.uid).update({
 								roleId: adminRoleId,
-								updatedAt: new Date().toISOString(),
+								updatedAt: Timestamp.fromDate(new Date()),
 								updatedBy: 'system',
 							});
 							await auth.setCustomUserClaims(userRecord.uid, { role: adminRoleName });
@@ -272,20 +271,19 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 					if (!userDoc.exists) {
 						// Create user profile in Firestore with USER roleId
 						// Note: id is document ID, not a field in the document
+						const nowDate = new Date();
 						const userProfile = {
 							email: userRecord.email,
 							firstName: '',
 							lastName: '',
-							enable: true,
-							active: true,
-							isOnline: false,
-							lastSeen: new Date().toISOString(),
-							createdAt: new Date().toISOString(),
+							isLocked: false,
+							isActive: false,
+							lastActivity: Timestamp.fromDate(nowDate),
+							createdAt: Timestamp.fromDate(nowDate),
 							createdBy: 'system',
 							roleId: userRoleId, // Set roleId for USER role
 							dob: null,
 							gender: null,
-							typingTo: null,
 							bio: null,
 							avatar: null,
 							// Note: updatedAt and updatedBy are NOT included in creation
@@ -303,7 +301,7 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 						if (existingData?.roleId !== userRoleId) {
 							await db.collection('users').doc(userRecord.uid).update({
 								roleId: userRoleId,
-								updatedAt: new Date().toISOString(),
+								updatedAt: Timestamp.fromDate(new Date()),
 								updatedBy: 'system',
 							});
 							await auth.setCustomUserClaims(userRecord.uid, { role: userRoleName });

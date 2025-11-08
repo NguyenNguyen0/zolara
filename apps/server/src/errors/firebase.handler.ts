@@ -1,7 +1,9 @@
-import { AppError } from '../types';
+import { AppError } from '../types/app-error';
+import { ErrorCode, ErrorMessage } from '../constants/errors';
 
 /**
  * Handle Firebase Auth errors and convert to AppError
+ * Maps Firebase-specific error codes to application error codes
  */
 export const handleFirebaseAuthError = (error: any): AppError => {
 	const errorCode = error.code || '';
@@ -19,7 +21,7 @@ export const handleFirebaseAuthError = (error: any): AppError => {
 			});
 
 		case 'auth/invalid-email':
-			return new AppError('Invalid email format', 400, 'VALIDATION', {
+			return new AppError('Invalid email format', 400, ErrorCode.VALIDATION_ERROR, {
 				errors: [
 					{
 						field: 'email',
@@ -30,26 +32,26 @@ export const handleFirebaseAuthError = (error: any): AppError => {
 			});
 
 		case 'auth/user-not-found':
-			return new AppError('User not found', 404, 'USER_NOT_FOUND');
+			return new AppError(ErrorMessage.USER_NOT_FOUND, 404, ErrorCode.USER_NOT_FOUND);
 
 		case 'auth/id-token-expired':
-			return new AppError('Token has expired', 401, 'TOKEN_EXPIRED');
+			return new AppError(ErrorMessage.TOKEN_EXPIRED, 401, ErrorCode.TOKEN_EXPIRED);
 
 		case 'auth/id-token-revoked':
 		case 'auth/invalid-id-token':
-			return new AppError('Invalid token', 401, 'INVALID_TOKEN');
+			return new AppError(ErrorMessage.INVALID_TOKEN, 401, ErrorCode.INVALID_TOKEN);
 
 		case 'auth/argument-error':
 			if (error.message?.includes('custom token')) {
-				return new AppError('Invalid custom token format', 401, 'INVALID_TOKEN');
+				return new AppError('Invalid custom token format', 401, ErrorCode.INVALID_TOKEN);
 			}
-			return new AppError('Invalid token format', 401, 'INVALID_TOKEN');
+			return new AppError('Invalid token format', 401, ErrorCode.INVALID_TOKEN);
 
 		default:
 			return new AppError(
-				error.message || 'An unexpected error occurred',
+				error.message || ErrorMessage.OPERATION_FAILED,
 				500,
-				'INTERNAL_ERROR',
+				ErrorCode.OPERATION_FAILED,
 			);
 	}
 };
