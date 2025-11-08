@@ -13,7 +13,7 @@ const router = Router();
  * @swagger
  * /api/auth/signup:
  *   post:
- *     summary: Đăng ký tài khoản mới
+ *     summary: Register a new account
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -23,7 +23,7 @@ const router = Router();
  *             $ref: '#/components/schemas/AuthRequest'
  *     responses:
  *       201:
- *         description: Đăng ký thành công
+ *         description: Registration successful
  *         content:
  *           application/json:
  *             schema:
@@ -34,7 +34,7 @@ const router = Router();
  *                 traceId:
  *                   type: string
  *       400:
- *         description: Lỗi validation
+ *         description: Validation error
  *         content:
  *           application/json:
  *             schema:
@@ -46,7 +46,7 @@ router.post('/signup', signup);
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Đăng nhập
+ *     summary: Login
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -56,7 +56,7 @@ router.post('/signup', signup);
  *             $ref: '#/components/schemas/AuthRequest'
  *     responses:
  *       200:
- *         description: Đăng nhập thành công
+ *         description: Login successful
  *         content:
  *           application/json:
  *             schema:
@@ -67,7 +67,7 @@ router.post('/signup', signup);
  *                 traceId:
  *                   type: string
  *       401:
- *         description: Email hoặc mật khẩu không đúng
+ *         description: Invalid email or password
  *         content:
  *           application/json:
  *             schema:
@@ -79,7 +79,7 @@ router.post('/login', login);
  * @swagger
  * /api/auth/refresh:
  *   post:
- *     summary: Làm mới token
+ *     summary: Refresh access token
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -89,7 +89,7 @@ router.post('/login', login);
  *             $ref: '#/components/schemas/RefreshTokenRequest'
  *     responses:
  *       200:
- *         description: Token mới được tạo thành công
+ *         description: New token created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -100,7 +100,7 @@ router.post('/login', login);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: User không tồn tại
+ *         description: User not found
  *         content:
  *           application/json:
  *             schema:
@@ -112,13 +112,13 @@ router.post('/refresh', refreshToken);
  * @swagger
  * /api/auth/me:
  *   get:
- *     summary: Lấy thông tin user hiện tại
+ *     summary: Get current user information
  *     tags: [Auth]
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Thông tin user
+ *         description: User information
  *         content:
  *           application/json:
  *             schema:
@@ -129,7 +129,7 @@ router.post('/refresh', refreshToken);
  *                 traceId:
  *                   type: string
  *       401:
- *         description: Chưa đăng nhập
+ *         description: Not authenticated
  *         content:
  *           application/json:
  *             schema:

@@ -3,19 +3,17 @@ export interface User {
 	email: string;
 	firstName: string;
 	lastName: string;
-	enable: boolean;
-	active: boolean;
-	isOnline: boolean;
-	lastSeen: string;
-	createdAt: string;
+	isLocked: boolean;
+	isActive: boolean;
+	lastActivity: Date;
+	createdAt: Date;
 	createdBy: string;
 	roleId: string;
-	dob: string | null;
+	dob: Date | null;
 	gender: string | null;
-	typingTo: string | null;
 	bio: string | null;
 	avatar: string | null;
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 
@@ -24,20 +22,18 @@ export interface UserDocument {
 	email: string;
 	firstName: string;
 	lastName: string;
-	enable: boolean;
-	active: boolean;
-	isOnline: boolean;
-	lastSeen: string;
-	createdAt: string;
+	isLocked: boolean;
+	isActive: boolean;
+	lastActivity: Date;
+	createdAt: Date;
 	createdBy: string;
 	roleId: string; // ID of role document
-	dob: string | null;
+	dob: Date | null;
 	gender: string | null;
-	typingTo: string | null;
 	bio: string | null;
 	avatar: string | null;
 	// Optional fields (only present when updated)
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 }
 
@@ -45,15 +41,13 @@ export interface UserCreateData {
 	email: string;
 	firstName?: string;
 	lastName?: string;
-	enable?: boolean;
-	active?: boolean;
-	isOnline?: boolean;
-	lastSeen?: string;
+	isLocked?: boolean;
+	isActive?: boolean;
+	lastActivity?: Date;
 	roleId: string;
 	createdBy: string;
-	dob?: string | null;
+	dob?: Date | null;
 	gender?: string | null;
-	typingTo?: string | null;
 	bio?: string | null;
 	avatar?: string | null;
 }
@@ -61,14 +55,12 @@ export interface UserCreateData {
 export interface UserUpdateData {
 	firstName?: string;
 	lastName?: string;
-	enable?: boolean;
-	active?: boolean;
-	isOnline?: boolean;
-	lastSeen?: string;
+	isLocked?: boolean;
+	isActive?: boolean;
+	lastActivity?: Date;
 	roleId?: string;
-	dob?: string | null;
+	dob?: Date | null;
 	gender?: string | null;
-	typingTo?: string | null;
 	bio?: string | null;
 	avatar?: string | null;
 }
@@ -81,18 +73,16 @@ export interface UserResponse {
 	roleName: string;
 	firstName: string;
 	lastName: string;
-	enable: boolean;
-	active: boolean;
-	isOnline: boolean;
-	lastSeen: string;
-	createdAt: string;
+	isLocked: boolean;
+	isActive: boolean;
+	lastActivity: Date;
+	createdAt: Date;
 	createdBy: string;
-	dob: string | null;
+	dob: Date | null;
 	gender: string | null;
-	typingTo: string | null;
 	bio: string | null;
 	avatar: string | null;
-	updatedAt?: string;
+	updatedAt?: Date;
 	updatedBy?: string;
 	emailVerified?: boolean;
 }
@@ -106,8 +96,7 @@ export interface UserRequest {
 	dob?: string;
 	gender?: string;
 	avatar?: string;
-	enable?: boolean;
-	active?: boolean;
+	isLocked?: boolean;
 	roleId?: string;
 }
 

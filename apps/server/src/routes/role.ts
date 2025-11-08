@@ -15,7 +15,7 @@ const router = Router();
  * @swagger
  * /api/roles:
  *   get:
- *     summary: Lấy danh sách roles (Admin only)
+ *     summary: Get list of roles (Admin only)
  *     tags: [Roles]
  *     security:
  *       - BearerAuth: []
@@ -24,10 +24,10 @@ const router = Router();
  *         name: active
  *         schema:
  *           type: boolean
- *         description: Lọc theo trạng thái active
+ *         description: Filter by active status
  *     responses:
  *       200:
- *         description: Danh sách roles
+ *         description: List of roles
  *         content:
  *           application/json:
  *             schema:
@@ -40,7 +40,7 @@ const router = Router();
  *                 traceId:
  *                   type: string
  *       403:
- *         description: Không có quyền truy cập
+ *         description: Access denied
  *         content:
  *           application/json:
  *             schema:
@@ -52,7 +52,7 @@ router.get('/', verifyAuth, requireAdmin, getRoles);
  * @swagger
  * /api/roles/{id}:
  *   get:
- *     summary: Lấy thông tin role theo ID (Admin only)
+ *     summary: Get role information by ID (Admin only)
  *     tags: [Roles]
  *     security:
  *       - BearerAuth: []
@@ -65,7 +65,7 @@ router.get('/', verifyAuth, requireAdmin, getRoles);
  *         description: Role ID
  *     responses:
  *       200:
- *         description: Thông tin role
+ *         description: Role information
  *         content:
  *           application/json:
  *             schema:
@@ -76,7 +76,7 @@ router.get('/', verifyAuth, requireAdmin, getRoles);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: Role không tồn tại
+ *         description: Role not found
  *         content:
  *           application/json:
  *             schema:
@@ -88,7 +88,7 @@ router.get('/:id', verifyAuth, requireAdmin, getRoleById);
  * @swagger
  * /api/roles:
  *   post:
- *     summary: Tạo role mới (Admin only)
+ *     summary: Create new role (Admin only)
  *     tags: [Roles]
  *     security:
  *       - BearerAuth: []
@@ -100,7 +100,7 @@ router.get('/:id', verifyAuth, requireAdmin, getRoleById);
  *             $ref: '#/components/schemas/RoleCreateRequest'
  *     responses:
  *       201:
- *         description: Tạo role thành công
+ *         description: Role created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -111,7 +111,7 @@ router.get('/:id', verifyAuth, requireAdmin, getRoleById);
  *                 traceId:
  *                   type: string
  *       409:
- *         description: Role đã tồn tại
+ *         description: Role already exists
  *         content:
  *           application/json:
  *             schema:
@@ -123,7 +123,7 @@ router.post('/', verifyAuth, requireAdmin, createRole);
  * @swagger
  * /api/roles/{id}:
  *   put:
- *     summary: Cập nhật role (Admin only)
+ *     summary: Update role (Admin only)
  *     tags: [Roles]
  *     security:
  *       - BearerAuth: []
@@ -142,7 +142,7 @@ router.post('/', verifyAuth, requireAdmin, createRole);
  *             $ref: '#/components/schemas/RoleUpdateRequest'
  *     responses:
  *       200:
- *         description: Cập nhật thành công
+ *         description: Update successful
  *         content:
  *           application/json:
  *             schema:
@@ -153,7 +153,7 @@ router.post('/', verifyAuth, requireAdmin, createRole);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: Role không tồn tại
+ *         description: Role not found
  *         content:
  *           application/json:
  *             schema:
@@ -165,7 +165,7 @@ router.put('/:id', verifyAuth, requireAdmin, updateRole);
  * @swagger
  * /api/roles/{id}:
  *   delete:
- *     summary: Xóa role (Admin only)
+ *     summary: Delete role (Admin only)
  *     tags: [Roles]
  *     security:
  *       - BearerAuth: []
@@ -178,15 +178,15 @@ router.put('/:id', verifyAuth, requireAdmin, updateRole);
  *         description: Role ID
  *     responses:
  *       204:
- *         description: Xóa thành công
+ *         description: Delete successful
  *       403:
- *         description: Role đang được sử dụng bởi user
+ *         description: Role is in use by users
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: Role không tồn tại
+ *         description: Role not found
  *         content:
  *           application/json:
  *             schema:
@@ -198,7 +198,7 @@ router.delete('/:id', verifyAuth, requireAdmin, deleteRole);
  * @swagger
  * /api/roles/{id}/permissions:
  *   patch:
- *     summary: Cập nhật permissions cho role (Admin only)
+ *     summary: Update role permissions (Admin only)
  *     tags: [Roles]
  *     security:
  *       - BearerAuth: []
@@ -217,7 +217,7 @@ router.delete('/:id', verifyAuth, requireAdmin, deleteRole);
  *             $ref: '#/components/schemas/UpdateRolePermissionsRequest'
  *     responses:
  *       200:
- *         description: Cập nhật permissions thành công
+ *         description: Permissions updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -228,7 +228,7 @@ router.delete('/:id', verifyAuth, requireAdmin, deleteRole);
  *                 traceId:
  *                   type: string
  *       404:
- *         description: Role hoặc Permission không tồn tại
+ *         description: Role or Permission not found
  *         content:
  *           application/json:
  *             schema:

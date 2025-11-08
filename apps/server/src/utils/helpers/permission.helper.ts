@@ -1,5 +1,25 @@
-import { db } from '../configs/firebase';
-import { AppError } from '../types';
+import { db } from '../../configs/firebase';
+import { AppError } from '../../types';
+import { Timestamp } from 'firebase-admin/firestore';
+
+/**
+ * Convert Firestore Timestamp to Date
+ */
+const timestampToDate = (timestamp: any): Date => {
+	if (timestamp instanceof Timestamp) {
+		return timestamp.toDate();
+	}
+	if (timestamp?.toDate && typeof timestamp.toDate === 'function') {
+		return timestamp.toDate();
+	}
+	if (timestamp instanceof Date) {
+		return timestamp;
+	}
+	if (typeof timestamp === 'string') {
+		return new Date(timestamp);
+	}
+	return new Date();
+};
 
 /**
  * Validate permission IDs and return invalid ones
@@ -53,7 +73,18 @@ export const getPermissionsByIds = async (permissionIds: string[]): Promise<any[
 	const permissions = await Promise.all(
 		permissionIds.map(async (permId: string) => {
 			const permDoc = await db.collection('permissions').doc(permId).get();
-			return permDoc.exists ? { id: permDoc.id, ...permDoc.data() } : null;
+			if (!permDoc.exists) return null;
+			
+			const permData = permDoc.data();
+			if (!permData) return null;
+
+			return {
+				id: permDoc.id,
+				...permData,
+				// Convert Timestamp to Date objects
+				createdAt: timestampToDate(permData.createdAt),
+				updatedAt: permData.updatedAt ? timestampToDate(permData.updatedAt) : undefined,
+			};
 		}),
 	);
 

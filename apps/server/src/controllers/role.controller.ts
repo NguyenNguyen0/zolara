@@ -1,64 +1,44 @@
 import { NextFunction, Request, Response } from 'express';
-import { db } from '../configs/firebase';
 import { AppError } from '../types';
 import { ok, created, noContent } from '../types/response';
-import { createRoleDocument, updateRoleDocument } from '../services/role.service';
+import {
+	getRolesService,
+	getRoleByIdService,
+	createRoleService,
+	updateRoleService,
+	deleteRoleService,
+	updateRolePermissionsService,
+} from '../services/role.service';
 import { createRoleSchema, updateRoleSchema, updateRolePermissionsSchema, validateRequest } from '../validations/role.validation';
-import { validatePermissionIdsOrThrow, getPermissionsByIds } from '../utils/permission.helper';
+import { handleRoleServiceError } from '../errors/role.handler';
+import { ErrorCode, ErrorMessage } from '../constants/errors';
 
 export const getRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const { active } = req.query;
+		const activeFilter = active !== undefined ? active === 'true' : undefined;
 
-		let query: any = db.collection('roles');
+		const result = await getRolesService({ active: activeFilter });
 
-		if (active !== undefined) {
-			const isActive = active === 'true';
-			query = query.where('active', '==', isActive);
-		}
-
-		const snapshot = await query.get();
-		const roles = await Promise.all(
-			snapshot.docs.map(async (doc: any) => {
-				const roleData = doc.data();
-				const permissionIds = roleData.permissionIds || [];
-				const permissions = await getPermissionsByIds(permissionIds);
-
-				return {
-					id: doc.id,
-					...roleData,
-					permissions,
-				};
-			}),
-		);
-
-		ok(res, roles);
+		ok(res, result.roles);
 	} catch (error: any) {
-		return next(error);
+		return next(handleRoleServiceError(error));
 	}
 };
 
 export const getRoleById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
+		const role = await getRoleByIdService(id);
 
-		const roleDoc = await db.collection('roles').doc(id).get();
-
-		if (!roleDoc.exists) {
-			return next(new AppError(`Role with id=${id} not found`, 404, 'ROLE_NOT_FOUND'));
+		if (!role) {
+			return next(new AppError(`Role with id=${id} not found`, 404, ErrorCode.ROLE_NOT_FOUND));
 		}
 
-		const roleData = roleDoc.data();
-		const permissionIds = roleData?.permissionIds || [];
-		const permissions = await getPermissionsByIds(permissionIds);
-
-		ok(res, {
-			id: roleDoc.id,
-			...roleData,
-			permissions,
-		});
+		ok(res, role);
 	} catch (error: any) {
-		return next(error);
+		return next(handleRoleServiceError(error, { id }));
 	}
 };
 
@@ -66,92 +46,44 @@ export const createRole = async (req: Request, res: Response, next: NextFunction
 	try {
 		const validatedData = await validateRequest(createRoleSchema, req.body);
 
-		if (validatedData.permissionIds && validatedData.permissionIds.length > 0) {
-			await validatePermissionIdsOrThrow(validatedData.permissionIds);
-		}
-
-		const existingRoles = await db.collection('roles').where('name', '==', validatedData.name.toUpperCase()).get();
-		if (!existingRoles.empty) {
-			return next(new AppError('Role with this name already exists', 409, 'ROLE_EXISTS'));
-		}
-
-		const role = await createRoleDocument({
-			...validatedData,
-			createdBy: req.user?.uid || 'system',
-		});
+		const role = await createRoleService(
+			validatedData,
+			req.user?.uid || 'system',
+		);
 
 		created(res, role, `/api/roles/${role.id}`);
 	} catch (error: any) {
-		return next(error);
+		return next(handleRoleServiceError(error));
 	}
 };
 
 export const updateRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
 		const validatedData = await validateRequest(updateRoleSchema, req.body);
 
-		const roleDoc = await db.collection('roles').doc(id).get();
+		const updatedRole = await updateRoleService(
+			id,
+			validatedData,
+			req.user?.uid || 'system',
+		);
 
-		if (!roleDoc.exists) {
-			return next(new AppError(`Role with id=${id} not found`, 404, 'ROLE_NOT_FOUND'));
-		}
-
-		if (validatedData.name !== undefined) {
-			const existingRoles = await db
-				.collection('roles')
-				.where('name', '==', validatedData.name.toUpperCase())
-				.get();
-
-			const isDuplicate = existingRoles.docs.some((doc) => doc.id !== id);
-			if (isDuplicate) {
-				return next(new AppError('Role with this name already exists', 409, 'ROLE_EXISTS'));
-			}
-		}
-
-		if (validatedData.permissionIds !== undefined && validatedData.permissionIds.length > 0) {
-			await validatePermissionIdsOrThrow(validatedData.permissionIds);
-		}
-
-		const updatedRole = await updateRoleDocument(id, validatedData, req.user?.uid || 'system');
-		const permissions = await getPermissionsByIds(updatedRole.permissionIds || []);
-
-		ok(res, {
-			...updatedRole,
-			permissions,
-		});
+		ok(res, updatedRole);
 	} catch (error: any) {
-		return next(error);
+		return next(handleRoleServiceError(error, { id }));
 	}
 };
 
 export const deleteRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
-
-		const roleDoc = await db.collection('roles').doc(id).get();
-
-		if (!roleDoc.exists) {
-			return next(new AppError(`Role with id=${id} not found`, 404, 'ROLE_NOT_FOUND'));
-		}
-
-		const usersSnapshot = await db.collection('users').where('roleId', '==', id).get();
-
-		if (!usersSnapshot.empty) {
-			return next(
-				new AppError(
-					'Cannot delete role that is assigned to users. Please reassign users first.',
-					409,
-					'ROLE_IN_USE',
-				),
-			);
-		}
-
-		await db.collection('roles').doc(id).delete();
+		await deleteRoleService(id);
 
 		noContent(res);
 	} catch (error: any) {
-		return next(error);
+		return next(handleRoleServiceError(error, { id }));
 	}
 };
 
@@ -160,33 +92,19 @@ export const updateRolePermissions = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
 		const validatedData = await validateRequest(updateRolePermissionsSchema, req.body);
 
-		const roleDoc = await db.collection('roles').doc(id).get();
-
-		if (!roleDoc.exists) {
-			return next(new AppError(`Role with id=${id} not found`, 404, 'ROLE_NOT_FOUND'));
-		}
-
-		if (validatedData.permissionIds.length > 0) {
-			await validatePermissionIdsOrThrow(validatedData.permissionIds);
-		}
-
-		const updatedRole = await updateRoleDocument(
+		const result = await updateRolePermissionsService(
 			id,
-			{ permissionIds: validatedData.permissionIds },
+			validatedData.permissionIds,
 			req.user?.uid || 'system',
 		);
 
-		const permissions = await getPermissionsByIds(validatedData.permissionIds);
-
-		ok(res, {
-			...updatedRole,
-			permissions,
-		});
+		ok(res, result);
 	} catch (error: any) {
-		return next(error);
+		return next(handleRoleServiceError(error, { id }));
 	}
 };

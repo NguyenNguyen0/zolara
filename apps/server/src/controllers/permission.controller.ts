@@ -1,9 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import { db } from '../configs/firebase';
 import { AppError } from '../types';
 import { ok, created, noContent } from '../types/response';
-import { createPermissionDocument, updatePermissionDocument } from '../services/permission.service';
+import {
+	getPermissionsService,
+	getPermissionByIdService,
+	createPermissionService,
+	updatePermissionService,
+	deletePermissionService,
+} from '../services/permission.service';
 import { createPermissionSchema, updatePermissionSchema, validateRequest } from '../validations/permission.validation';
+import { handlePermissionServiceError } from '../errors/permission.handler';
+import { ErrorCode, ErrorMessage } from '../constants/errors';
 
 export const getPermissions = async (
 	req: Request,
@@ -12,27 +19,17 @@ export const getPermissions = async (
 ): Promise<void> => {
 	try {
 		const { module, active } = req.query;
+		const moduleFilter = module as string | undefined;
+		const activeFilter = active !== undefined ? active === 'true' : undefined;
 
-		let query: any = db.collection('permissions');
+		const result = await getPermissionsService({
+			module: moduleFilter,
+			active: activeFilter,
+		});
 
-		if (module) {
-			query = query.where('module', '==', module);
-		}
-
-		if (active !== undefined) {
-			const isActive = active === 'true';
-			query = query.where('active', '==', isActive);
-		}
-
-		const snapshot = await query.get();
-		const permissions = snapshot.docs.map((doc: any) => ({
-			id: doc.id,
-			...doc.data(),
-		}));
-
-		ok(res, permissions);
+		ok(res, result.permissions);
 	} catch (error: any) {
-		return next(error);
+		return next(handlePermissionServiceError(error));
 	}
 };
 
@@ -41,21 +38,18 @@ export const getPermissionById = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
+		const permission = await getPermissionByIdService(id);
 
-		const permissionDoc = await db.collection('permissions').doc(id).get();
-
-		if (!permissionDoc.exists) {
-			return next(new AppError(`Permission with id=${id} not found`, 404, 'PERMISSION_NOT_FOUND'));
+		if (!permission) {
+			return next(new AppError(`Permission with id=${id} not found`, 404, ErrorCode.PERMISSION_NOT_FOUND));
 		}
 
-		ok(res, {
-			id: permissionDoc.id,
-			...permissionDoc.data(),
-		});
+		ok(res, permission);
 	} catch (error: any) {
-		return next(error);
+		return next(handlePermissionServiceError(error, { id }));
 	}
 };
 
@@ -67,26 +61,14 @@ export const createPermission = async (
 	try {
 		const validatedData = await validateRequest(createPermissionSchema, req.body);
 
-		const existingPermissions = await db
-			.collection('permissions')
-			.where('apiPath', '==', validatedData.apiPath)
-			.where('method', '==', validatedData.method)
-			.get();
-
-		if (!existingPermissions.empty) {
-			return next(
-				new AppError('Permission already exists for this API path and method', 409, 'PERMISSION_EXISTS'),
-			);
-		}
-
-		const permission = await createPermissionDocument({
-			...validatedData,
-			createdBy: req.user?.uid || 'system',
-		});
+		const permission = await createPermissionService(
+			validatedData,
+			req.user?.uid || 'system',
+		);
 
 		created(res, permission, `/api/permissions/${permission.id}`);
 	} catch (error: any) {
-		return next(error);
+		return next(handlePermissionServiceError(error));
 	}
 };
 
@@ -95,39 +77,20 @@ export const updatePermission = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
 		const validatedData = await validateRequest(updatePermissionSchema, req.body);
 
-		const permissionDoc = await db.collection('permissions').doc(id).get();
-
-		if (!permissionDoc.exists) {
-			return next(new AppError(`Permission with id=${id} not found`, 404, 'PERMISSION_NOT_FOUND'));
-		}
-
-		if (validatedData.apiPath !== undefined || validatedData.method !== undefined) {
-			const checkApiPath = validatedData.apiPath || permissionDoc.data()?.apiPath;
-			const checkMethod = validatedData.method || permissionDoc.data()?.method;
-
-			const existingPermissions = await db
-				.collection('permissions')
-				.where('apiPath', '==', checkApiPath)
-				.where('method', '==', checkMethod)
-				.get();
-
-			const isDuplicate = existingPermissions.docs.some((doc) => doc.id !== id);
-			if (isDuplicate) {
-				return next(
-					new AppError('Permission already exists for this API path and method', 409, 'PERMISSION_EXISTS'),
-				);
-			}
-		}
-
-		const updatedPermission = await updatePermissionDocument(id, validatedData, req.user?.uid || 'system');
+		const updatedPermission = await updatePermissionService(
+			id,
+			validatedData,
+			req.user?.uid || 'system',
+		);
 
 		ok(res, updatedPermission);
 	} catch (error: any) {
-		return next(error);
+		return next(handlePermissionServiceError(error, { id }));
 	}
 };
 
@@ -136,35 +99,13 @@ export const deletePermission = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
+	const { id } = req.params;
+
 	try {
-		const { id } = req.params;
-
-		const permissionDoc = await db.collection('permissions').doc(id).get();
-
-		if (!permissionDoc.exists) {
-			return next(new AppError(`Permission with id=${id} not found`, 404, 'PERMISSION_NOT_FOUND'));
-		}
-
-		const rolesSnapshot = await db.collection('roles').get();
-		const rolesUsingPermission = rolesSnapshot.docs.filter((doc) => {
-			const permissionIds = doc.data()?.permissionIds || [];
-			return permissionIds.includes(id);
-		});
-
-		if (rolesUsingPermission.length > 0) {
-			return next(
-				new AppError(
-					'Cannot delete permission that is assigned to roles. Please remove it from roles first.',
-					409,
-					'PERMISSION_IN_USE',
-				),
-			);
-		}
-
-		await db.collection('permissions').doc(id).delete();
+		await deletePermissionService(id);
 
 		noContent(res);
 	} catch (error: any) {
-		return next(error);
+		return next(handlePermissionServiceError(error, { id }));
 	}
 };
