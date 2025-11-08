@@ -1,0 +1,4 @@
+.env
+
+# Firebase service account keys
+env/*.json
