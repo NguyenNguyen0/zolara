@@ -1,321 +1,332 @@
-import { Request, Response } from 'express';
-import { db, bucket } from '../configs/firebase.config';
-import {
-	User,
-	UpdateUserProfileRequestSchema,
-	ResetPasswordRequestSchema,
-	CreateUserProfileRequestSchema,
-} from '@repo/types';
+import { NextFunction, Request, Response } from 'express';
+import { auth, db } from '../configs/firebase';
+import { AppError } from '../types';
+import { ok, noContent } from '../types/response';
+import { getUserDocument, updateUserDocument } from '../services/user.service';
+import { updateUserSchema, updateRoleSchema, toggleActiveSchema, validateRequest } from '../validations/user.validation';
+import { populateRole } from '../utils/role.helper';
 
-const USERS_COLLECTION = 'users';
-const FRIEND_LISTS_COLLECTION = 'friendLists';
-
-export const getUserProfile = async (
-	req: Request & { user?: any },
+export const getUsers = async (
+	req: Request,
 	res: Response,
-) => {
+	next: NextFunction,
+): Promise<void> => {
 	try {
-		// Handle the case where 'me' is requested but user is not authenticated
-		if (req.params.id === 'me' && !req.user) {
-			return res.status(401).json({
-				success: false,
-				message: 'Authentication required',
-				error: 'You must be logged in to access your own profile',
-			});
-		}
+		const page = parseInt(req.query.page as string) || 1;
+		const pageSize = parseInt(req.query.pageSize as string) || 20;
+		const active = req.query.active !== undefined ? req.query.active === 'true' : undefined;
+		const limit = pageSize;
 
-		// Use ID from token if the "me" parameter is provided, otherwise use the ID from the URL
-		const userId =
-			req.params.id === 'me' && req.user ? req.user.uid : req.params.id;
+		let users: any[] = [];
+		let total: number;
 
-		const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
+		if (active !== undefined) {
+			const allUsersSnapshot = await db.collection('users').get();
+			
+			const filteredUsers = allUsersSnapshot.docs
+				.map((doc: any) => ({
+					id: doc.id,
+					...doc.data(),
+				}))
+				.filter((user: any) => user.active === active)
+				.sort((a: any, b: any) => {
+					const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+					const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+					return bDate - aDate;
+				});
 
-		if (!userDoc.exists) {
-			return res.status(404).json({
-				success: false,
-				message: 'User not found',
-				error: 'User with this ID does not exist',
-			});
-		}
+			total = filteredUsers.length;
+			const startIndex = (page - 1) * pageSize;
+			const endIndex = startIndex + pageSize;
+			const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
-		const userData = userDoc.data() as User;
-
-		return res.status(200).json({
-			success: true,
-			message: 'User profile retrieved successfully',
-			data: userData,
-		});
-	} catch (error) {
-		console.error('Error getting user profile:', error);
-		return res.status(500).json({
-			success: false,
-			message: 'Failed to retrieve user profile',
-			error: error instanceof Error ? error.message : 'Unknown error',
-		});
-	}
-};
-
-export const createUserProfile = async (
-	req: Request & { user?: any },
-	res: Response,
-) => {
-	try {
-		// Validate request body
-		try {
-			CreateUserProfileRequestSchema.parse(req.body);
-		} catch (error) {
-			return res.status(400).json({
-				success: false,
-				message: 'Invalid input data',
-				error,
-			});
-		}
-
-		const { firstName, lastName, email } = req.body;
-
-		// Get user ID from token
-		const newUserId = req.user.uid;
-
-		// Check if user profile already exists for this ID
-		const existingUser = await db
-			.collection(USERS_COLLECTION)
-			.doc(newUserId)
-			.get();
-
-		if (existingUser.exists) {
-			return res.status(400).json({
-				success: false,
-				message: 'User profile already exists',
-				error: 'A profile is already registered for this user',
-			});
-		}
-
-		// Check if email is already used by another user
-		const existingEmailUsers = await db
-			.collection(USERS_COLLECTION)
-			.where('email', '==', email)
-			.limit(1)
-			.get();
-
-		if (!existingEmailUsers.empty) {
-			return res.status(400).json({
-				success: false,
-				message: 'User with this email already exists',
-				error: 'Email is already registered',
-			});
-		}
-
-		const newUser: User = {
-			id: newUserId,
-			email,
-			firstName,
-			lastName,
-			enable: true,
-			isOnline: false,
-			lastSeen: new Date(),
-			createdAt: new Date(),
-			role: 'user',
-		};
-
-		await db.collection(USERS_COLLECTION).doc(newUserId).set(newUser);
-
-		// Create empty friend list for the user
-		const friendListId = db.collection(FRIEND_LISTS_COLLECTION).doc().id;
-		const newFriendList = {
-			id: friendListId,
-			ownerId: newUserId,
-			count: 0,
-			friends: [],
-		};
-
-		await db
-			.collection(FRIEND_LISTS_COLLECTION)
-			.doc(friendListId)
-			.set(newFriendList);
-
-		return res.status(201).json({
-			success: true,
-			message: 'User profile created successfully',
-			data: newUser,
-		});
-	} catch (error) {
-		console.error('Error creating user profile:', error);
-		return res.status(500).json({
-			success: false,
-			message: 'Failed to create user profile',
-			error: error instanceof Error ? error.message : 'Unknown error',
-		});
-	}
-};
-
-export const updateUserProfile = async (
-	req: Request & { file?: Express.Multer.File; user?: any },
-	res: Response,
-) => {
-	try {
-		// Get user ID from token
-		const userId = req.user.uid;
-
-		const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
-
-		if (!userDoc.exists) {
-			return res.status(404).json({
-				success: false,
-				message: 'User not found',
-				error: 'User with this ID does not exist',
-			});
-		}
-
-		// Validate request body
-		try {
-			UpdateUserProfileRequestSchema.parse(req.body);
-		} catch (error) {
-			return res.status(400).json({
-				success: false,
-				message: 'Invalid input data',
-				error,
-			});
-		}
-
-		const updateData: Record<string, any> = {};
-
-		// Update text fields if provided
-		if (req.body.firstName) updateData.firstName = req.body.firstName;
-		if (req.body.lastName) updateData.lastName = req.body.lastName;
-		if (req.body.bio !== undefined) updateData.bio = req.body.bio;
-		if (req.body.gender) updateData.gender = req.body.gender;
-		if (req.body.dob) updateData.dob = req.body.dob; // Zod schema will have already converted this to a Date
-
-		// Handle file upload if provided
-		if (req.file) {
-			const util = await import('util');
-			const stream = await import('stream');
-			const pipeline = util.promisify(stream.pipeline);
-
-			const fileName = `avatars/${userId}_${Date.now()}.${req.file.originalname.split('.').pop()}`;
-			const fileUpload = bucket.file(fileName);
-
-			const passthrough = new stream.PassThrough();
-			passthrough.end(req.file.buffer);
-
-			await pipeline(
-				passthrough,
-				fileUpload.createWriteStream({
-					metadata: {
-						contentType: req.file.mimetype,
-					},
+			users = await Promise.all(
+				paginatedUsers.map(async (user: any) => {
+					const role = await populateRole(user.roleId);
+					return {
+						...user,
+						role,
+					};
 				}),
 			);
-
-			// Make the file publicly accessible
-			await fileUpload.makePublic();
-
-			// Get the public URL
-			const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-
-			// Update avatar URL in user document
-			updateData.avatar = publicUrl;
-
-			// Update user document
-			await db
-				.collection(USERS_COLLECTION)
-				.doc(userId)
-				.update(updateData);
-
-			// Get updated user data
-			const updatedUserDoc = await db
-				.collection(USERS_COLLECTION)
-				.doc(userId)
-				.get();
-			const userData = updatedUserDoc.data() as User;
-
-			return res.status(200).json({
-				success: true,
-				message: 'User profile updated successfully',
-				data: userData,
-			});
 		} else {
-			// Update user document without file
-			await db
-				.collection(USERS_COLLECTION)
-				.doc(userId)
-				.update(updateData);
-
-			// Get updated user data
-			const updatedUserDoc = await db
-				.collection(USERS_COLLECTION)
-				.doc(userId)
+			const usersSnapshot = await db
+				.collection('users')
+				.orderBy('createdAt', 'desc')
+				.limit(limit)
 				.get();
-			const userData = updatedUserDoc.data() as User;
 
-			return res.status(200).json({
-				success: true,
-				message: 'User profile updated successfully',
-				data: userData,
-			});
+			total = (await db.collection('users').count().get()).data().count;
+
+			users = await Promise.all(
+				usersSnapshot.docs.map(async (doc: any) => {
+					const userData = doc.data();
+					const role = await populateRole(userData.roleId);
+					return {
+						id: doc.id,
+						...userData,
+						role,
+					};
+				}),
+			);
 		}
-	} catch (error) {
-		console.error('Error updating user profile:', error);
-		return res.status(500).json({
-			success: false,
-			message: 'Failed to update user profile',
-			error: error instanceof Error ? error.message : 'Unknown error',
-		});
+
+		ok(
+			res,
+			users,
+			{
+				total,
+				page,
+				pageSize,
+			},
+			{
+				self: `/api/users?page=${page}&pageSize=${pageSize}`,
+				next: page * pageSize < total ? `/api/users?page=${page + 1}&pageSize=${pageSize}` : undefined,
+				prev: page > 1 ? `/api/users?page=${page - 1}&pageSize=${pageSize}` : undefined,
+			},
+		);
+	} catch (error: any) {
+		return next(error);
 	}
 };
 
-export const resetPassword = async (
-	req: Request & { user?: any },
+export const getUserById = async (
+	req: Request,
 	res: Response,
-) => {
+	next: NextFunction,
+): Promise<void> => {
 	try {
-		// Get user ID from token
-		const userId = req.user.uid;
+		const { id } = req.params;
+		const userDoc = await getUserDocument(id);
 
-		// Validate request body
+		if (!userDoc) {
+			return next(new AppError(`User with id=${id} not found`, 404, 'USER_NOT_FOUND'));
+		}
+
+		const role = await populateRole(userDoc.roleId);
+
+		ok(res, {
+			...userDoc,
+			role,
+		});
+	} catch (error: any) {
+		return next(error);
+	}
+};
+
+export const updateUser = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<void> => {
+	try {
+		const { id } = req.params;
+		const validatedData = await validateRequest(updateUserSchema, req.body);
+
+		const userDoc = await getUserDocument(id);
+		if (!userDoc) {
+			return next(new AppError(`User with id=${id} not found`, 404, 'USER_NOT_FOUND'));
+		}
+
+		if (!req.user) {
+			return next(new AppError('Authentication required', 401, 'UNAUTHORIZED'));
+		}
+
+		if (req.user.role !== 'ADMIN' && req.user.uid !== id) {
+			return next(new AppError('You can only update your own profile', 403, 'FORBIDDEN'));
+		}
+
+		const updateData: any = { ...validatedData };
+		if (updateData.enable !== undefined && req.user.role !== 'ADMIN') {
+			delete updateData.enable;
+		}
+		if (updateData.active !== undefined && req.user.role !== 'ADMIN') {
+			delete updateData.active;
+		}
+
+		const updatedUser = await updateUserDocument(id, updateData, req.user.uid);
+		const role = await populateRole(updatedUser.roleId);
+
+		ok(res, {
+			...updatedUser,
+			role,
+		});
+	} catch (error: any) {
+		return next(error);
+	}
+};
+
+export const deleteUser = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<void> => {
+	try {
+		const { id } = req.params;
+		
+		// Verify user document exists in Firestore first
+		const userDoc = await getUserDocument(id);
+		if (!userDoc) {
+			return next(new AppError(`User with id=${id} not found`, 404, 'USER_NOT_FOUND'));
+		}
+
+		// Verify user exists in Firebase Auth before deleting
 		try {
-			ResetPasswordRequestSchema.parse(req.body);
-		} catch (error) {
-			return res.status(400).json({
-				success: false,
-				message: 'Invalid input data',
-				error,
-			});
+			await auth.getUser(id);
+		} catch (error: any) {
+			if (error.code === 'auth/user-not-found') {
+				return next(new AppError('User not found in Firebase Auth', 404, 'USER_NOT_FOUND'));
+			}
+			throw error;
 		}
 
-		const { currentPassword, newPassword } = req.body;
-
-		// For security reasons, you would typically use Firebase Authentication here
-		// This is a placeholder implementation - in a real app, you would validate the
-		// current password against Firebase Auth and then update the password
-
-		// Simulate password validation (replace with actual Firebase Auth validation)
-		// TODO: Implement actual password validation using Firebase Auth before production.
-		// For example, you can use Firebase Admin SDK to verify the user's credentials.
-		// This is a placeholder and should NOT be used in production.
-		const isCurrentPasswordValid = false;
-
-		if (!isCurrentPasswordValid) {
-			return res.status(401).json({
-				success: false,
-				message: 'Current password is incorrect',
-				error: 'Authentication failed',
-			});
+		// Delete from Firestore first
+		await db.collection('users').doc(id).delete();
+		
+		// Then delete from Firebase Auth
+		try {
+			await auth.deleteUser(id);
+		} catch (error: any) {
+			if (error.code === 'auth/user-not-found') {
+				// Firestore document already deleted, but Auth user not found - this is acceptable
+				// Continue with response
+			} else {
+				throw error;
+			}
 		}
 
-		// In a real implementation, update password with Firebase Auth
-		// await admin.auth().updateUser(userId, { password: newPassword });
+		noContent(res);
+	} catch (error: any) {
+		if (error instanceof AppError) {
+			return next(error);
+		}
+		if (error.code === 'auth/user-not-found') {
+			return next(new AppError('User not found', 404, 'USER_NOT_FOUND'));
+		}
+		return next(error);
+	}
+};
 
-		return res.status(200).json({
-			success: true,
-			message: 'Password reset successfully',
+export const updateRole = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<void> => {
+	try {
+		const { id } = req.params;
+		const validatedData = await validateRequest(updateRoleSchema, req.body);
+		const { roleId } = validatedData;
+
+		// Verify user document exists in Firestore first
+		const userDoc = await getUserDocument(id);
+		if (!userDoc) {
+			return next(new AppError(`User with id=${id} not found`, 404, 'USER_NOT_FOUND'));
+		}
+
+		// Verify role exists
+		const roleDoc = await db.collection('roles').doc(roleId).get();
+		if (!roleDoc.exists) {
+			return next(new AppError('Role not found', 404, 'ROLE_NOT_FOUND'));
+		}
+
+		const roleData = roleDoc.data();
+		const roleName = roleData?.name || 'USER';
+
+		// Verify user exists in Firebase Auth
+		try {
+			await auth.getUser(id);
+		} catch (error: any) {
+			if (error.code === 'auth/user-not-found') {
+				return next(new AppError('User not found in Firebase Auth', 404, 'USER_NOT_FOUND'));
+			}
+			throw error;
+		}
+
+		if (!req.user) {
+			return next(new AppError('Authentication required', 401, 'UNAUTHORIZED'));
+		}
+
+		const updatedUser = await updateUserDocument(id, { roleId }, req.user.uid);
+		await auth.setCustomUserClaims(id, { role: roleName });
+
+		const role = await populateRole(updatedUser.roleId);
+
+		ok(res, {
+			...updatedUser,
+			role,
+			message: 'User role updated successfully',
 		});
-	} catch (error) {
-		console.error('Error resetting password:', error);
-		return res.status(500).json({
-			success: false,
-			message: 'Failed to reset password',
-			error: error instanceof Error ? error.message : 'Unknown error',
+	} catch (error: any) {
+		if (error instanceof AppError) {
+			return next(error);
+		}
+		if (error.code === 'auth/user-not-found') {
+			return next(new AppError('User not found', 404, 'USER_NOT_FOUND'));
+		}
+		return next(error);
+	}
+};
+
+export const toggleActive = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<void> => {
+	try {
+		const { id } = req.params;
+		const validatedData = await validateRequest(toggleActiveSchema, req.body);
+		const { active } = validatedData;
+
+		// Verify user document exists in Firestore first
+		const userDoc = await getUserDocument(id);
+		if (!userDoc) {
+			return next(new AppError(`User with id=${id} not found`, 404, 'USER_NOT_FOUND'));
+		}
+
+		if (!req.user) {
+			return next(new AppError('Authentication required', 401, 'UNAUTHORIZED'));
+		}
+
+		// Verify user exists in Firebase Auth before updating
+		try {
+			await auth.getUser(id);
+		} catch (error: any) {
+			if (error.code === 'auth/user-not-found') {
+				return next(new AppError('User not found in Firebase Auth', 404, 'USER_NOT_FOUND'));
+			}
+			throw error;
+		}
+
+		const updatedUser = await updateUserDocument(id, { active }, req.user.uid);
+
+		// Update Firebase Auth disabled status
+		try {
+			if (!active) {
+				await auth.updateUser(id, { disabled: true });
+			} else {
+				await auth.updateUser(id, { disabled: false });
+			}
+		} catch (error: any) {
+			if (error.code === 'auth/user-not-found') {
+				return next(new AppError('User not found in Firebase Auth', 404, 'USER_NOT_FOUND'));
+			}
+			throw error;
+		}
+
+		const role = await populateRole(updatedUser.roleId);
+
+		ok(res, {
+			...updatedUser,
+			role,
+			message: active ? 'User account activated' : 'User account deactivated',
 		});
+	} catch (error: any) {
+		if (error instanceof AppError) {
+			return next(error);
+		}
+		if (error.code === 'auth/user-not-found') {
+			return next(new AppError('User not found', 404, 'USER_NOT_FOUND'));
+		}
+		return next(error);
 	}
 };

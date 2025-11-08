@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/src/config/firebase';
 import ShareInput from '@/src/components/input/share.input';
 import ShareButton from '@/src/components/button/share.button';
 import ShareQuestion from '@/src/components/button/share.question';
@@ -32,18 +30,13 @@ export default function ConfirmPassword() {
 			email,
 			password,
 			isLogin,
-			isSignup
+			isSignup,
 		});
 
 		try {
 			if (isLogin) {
 				// Sign in with email and password
-				const user = await signInWithEmailAndPassword(auth, email, password);
-				console.log('Sign in successful:', {
-					email: user.user.email,
-					uid: user.user.uid,
-				});
-				Alert.alert('Success', 'Sign in successful: ' + user.user.email);
+
 				router.dismissAll();
 				router.replace({
 					pathname: '/(screens)/(auth)/login.success',
@@ -51,12 +44,7 @@ export default function ConfirmPassword() {
 				});
 			} else if (isSignup) {
 				// Create user with email and password
-				const user = await createUserWithEmailAndPassword(auth, email, password);
-				console.log('Sign up successful:', {
-					email: user.user.email,
-					uid: user.user.uid,
-				});
-				Alert.alert('Success', 'Sign up successful: ' + user.user.email);
+
 				router.dismissAll();
 				router.replace({
 					pathname: '/(screens)/(auth)/signup.name',
@@ -66,7 +54,10 @@ export default function ConfirmPassword() {
 		} catch (error: any) {
 			console.error('Auth error:', error);
 			const errorMessage = error.message || 'Authentication failed';
-			Alert.alert('Error', (isLogin ? 'Sign in' : 'Sign up') + ' failed: ' + errorMessage);
+			Alert.alert(
+				'Error',
+				(isLogin ? 'Sign in' : 'Sign up') + ' failed: ' + errorMessage,
+			);
 		} finally {
 		}
 	};
@@ -74,9 +65,7 @@ export default function ConfirmPassword() {
 	const isNextDisabled = !password.trim();
 
 	return (
-		<SafeAreaView
-			className="flex-1 bg-light-mode dark:bg-dark-mode"
-		>
+		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
 			<ShareBack />
 
 			<KeyboardAvoidingView
@@ -86,16 +75,12 @@ export default function ConfirmPassword() {
 				{/* Content Container */}
 				<View>
 					{/* Title */}
-					<Text
-						className="text-xl text-center mb-2 text-dark-mode dark:text-light-mode"
-					>
+					<Text className="text-xl text-center mb-2 text-dark-mode dark:text-light-mode">
 						{t('title')}
 					</Text>
 
 					{/* Email Display */}
-					<Text
-						className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode"
-					>
+					<Text className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode">
 						{email || 'Unknown Email'}
 					</Text>
 
@@ -120,7 +105,9 @@ export default function ConfirmPassword() {
 								: APP_COLOR.PRIMARY,
 						}}
 						textStyle={{
-							color: isNextDisabled ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
+							color: isNextDisabled
+								? APP_COLOR.DARK_MODE
+								: APP_COLOR.LIGHT_MODE,
 						}}
 					/>
 

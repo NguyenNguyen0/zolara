@@ -2,61 +2,33 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { logger } from './middlewares/logger.middleware';
 import chalk from 'chalk';
-import { specs } from './configs/swagger.config';
-import { userRouter } from './routes/user';
-import { messageRouter } from './routes/message';
-import { chatRouter } from './routes/chat';
-import { friendRouter } from './routes/friend';
-import { agoraRouter } from './routes/agora';
+import morgan from 'morgan';
+import { specs } from './configs/swagger';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
+import permissionRoutes from './routes/permission';
+import roleRoutes from './routes/role';
+import { attachTraceId } from './middlewares/trace';
+import { errorHandler } from './middlewares/error-handler';
+import { seedData } from './scripts/seed.data';
 
 dotenv.config();
+
+// Initialize Firebase (validation and initialization happens here)
+import './configs/firebase';
 
 const app = express();
 
 // Middleware
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
-app.use(
-	logger({
-		logHeader: true,
-		logBody: process.env.NODE_ENV === 'development',
-	}),
-);
+app.use(morgan('dev'));
+app.use(attachTraceId);
 
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     BearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- */
-
-/**
- * @swagger
- * /:
- *   get:
- *     summary: API status check
- *     description: Check if the API is running
- *     responses:
- *       200:
- *         description: API is running
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                 version:
- *                   type: string
- */
 app.get('/', (req, res) => {
 	res.json({
-		status: 'API is running',
+		status: 'Zolara API is running',
 		version: '1.0.0',
 	});
 });
@@ -65,19 +37,33 @@ app.get('/', (req, res) => {
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // API routes
-app.use('/api/agora', agoraRouter);
-app.use('/api/users', userRouter);
-app.use('/api/chats', chatRouter);
-app.use('/api/messages', messageRouter);
-app.use('/api/friends', friendRouter);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/permissions', permissionRoutes);
+app.use('/api/roles', roleRoutes);
 
-// Start server
+// Error handler (must be last)
+app.use(errorHandler);
+
+// Start server and seed data
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-	console.log(
-		`🌐 ${chalk.bold('SERVER RUNNING ON')} ${chalk.green('http://localhost:' + PORT)}`,
-	);
-	console.log(
-		`📚 ${chalk.bold('API DOCUMENTATION')} ${chalk.yellow('http://localhost:' + PORT + '/api-docs')}`,
-	);
-});
+
+// Seed data
+seedData()
+	.then(() => {
+		console.log('✅ Permissions and roles seeded successfully');
+	})
+	.catch((error) => {
+		console.error('⚠️  Warning: Failed to seed permissions and roles:', error.message);
+		console.log('Server will continue to start, but some features may not work correctly.');
+	})
+	.finally(() => {
+		app.listen(PORT, () => {
+			console.log(
+				`🌐 ${chalk.bold('SERVER RUNNING ON')} ${chalk.green('http://localhost:' + PORT)}`,
+			);
+			console.log(
+				`📚 ${chalk.bold('API DOCUMENTATION')} ${chalk.yellow('http://localhost:' + PORT + '/api-docs')}`,
+			);
+		});
+	});
