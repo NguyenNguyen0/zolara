@@ -9,11 +9,20 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useTheme } from '@/src/hooks/useTheme';
 import { APP_COLOR } from '@/src/utils/constants';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { setupAxiosInterceptors } from '@/src/config/axios.client';
+import { setupDebugAuth } from '@/src/utils/debugAuth';
 
 // SplashScreen.preventAutoHideAsync();
 
 function RootLayoutContent() {
 	const { isDark } = useTheme();
+
+	// Setup axios interceptors
+	useEffect(() => {
+		setupAxiosInterceptors(store.dispatch, store.getState);
+		setupDebugAuth(store.getState);
+	}, []);
 
 	return (
 		<>
@@ -33,20 +42,6 @@ function RootLayoutContent() {
 }
 
 export default function RootLayout() {
-	//   const [loaded] = useFonts({
-	//     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-	//   });
-
-	//   useEffect(() => {
-	//     if (loaded) {
-	//       SplashScreen.hideAsync();
-	//     }
-	//   }, [loaded]);
-
-	//   if (!loaded) {
-	//     return null;
-	//   }
-
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<SafeAreaProvider>

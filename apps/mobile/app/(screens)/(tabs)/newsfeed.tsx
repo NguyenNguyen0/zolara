@@ -15,7 +15,6 @@ export default function NewsfeedTab() {
 	const { isDark } = useTheme();
 	const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
 	const [refreshing, setRefreshing] = useState(false);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -24,16 +23,6 @@ export default function NewsfeedTab() {
 			setRefreshing(false);
 		}, 1000);
 	}, []);
-
-	const handleLoadMore = () => {
-		if (!isLoadingMore) {
-			setIsLoadingMore(true);
-			// Simulate API call to load more posts
-			setTimeout(() => {
-				setIsLoadingMore(false);
-			}, 2000);
-		}
-	};
 
 	const handleCreate = (text?: string, images?: string[]) => {
 		const newPost: Post = {
@@ -48,19 +37,6 @@ export default function NewsfeedTab() {
 			comments: 0,
 		};
 		setPosts((prev) => [newPost, ...prev]);
-	};
-
-	const renderFooter = () => {
-		if (!isLoadingMore) return null;
-		return (
-			<View className="py-4 items-center justify-center">
-				<ActivityIndicator
-					size="small"
-					color={APP_COLOR.PRIMARY}
-					animating={true}
-				/>
-			</View>
-		);
 	};
 
 	return (
@@ -82,9 +58,6 @@ export default function NewsfeedTab() {
 						</Text>
 					</View>
 				}
-				ListFooterComponent={renderFooter}
-				onEndReached={handleLoadMore}
-				onEndReachedThreshold={0.5}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

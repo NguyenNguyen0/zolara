@@ -8,6 +8,9 @@ import { APP_COLOR } from '@/src/utils/constants';
 import SettingItem from '@/src/components/item/setting.item';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { logoutThunk } from '@/src/store/slices/authSlice';
+import type { AppDispatch } from '@/src/store';
 
 type SettingItemData = {
 	id: string;
@@ -19,6 +22,19 @@ type SettingItemData = {
 export default function Setting() {
 	const { isDark } = useTheme();
 	const { t } = useTranslation('setting');
+	const dispatch = useDispatch<AppDispatch>();
+
+	const handleLogout = async () => {
+		try {
+			// Gọi logoutThunk để xóa token và Redux state
+			await dispatch(logoutThunk()).unwrap();
+			
+			// Redirect về welcome
+			router.replace('/(screens)/(auth)/welcome');
+		} catch (error) {
+			Alert.alert('Error', 'Logout failed');
+		}
+	};
 
 	const SETTING_ITEMS: SettingItemData[] = [
 		{
@@ -96,7 +112,7 @@ export default function Setting() {
 				<View className="px-4 py-4">
 					<ShareButton
 						title={t('logout')}
-						onPress={() => router.replace('/(auth)/welcome')}
+						onPress={handleLogout}
 						icon={
 							<MaterialIcons
 								name="logout"

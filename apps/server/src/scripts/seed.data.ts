@@ -101,12 +101,14 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 		} else {
 			console.log('📝 Seeding permissions...');
 			for (const permission of permissions) {
+				const now = new Date();
 				const docRef = db.collection('permissions').doc();
 				await docRef.set({
 					...permission,
-					createdAt: Timestamp.fromDate(new Date()),
+					createdAt: Timestamp.fromDate(now),
 					createdBy,
-					// Note: updatedAt and updatedBy are NOT included in creation
+					updatedAt: Timestamp.fromDate(now),
+					updatedBy: createdBy,
 				});
 				permissionIds.push(docRef.id);
 				permissionMap.set(`${permission.apiPath}:${permission.method}`, docRef.id);
@@ -140,13 +142,15 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 
 			for (const role of roles) {
 				const rolePermissionIds = rolePermissions[role.name] || [];
+				const now = new Date();
 				const docRef = db.collection('roles').doc();
 				await docRef.set({
 					...role,
 					permissionIds: rolePermissionIds,
-					createdAt: Timestamp.fromDate(new Date()),
+					createdAt: Timestamp.fromDate(now),
 					createdBy,
-					// Note: updatedAt and updatedBy are NOT included in creation
+					updatedAt: Timestamp.fromDate(now),
+					updatedBy: createdBy,
 				});
 				console.log(`  ✓ Created role: ${role.name} (${docRef.id})`);
 			}
@@ -199,12 +203,13 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 							lastActivity: Timestamp.fromDate(nowDate),
 							createdAt: Timestamp.fromDate(nowDate),
 							createdBy: 'system',
+							updatedAt: Timestamp.fromDate(nowDate),
+							updatedBy: 'system',
 							roleId: adminRoleId, // Set roleId instead of role name
 							dob: null,
 							gender: null,
 							bio: null,
 							avatar: null,
-							// Note: updatedAt and updatedBy are NOT included in creation
 						};
 
 						await db.collection('users').doc(userRecord.uid).set(userProfile);
@@ -281,12 +286,13 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 							lastActivity: Timestamp.fromDate(nowDate),
 							createdAt: Timestamp.fromDate(nowDate),
 							createdBy: 'system',
+							updatedAt: Timestamp.fromDate(nowDate),
+							updatedBy: 'system',
 							roleId: userRoleId, // Set roleId for USER role
 							dob: null,
 							gender: null,
 							bio: null,
 							avatar: null,
-							// Note: updatedAt and updatedBy are NOT included in creation
 						};
 
 						await db.collection('users').doc(userRecord.uid).set(userProfile);

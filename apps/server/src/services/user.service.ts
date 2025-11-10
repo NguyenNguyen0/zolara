@@ -23,12 +23,13 @@ export const createUserDocument = async (
 		lastActivity: dateToTimestamp(data.lastActivity || now),
 		createdAt: Timestamp.fromDate(now),
 		createdBy: data.createdBy,
+		updatedAt: Timestamp.fromDate(now),
+		updatedBy: data.createdBy,
 		roleId: data.roleId,
 		dob: dateToTimestamp(data.dob),
 		gender: data.gender || null,
 		bio: data.bio || null,
 		avatar: data.avatar || null,
-		// Note: updatedAt and updatedBy are NOT included in creation
 	};
 
 	await db.collection('users').doc(userId).set(userDocData);

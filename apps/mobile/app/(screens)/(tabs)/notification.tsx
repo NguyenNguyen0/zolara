@@ -23,7 +23,6 @@ export default function NotificationTab() {
 	const [notifications, setNotifications] =
 		useState<NotificationItemProps[]>(MOCK_NOTIFICATIONS);
 	const [refreshing, setRefreshing] = useState(false);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -32,16 +31,6 @@ export default function NotificationTab() {
 			setRefreshing(false);
 		}, 1000);
 	}, []);
-
-	const handleLoadMore = () => {
-		if (!isLoadingMore) {
-			setIsLoadingMore(true);
-			// Simulate API call to load more notifications
-			setTimeout(() => {
-				setIsLoadingMore(false);
-			}, 2000);
-		}
-	};
 
 	const handlePress = (id: string) => {
 		console.log('Pressed:', id);
@@ -70,19 +59,6 @@ export default function NotificationTab() {
 		</View>
 	);
 
-	const renderFooter = () => {
-		if (!isLoadingMore) return null;
-		return (
-			<View className="py-4 items-center justify-center">
-				<ActivityIndicator
-					size="small"
-					color={APP_COLOR.PRIMARY}
-					animating={true}
-				/>
-			</View>
-		);
-	};
-
 	return (
 		<SafeAreaView
 			edges={['top']}
@@ -94,9 +70,6 @@ export default function NotificationTab() {
 				renderItem={renderItem}
 				keyExtractor={(item) => item.id}
 				ListEmptyComponent={renderEmpty}
-				ListFooterComponent={renderFooter}
-				onEndReached={handleLoadMore}
-				onEndReachedThreshold={0.5}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

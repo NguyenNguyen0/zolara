@@ -1,9 +1,17 @@
 import { auth, db } from '../configs/firebase';
 import { UserDocument, UserCreateData } from '../types/user';
 import { AuthRequest, AuthResponse, SignupResponse } from '../types';
-import { createUserDocument, getUserDocument, updateUserDocument } from './user.service';
+import {
+	createUserDocument,
+	getUserDocument,
+	updateUserDocument,
+} from './user.service';
 import { getRoleInfoFromUser } from '../utils/helpers';
-import { ErrorCode, ErrorMessage, createServiceError } from '../constants/errors';
+import {
+	ErrorCode,
+	ErrorMessage,
+	createServiceError,
+} from '../constants/errors';
 
 /**
  * Sign up a new user
@@ -21,13 +29,23 @@ export const signupService = async (
 	});
 
 	if (!userRecord.email) {
-		throw createServiceError('User email is required', ErrorCode.OPERATION_FAILED);
+		throw createServiceError(
+			'User email is required',
+			ErrorCode.OPERATION_FAILED,
+		);
 	}
 
 	// Get USER role
-	const userRoleSnapshot = await db.collection('roles').where('name', '==', 'USER').limit(1).get();
+	const userRoleSnapshot = await db
+		.collection('roles')
+		.where('name', '==', 'USER')
+		.limit(1)
+		.get();
 	if (userRoleSnapshot.empty) {
-		throw createServiceError('USER role not found. Please ensure roles are seeded.', ErrorCode.ROLE_NOT_FOUND);
+		throw createServiceError(
+			'USER role not found. Please ensure roles are seeded.',
+			ErrorCode.ROLE_NOT_FOUND,
+		);
 	}
 
 	const userRoleId = userRoleSnapshot.docs[0].id;
@@ -71,15 +89,22 @@ export const loginService = async (email: string): Promise<AuthResponse> => {
 	const customToken = await auth.createCustomToken(userRecord.uid);
 
 	// Update user activity
-	await updateUserDocument(userRecord.uid, {
-		lastActivity: new Date(),
-		isActive: true,
-	}, userRecord.uid);
+	await updateUserDocument(
+		userRecord.uid,
+		{
+			lastActivity: new Date(),
+			isActive: true,
+		},
+		userRecord.uid,
+	);
 
 	// Get user document
 	const userDocument = await getUserDocument(userRecord.uid);
 	if (!userDocument) {
-		throw createServiceError(ErrorMessage.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND);
+		throw createServiceError(
+			ErrorMessage.USER_NOT_FOUND,
+			ErrorCode.USER_NOT_FOUND,
+		);
 	}
 
 	// Get role info
@@ -97,19 +122,27 @@ export const loginService = async (email: string): Promise<AuthResponse> => {
 /**
  * Refresh access token
  */
-export const refreshTokenService = async (uid: string): Promise<{ accessToken: string }> => {
+export const refreshTokenService = async (
+	uid: string,
+): Promise<{ accessToken: string }> => {
 	// Verify user exists in Firebase Auth
 	await auth.getUser(uid);
 
 	// Verify user document exists in Firestore
 	const userDocument = await getUserDocument(uid);
 	if (!userDocument) {
-		throw createServiceError(ErrorMessage.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND);
+		throw createServiceError(
+			ErrorMessage.USER_NOT_FOUND,
+			ErrorCode.USER_NOT_FOUND,
+		);
 	}
 
 	// Check if user is locked
 	if (userDocument.isLocked) {
-		throw createServiceError(ErrorMessage.USER_ACCOUNT_LOCKED, ErrorCode.USER_ACCOUNT_LOCKED);
+		throw createServiceError(
+			ErrorMessage.USER_ACCOUNT_LOCKED,
+			ErrorCode.USER_ACCOUNT_LOCKED,
+		);
 	}
 
 	// Generate new custom token
@@ -125,7 +158,10 @@ export const getMeService = async (uid: string): Promise<any> => {
 	// Get user document
 	const userDocument = await getUserDocument(uid);
 	if (!userDocument) {
-		throw createServiceError(ErrorMessage.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND);
+		throw createServiceError(
+			ErrorMessage.USER_NOT_FOUND,
+			ErrorCode.USER_NOT_FOUND,
+		);
 	}
 
 	// Get user record from Firebase Auth
@@ -155,4 +191,3 @@ export const getMeService = async (uid: string): Promise<any> => {
 		emailVerified: userRecord.emailVerified || false,
 	};
 };
-

@@ -1,25 +1,7 @@
 import { db } from '../../configs/firebase';
 import { AppError } from '../../types';
-import { Timestamp } from 'firebase-admin/firestore';
-
-/**
- * Convert Firestore Timestamp to Date
- */
-const timestampToDate = (timestamp: any): Date => {
-	if (timestamp instanceof Timestamp) {
-		return timestamp.toDate();
-	}
-	if (timestamp?.toDate && typeof timestamp.toDate === 'function') {
-		return timestamp.toDate();
-	}
-	if (timestamp instanceof Date) {
-		return timestamp;
-	}
-	if (typeof timestamp === 'string') {
-		return new Date(timestamp);
-	}
-	return new Date();
-};
+import { convertFirestoreToPermissionDocument } from '../converters';
+import { PermissionDocument } from '../../types/permission';
 
 /**
  * Validate permission IDs and return invalid ones
@@ -64,8 +46,9 @@ export const validatePermissionIdsOrThrow = async (permissionIds: string[]): Pro
 
 /**
  * Get permissions with populated data from permission IDs
+ * Returns PermissionDocument[] with proper type conversion
  */
-export const getPermissionsByIds = async (permissionIds: string[]): Promise<any[]> => {
+export const getPermissionsByIds = async (permissionIds: string[]): Promise<PermissionDocument[]> => {
 	if (permissionIds.length === 0) {
 		return [];
 	}
@@ -78,16 +61,10 @@ export const getPermissionsByIds = async (permissionIds: string[]): Promise<any[
 			const permData = permDoc.data();
 			if (!permData) return null;
 
-			return {
-				id: permDoc.id,
-				...permData,
-				// Convert Timestamp to Date objects
-				createdAt: timestampToDate(permData.createdAt),
-				updatedAt: permData.updatedAt ? timestampToDate(permData.updatedAt) : undefined,
-			};
+			return convertFirestoreToPermissionDocument(permDoc.id, permData);
 		}),
 	);
 
-	return permissions.filter((p) => p !== null);
+	return permissions.filter((p) => p !== null) as PermissionDocument[];
 };
 
