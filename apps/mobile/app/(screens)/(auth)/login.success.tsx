@@ -15,12 +15,6 @@ const LoginSuccess = () => {
 	const isSignup = params.isSignup === '1';
 
 	const handleDone = () => {
-		console.log('Login Success - Submit:', {
-			email,
-			password,
-			isLogin,
-			isSignup,
-		});
 		router.replace('/(screens)/(tabs)/conversation');
 	};
 

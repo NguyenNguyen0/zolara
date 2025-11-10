@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	View,
 	Text,
 	KeyboardAvoidingView,
 	Platform,
 	Alert,
+	ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -14,6 +15,9 @@ import ShareQuestion from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareBack from '@/src/components/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginThunk } from '@/src/store/slices/authSlice';
+import type { AppDispatch, RootState } from '@/src/store';
 
 export default function ConfirmPassword() {
 	const { t } = useTranslation('confirm-password');
@@ -21,30 +25,28 @@ export default function ConfirmPassword() {
 	const params = useLocalSearchParams();
 	const [password, setPassword] = useState('');
 
+	const dispatch = useDispatch<AppDispatch>();
+	const authState = useSelector((state: RootState) => state.auth);
+	const { isLoading, error } = authState;
+
 	const email = params.email as string;
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
 	const handleNext = async () => {
-		console.log('Password Confirmation:', {
-			email,
-			password,
-			isLogin,
-			isSignup,
-		});
-
 		try {
 			if (isLogin) {
-				// Sign in with email and password
-
+				// Login với email và password
+				const result = await dispatch(loginThunk({ email, password })).unwrap();
+				// Login thành công - chuyển đến màn hình success
 				router.dismissAll();
 				router.replace({
 					pathname: '/(screens)/(auth)/login.success',
 					params: { email, password, isLogin: 1, isSignup: 0 },
 				});
 			} else if (isSignup) {
-				// Create user with email and password
-
+				// Chưa xử lý!
+				// Signup - chuyển đến màn hình nhập name
 				router.dismissAll();
 				router.replace({
 					pathname: '/(screens)/(auth)/signup.name',
@@ -52,17 +54,15 @@ export default function ConfirmPassword() {
 				});
 			}
 		} catch (error: any) {
-			console.error('Auth error:', error);
-			const errorMessage = error.message || 'Authentication failed';
+			const errorMessage = error || 'Authentication failed';
 			Alert.alert(
 				'Error',
 				(isLogin ? 'Sign in' : 'Sign up') + ' failed: ' + errorMessage,
 			);
-		} finally {
 		}
 	};
 
-	const isNextDisabled = !password.trim();
+	const isNextDisabled = !password.trim() || isLoading;
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
@@ -95,21 +95,24 @@ export default function ConfirmPassword() {
 					</View>
 
 					{/* Next Button */}
-					<ShareButton
-						title={t('nextButton')}
-						onPress={handleNext}
-						disabled={isNextDisabled}
-						buttonStyle={{
-							backgroundColor: isNextDisabled
-								? APP_COLOR.GRAY_200
-								: APP_COLOR.PRIMARY,
-						}}
-						textStyle={{
-							color: isNextDisabled
-								? APP_COLOR.DARK_MODE
-								: APP_COLOR.LIGHT_MODE,
-						}}
-					/>
+					<View>
+						<ShareButton
+							title={isLoading ? 'Loading...' : t('nextButton')}
+							onPress={handleNext}
+							disabled={isNextDisabled}
+							buttonStyle={{
+								backgroundColor: isNextDisabled
+									? APP_COLOR.GRAY_200
+									: APP_COLOR.PRIMARY,
+							}}
+							textStyle={{
+								color: isNextDisabled
+									? APP_COLOR.DARK_MODE
+									: APP_COLOR.LIGHT_MODE,
+							}}
+							isLoading={isLoading}
+						/>
+					</View>
 
 					{/* Forgot Password Link - Only show for login flow */}
 					{isLogin && (

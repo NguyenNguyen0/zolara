@@ -162,6 +162,10 @@ const options: swaggerJSDoc.Options = {
 						name: { type: 'string' },
 						description: { type: 'string' },
 						permissionIds: { type: 'array', items: { type: 'string' } },
+						permissions: {
+							type: 'array',
+							items: { $ref: '#/components/schemas/Permission' },
+						},
 						active: { type: 'boolean' },
 						createdAt: { type: 'string', format: 'date-time' },
 						createdBy: { type: 'string' },

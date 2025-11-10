@@ -20,7 +20,8 @@ export const createPermissionDocument = async (
 		active: data.active !== undefined ? data.active : true,
 		createdAt: Timestamp.fromDate(now),
 		createdBy: data.createdBy,
-		// Note: updatedAt and updatedBy are NOT included in creation
+		updatedAt: Timestamp.fromDate(now),
+		updatedBy: data.createdBy,
 	};
 
 	const docRef = db.collection('permissions').doc();

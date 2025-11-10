@@ -13,20 +13,8 @@ import { MOCK_CONVERSATION_LIST } from '@/src/mocks/conversationList';
 
 export default function ConversationTab() {
 	const { t } = useTranslation('conversations');
-	// const [currentPage, setCurrentPage] = useState<number>(1);
-	// const [pageSize, setPageSize] = useState<number>(5);
-	// TODO: Xoá sau này dùng redux thay thế
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const handleEndReached = async () => {
-		if (!isLoading) {
-			setIsLoading(true);
-			// setCurrentPage((prev) => prev + 1);
-			setTimeout(() => {
-				setIsLoading(false);
-			}, 3000);
-		}
-	};
 	const fetchInitData = async () => {
 		setIsLoading(true);
 		// call api from axios (demo 2s)
@@ -34,6 +22,7 @@ export default function ConversationTab() {
 			setIsLoading(false);
 		}, 2000);
 	};
+	
 	useEffect(() => {
 		fetchInitData();
 	}, []);
@@ -51,19 +40,6 @@ export default function ConversationTab() {
 				keyExtractor={(item) => item.id}
 				renderItem={({ item }) => <ConversationItem item={item} />}
 				className="flex-1"
-				onEndReachedThreshold={0.5}
-				onEndReached={handleEndReached}
-				ListFooterComponent={
-					isLoading ? (
-						<View className="py-3 items-center justify-center">
-							<ActivityIndicator
-								size="small"
-								color={APP_COLOR.PRIMARY}
-								animating={true}
-							/>
-						</View>
-					) : null
-				}
 			/>
 		</SafeAreaView>
 	);

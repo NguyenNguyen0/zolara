@@ -1,9 +1,10 @@
 import { db } from '../configs/firebase';
-import { RoleDocument, RoleCreateData, RoleUpdateData } from '../types/role';
+import { RoleDocument, RoleCreateData, RoleUpdateData, RoleWithPermissions } from '../types/role';
 import { Timestamp } from 'firebase-admin/firestore';
 import { ErrorCode, ErrorMessage, createServiceError } from '../constants/errors';
 import { convertFirestoreToRoleDocument } from '../utils/converters';
-import { validatePermissionIdsOrThrow } from '../utils/helpers';
+import { validatePermissionIdsOrThrow, getPermissionsByIds } from '../utils/helpers';
+import { PermissionDocument } from '../types/permission';
 
 /**
  * Create a new role document in Firestore
@@ -18,7 +19,8 @@ export const createRoleDocument = async (data: RoleCreateData): Promise<RoleDocu
 		active: data.active !== undefined ? data.active : true,
 		createdAt: Timestamp.fromDate(now),
 		createdBy: data.createdBy,
-		// Note: updatedAt and updatedBy are NOT included in creation
+		updatedAt: Timestamp.fromDate(now),
+		updatedBy: data.createdBy,
 	};
 
 	const docRef = db.collection('roles').doc();
@@ -88,7 +90,7 @@ export interface GetRolesOptions {
 }
 
 export interface GetRolesResult {
-	roles: RoleDocument[];
+	roles: RoleWithPermissions[];
 }
 
 export const getRolesService = async (options: GetRolesOptions = {}): Promise<GetRolesResult> => {
@@ -101,19 +103,37 @@ export const getRolesService = async (options: GetRolesOptions = {}): Promise<Ge
 	}
 
 	const snapshot = await query.get();
-	const roles = snapshot.docs.map((doc: any) => {
-		const roleData = doc.data();
-		return convertFirestoreToRoleDocument(doc.id, roleData);
-	});
+	const roles = await Promise.all(
+		snapshot.docs.map(async (doc: any) => {
+			const roleData = doc.data();
+			const roleDocument = convertFirestoreToRoleDocument(doc.id, roleData);
+			const permissions = await getPermissionsByIds(roleDocument.permissionIds);
+			
+			return {
+				...roleDocument,
+				permissions,
+			} as RoleWithPermissions;
+		}),
+	);
 
 	return { roles };
 };
 
 /**
- * Get role by ID
+ * Get role by ID with permissions
  */
-export const getRoleByIdService = async (roleId: string): Promise<RoleDocument | null> => {
-	return await getRoleDocument(roleId);
+export const getRoleByIdService = async (roleId: string): Promise<RoleWithPermissions | null> => {
+	const role = await getRoleDocument(roleId);
+	if (!role) {
+		return null;
+	}
+
+	const permissions = await getPermissionsByIds(role.permissionIds);
+	
+	return {
+		...role,
+		permissions,
+	} as RoleWithPermissions;
 };
 
 /**
@@ -122,7 +142,7 @@ export const getRoleByIdService = async (roleId: string): Promise<RoleDocument |
 export const createRoleService = async (
 	data: RoleCreateData,
 	createdBy: string,
-): Promise<RoleDocument> => {
+): Promise<RoleWithPermissions> => {
 	// Validate permission IDs if provided
 	if (data.permissionIds && data.permissionIds.length > 0) {
 		await validatePermissionIdsOrThrow(data.permissionIds);
@@ -134,10 +154,17 @@ export const createRoleService = async (
 		throw createServiceError(ErrorMessage.ROLE_ALREADY_EXISTS, ErrorCode.ROLE_ALREADY_EXISTS);
 	}
 
-	return await createRoleDocument({
+	const role = await createRoleDocument({
 		...data,
 		createdBy,
 	});
+	
+	const permissions = await getPermissionsByIds(role.permissionIds);
+	
+	return {
+		...role,
+		permissions,
+	} as RoleWithPermissions;
 };
 
 /**
@@ -147,7 +174,7 @@ export const updateRoleService = async (
 	roleId: string,
 	data: RoleUpdateData,
 	updatedBy: string,
-): Promise<RoleDocument> => {
+): Promise<RoleWithPermissions> => {
 	// Verify role exists
 	const existingRole = await getRoleDocument(roleId);
 	if (!existingRole) {
@@ -172,7 +199,13 @@ export const updateRoleService = async (
 		await validatePermissionIdsOrThrow(data.permissionIds);
 	}
 
-	return await updateRoleDocument(roleId, data, updatedBy);
+	const updatedRole = await updateRoleDocument(roleId, data, updatedBy);
+	const permissions = await getPermissionsByIds(updatedRole.permissionIds);
+	
+	return {
+		...updatedRole,
+		permissions,
+	} as RoleWithPermissions;
 };
 
 /**
@@ -202,7 +235,7 @@ export const updateRolePermissionsService = async (
 	roleId: string,
 	permissionIds: string[],
 	updatedBy: string,
-): Promise<RoleDocument> => {
+): Promise<RoleWithPermissions> => {
 	// Verify role exists
 	const role = await getRoleDocument(roleId);
 	if (!role) {
@@ -215,9 +248,16 @@ export const updateRolePermissionsService = async (
 	}
 
 	// Update role permissions
-	return await updateRoleDocument(
+	const updatedRole = await updateRoleDocument(
 		roleId,
 		{ permissionIds },
 		updatedBy,
 	);
+	
+	const permissions = await getPermissionsByIds(updatedRole.permissionIds);
+	
+	return {
+		...updatedRole,
+		permissions,
+	} as RoleWithPermissions;
 };

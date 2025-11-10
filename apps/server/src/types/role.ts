@@ -1,3 +1,5 @@
+import { PermissionDocument } from './permission';
+
 export interface Role {
 	id?: string; // Firestore document ID
 	name: string; // ADMIN, USER
@@ -36,5 +38,9 @@ export interface RoleUpdateData {
 	description?: string;
 	permissionIds?: string[];
 	active?: boolean;
+}
+
+export interface RoleWithPermissions extends RoleDocument {
+	permissions: PermissionDocument[];
 }
 
