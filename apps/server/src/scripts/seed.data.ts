@@ -1,4 +1,4 @@
-import { auth, db } from '../configs/firebase';
+import { auth, db, testFirebaseConnection } from '../configs/firebase';
 import { Permission, Role } from '../types';
 import { Timestamp } from 'firebase-admin/firestore';
 
@@ -54,7 +54,7 @@ const roles: Omit<Role, 'id' | 'createdAt' | 'createdBy' | 'updatedAt' | 'update
 const adminUsers = [
 	{
 		email: 'admin@gmail.com',
-		password: 'zolaraadmin',
+		password: '123456',
 	},
 	{
 		email: 'nvminh162@gmail.com',
@@ -62,7 +62,7 @@ const adminUsers = [
 	},
 	{
 		email: 'trungnguyenwork123@gmail.com',
-		password: 'admintrungnguyenwork123',
+		password: '123456',
 	},
 ];
 
@@ -70,7 +70,7 @@ const adminUsers = [
 const regularUsers = [
 	{
 		email: 'user@gmail.com',
-		password: 'zolarauser',
+		password: '123456',
 	},
 ];
 
@@ -79,6 +79,8 @@ const regularUsers = [
 // USER gets basic permissions (auth, view own profile)
 
 export const seedData = async (adminUserId?: string): Promise<void> => {
+	await testFirebaseConnection();
+
 	try {
 		console.log('🌱 Starting to seed permissions, roles, and admin users...');
 
