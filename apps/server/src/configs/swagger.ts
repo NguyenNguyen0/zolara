@@ -240,8 +240,178 @@ const options: swaggerJSDoc.Options = {
 						pageSize: { type: 'number' },
 					},
 				},
+				FriendRequest: {
+					type: 'object',
+					properties: {
+						id: { type: 'string' },
+						from: { type: 'string', description: 'User ID who sent the request' },
+						to: { type: 'string', description: 'User ID who received the request' },
+						message: { type: 'string', maxLength: 300, nullable: true },
+						createdAt: { type: 'string', format: 'date-time' },
+						updatedAt: { type: 'string', format: 'date-time', nullable: true },
+						fromUser: { $ref: '#/components/schemas/User', nullable: true },
+						toUser: { $ref: '#/components/schemas/User', nullable: true },
+					},
+					required: ['id', 'from', 'to', 'createdAt'],
+				},
+				Friendship: {
+					type: 'object',
+					properties: {
+						friendshipId: { type: 'string' },
+						user: { $ref: '#/components/schemas/User' },
+						friendsSince: { type: 'string', format: 'date-time' },
+					},
+				},
+				FriendSuggestion: {
+					type: 'object',
+					properties: {
+						user: { $ref: '#/components/schemas/User' },
+						mutualFriends: { type: 'number' },
+						reason: { type: 'string' },
+					},
+				},
+				Conversation: {
+					type: 'object',
+					properties: {
+						id: { type: 'string' },
+						type: { type: 'string', enum: ['direct', 'group'] },
+						participants: {
+							type: 'array',
+							items: {
+								type: 'object',
+								properties: {
+									userId: { type: 'string' },
+									joinedAt: { type: 'string', format: 'date-time' },
+								},
+							},
+						},
+						group: {
+							type: 'object',
+							nullable: true,
+							properties: {
+								name: { type: 'string' },
+								avatarUrl: { type: 'string', format: 'uri', nullable: true },
+								createdBy: { type: 'string' },
+							},
+						},
+						lastMessage: {
+							type: 'object',
+							nullable: true,
+							properties: {
+								id: { type: 'string' },
+								content: { type: 'string', nullable: true },
+								senderId: { type: 'string' },
+								createdAt: { type: 'string', format: 'date-time' },
+							},
+						},
+						lastMessageAt: { type: 'string', format: 'date-time', nullable: true },
+						seenBy: { type: 'array', items: { type: 'string' } },
+						unreadCounts: { type: 'object', additionalProperties: { type: 'number' } },
+						createdAt: { type: 'string', format: 'date-time' },
+						updatedAt: { type: 'string', format: 'date-time', nullable: true },
+					},
+					required: ['id', 'type', 'participants', 'createdAt'],
+				},
+				ConversationCreateRequest: {
+					type: 'object',
+					properties: {
+						type: { type: 'string', enum: ['direct', 'group'] },
+						participantIds: { type: 'array', items: { type: 'string' }, minItems: 2 },
+						groupName: { type: 'string', description: 'Required for group conversations' },
+						groupAvatarUrl: { type: 'string', format: 'uri' },
+					},
+					required: ['type', 'participantIds'],
+				},
+				ConversationUpdateRequest: {
+					type: 'object',
+					properties: {
+						groupName: { type: 'string' },
+						groupAvatarUrl: { type: 'string', format: 'uri' },
+					},
+				},
+				Message: {
+					type: 'object',
+					properties: {
+						id: { type: 'string' },
+						conversationId: { type: 'string' },
+						senderId: { type: 'string' },
+						content: { type: 'string', nullable: true },
+						imgUrl: { type: 'string', format: 'uri', nullable: true },
+						createdAt: { type: 'string', format: 'date-time' },
+						updatedAt: { type: 'string', format: 'date-time', nullable: true },
+						sender: { $ref: '#/components/schemas/User', nullable: true },
+					},
+					required: ['id', 'conversationId', 'senderId', 'createdAt'],
+				},
+				MessageCreateRequest: {
+					type: 'object',
+					properties: {
+						conversationId: { type: 'string' },
+						content: { type: 'string', description: 'Required if imgUrl is not provided' },
+						imgUrl: { type: 'string', format: 'uri', description: 'Required if content is not provided' },
+					},
+					required: ['conversationId'],
+				},
+				MessageUpdateRequest: {
+					type: 'object',
+					properties: {
+						content: { type: 'string' },
+						imgUrl: { type: 'string', format: 'uri' },
+					},
+				},
+			},
+			responses: {
+				BadRequest: {
+					description: 'Bad Request',
+					content: {
+						'application/json': {
+							schema: {
+								$ref: '#/components/schemas/ErrorResponse',
+							},
+						},
+					},
+				},
+				Unauthorized: {
+					description: 'Unauthorized - Missing or invalid token',
+					content: {
+						'application/json': {
+							schema: {
+								$ref: '#/components/schemas/ErrorResponse',
+							},
+						},
+					},
+				},
+				Forbidden: {
+					description: 'Forbidden - Insufficient permissions',
+					content: {
+						'application/json': {
+							schema: {
+								$ref: '#/components/schemas/ErrorResponse',
+							},
+						},
+					},
+				},
+				NotFound: {
+					description: 'Resource not found',
+					content: {
+						'application/json': {
+							schema: {
+								$ref: '#/components/schemas/ErrorResponse',
+							},
+						},
+					},
+				},
 			},
 		},
+		tags: [
+			{ name: 'Auth', description: 'Authentication endpoints' },
+			{ name: 'Users', description: 'User management endpoints' },
+			{ name: 'Permissions', description: 'Permission management endpoints' },
+			{ name: 'Roles', description: 'Role management endpoints' },
+			{ name: 'Friends', description: 'Friend management endpoints' },
+			{ name: 'Conversations', description: 'Conversation management endpoints' },
+			{ name: 'Messages', description: 'Message management endpoints' },
+		],
 	},
 	apis: ['./src/routes/*.ts'],
 };

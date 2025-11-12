@@ -4,7 +4,6 @@ import {
 	FlatList,
 	TouchableOpacity,
 	RefreshControl,
-	ActivityIndicator,
 	ListRenderItem,
 } from 'react-native';
 import React, { useMemo, useState } from 'react';
@@ -28,7 +27,6 @@ export default function ContactTab() {
 	const { t } = useTranslation('contact');
 	const { isDark } = useTheme();
 	const [refreshing, setRefreshing] = useState(false);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -37,16 +35,6 @@ export default function ContactTab() {
 			setRefreshing(false);
 		}, 1000);
 	}, []);
-
-	const handleLoadMore = () => {
-		if (!isLoadingMore) {
-			setIsLoadingMore(true);
-			// Simulate API call to load more contacts
-			setTimeout(() => {
-				setIsLoadingMore(false);
-			}, 2000);
-		}
-	};
 
 	const sections = useMemo(() => {
 		const sectionsMap = MOCK_CONTACTS.reduce(
@@ -121,20 +109,6 @@ export default function ContactTab() {
 		</View>
 	);
 
-	// Render loading footer
-	const renderFooter = () => {
-		if (!isLoadingMore) return null;
-		return (
-			<View className="py-4 items-center justify-center">
-				<ActivityIndicator
-					size="small"
-					color={APP_COLOR.PRIMARY}
-					animating={true}
-				/>
-			</View>
-		);
-	};
-
 	return (
 		<SafeAreaView
 			edges={['top']}
@@ -146,8 +120,7 @@ export default function ContactTab() {
 				keyExtractor={(item) => item.letter}
 				renderItem={renderSection}
 				ListHeaderComponent={renderListHeader}
-				ListFooterComponent={renderFooter}
-				onEndReached={handleLoadMore}
+				ListFooterComponent={<></>}
 				onEndReachedThreshold={0.5}
 				refreshControl={
 					<RefreshControl
