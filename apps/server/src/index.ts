@@ -9,6 +9,9 @@ import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
 import permissionRoutes from './routes/permission';
 import roleRoutes from './routes/role';
+import friendRoutes from './routes/friend';
+import conversationRoutes from './routes/conversation';
+import messageRoutes from './routes/message';
 import { attachTraceId } from './middlewares/trace';
 import { errorHandler } from './middlewares/error-handler';
 import { seedData } from './scripts/seed.data';
@@ -41,6 +44,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/roles', roleRoutes);
+app.use('/api/friends', friendRoutes);
+app.use('/api/conversations', conversationRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

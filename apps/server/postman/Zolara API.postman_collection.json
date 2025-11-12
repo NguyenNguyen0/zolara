@@ -951,6 +951,981 @@
 				}
 			],
 			"description": "Role management endpoints (Admin only)"
+		},
+		{
+			"name": "Friends",
+			"item": [
+				{
+					"name": "Add Friend",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"toUserId\": \"TARGET_USER_ID_HERE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/friends",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends"
+							]
+						},
+						"description": "Send a friend request to another user"
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Friend Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"accept\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/{{friendRequestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"{{friendRequestId}}"
+							]
+						},
+						"description": "Accept a friend request"
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Friend Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"reject\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/{{friendRequestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"{{friendRequestId}}"
+							]
+						},
+						"description": "Reject a friend request"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Friend List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/friends",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends"
+							]
+						},
+						"description": "Get list of friends"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Friend Requests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"requests"
+							]
+						},
+						"description": "Get pending friend requests received"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sent Friend Requests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/sent",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"sent"
+							]
+						},
+						"description": "Get sent friend requests"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Friend",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/{{friendId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"{{friendId}}"
+							]
+						},
+						"description": "Remove a friend"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Friend Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/requests/{{friendRequestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"requests",
+								"{{friendRequestId}}"
+							]
+						},
+						"description": "Cancel a sent friend request"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Friend Suggestions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/friends/suggestions?limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"friends",
+								"suggestions"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of suggestions to return"
+								}
+							]
+						},
+						"description": "Get friend suggestions based on mutual friends"
+					},
+					"response": []
+				}
+			],
+			"description": "Friend management endpoints"
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Create Direct Conversation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.id) {",
+									"        pm.environment.set('conversationId', response.data.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"direct\",\n    \"participantIds\": [\"TARGET_USER_ID_HERE\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations"
+							]
+						},
+						"description": "Create a direct (1-to-1) conversation with another user"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Group Conversation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.id) {",
+									"        pm.environment.set('conversationId', response.data.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"group\",\n    \"participantIds\": [\"USER_ID_1\", \"USER_ID_2\", \"USER_ID_3\"],\n    \"groupName\": \"My Awesome Group\",\n    \"groupAvatarUrl\": \"https://example.com/group-avatar.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations"
+							]
+						},
+						"description": "Create a group conversation with multiple users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All My Conversations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations"
+							]
+						},
+						"description": "Get all conversations the current user is participating in"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}"
+							]
+						},
+						"description": "Get conversation details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation Messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}/messages?limit=50",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Number of messages to retrieve (default: 50)"
+								},
+								{
+									"key": "before",
+									"value": "",
+									"description": "Get messages before this timestamp (ISO 8601)",
+									"disabled": true
+								},
+								{
+									"key": "after",
+									"value": "",
+									"description": "Get messages after this timestamp (ISO 8601)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get messages in a conversation with pagination support"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group Conversation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupName\": \"Updated Group Name\",\n    \"groupAvatarUrl\": \"https://example.com/new-avatar.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}"
+							]
+						},
+						"description": "Update group conversation name and avatar (group only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Conversation As Seen",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}/seen",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}",
+								"seen"
+							]
+						},
+						"description": "Mark conversation as seen and reset unread count to 0"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Participant to Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"NEW_USER_ID_HERE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}/participants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}",
+								"participants"
+							]
+						},
+						"description": "Add a new participant to a group conversation (group only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Participant from Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}/participants/{{targetUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}",
+								"participants",
+								"{{targetUserId}}"
+							]
+						},
+						"description": "Remove a participant from a group conversation (group only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Conversation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/conversations/{{conversationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{{conversationId}}"
+							]
+						},
+						"description": "Delete a conversation and all its messages"
+					},
+					"response": []
+				}
+			],
+			"description": "Conversation management endpoints for direct and group chats"
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Send Message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.id) {",
+									"        pm.environment.set('messageId', response.data.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conversationId\": \"{{conversationId}}\",\n    \"content\": \"Hello, this is my message!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"messages"
+							]
+						},
+						"description": "Send a text message to a conversation"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message with Image",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.id) {",
+									"        pm.environment.set('messageId', response.data.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conversationId\": \"{{conversationId}}\",\n    \"content\": \"Check out this image!\",\n    \"imgUrl\": \"https://example.com/image.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"messages"
+							]
+						},
+						"description": "Send a message with text and image URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Message By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/{{messageId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								"{{messageId}}"
+							]
+						},
+						"description": "Get message details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Updated message content\",\n    \"imgUrl\": \"https://example.com/updated-image.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/{{messageId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								"{{messageId}}"
+							]
+						},
+						"description": "Edit message content or image (only by sender)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/messages/{{messageId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								"{{messageId}}"
+							]
+						},
+						"description": "Delete a message (only by sender)"
+					},
+					"response": []
+				}
+			],
+			"description": "Message management endpoints for sending, editing, and deleting messages"
 		}
 	],
 	"variable": [
@@ -991,6 +1966,31 @@
 		},
 		{
 			"key": "userRoleId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "friendRequestId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "friendId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "conversationId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "messageId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "targetUserId",
 			"value": "",
 			"type": "string"
 		}

@@ -37,6 +37,8 @@ export enum ErrorCode {
 	// Generic errors
 	DOCUMENT_NOT_FOUND = 'DOCUMENT_NOT_FOUND',
 	OPERATION_FAILED = 'OPERATION_FAILED',
+	NOT_FOUND = 'NOT_FOUND',
+	INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
 }
 
 export enum ErrorMessage {
