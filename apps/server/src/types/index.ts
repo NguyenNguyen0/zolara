@@ -7,5 +7,6 @@ export * from './friend';
 export * from './conversation';
 export * from './message';
 export * from './express';
+export * from './agent';
 export * from './response';
 

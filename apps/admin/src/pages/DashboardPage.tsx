@@ -2,17 +2,15 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useDashboard } from '../hooks/useDashboard';
 import { AnalyticsService, type AnalyticsData } from '../services/analyticsService';
-import { FirebaseAuthService } from '../services/authService';
 import { Button } from '../components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
-import { AnalyticsDashboard } from '../components/ui/AnalyticsDashboard';
 import {
-  UserGrowthChart,
-  MessageActivityChart,
-  CallDistributionChart,
-  PerformanceMetricsChart
-} from '../components/ui/Charts';
-import { LogOut, Users, MessageSquare, Phone, Activity, UserPlus, BarChart3 } from 'lucide-react';
+  DashboardSidebar,
+  OverviewSection,
+  AnalyticsSection,
+  FirebaseAnalyticsSection,
+  type DashboardSection
+} from '../components/dashboard';
+import { LogOut, Activity } from 'lucide-react';
 import logoSrc from '../assets/logo.png';
 
 export const DashboardPage: React.FC = () => {
@@ -26,13 +24,13 @@ export const DashboardPage: React.FC = () => {
     refreshStats
   } = useDashboard();
 
+  const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [realtimeData, setRealtimeData] = useState<{
     activeUsers: number;
     currentPageViews: number;
     topActivePages: Array<{ page: string; activeUsers: number }>;
   } | null>(null);
-  const [isCreatingUser, setIsCreatingUser] = useState(false);
 
   // Load stats on mount
   useEffect(() => {
@@ -70,37 +68,29 @@ export const DashboardPage: React.FC = () => {
     }
   };
 
-  const createDemoUser = async () => {
-    setIsCreatingUser(true);
-    try {
-      await FirebaseAuthService.createAdminUser(
-        'demo@zolara.com',
-        'demo123',
-        'Demo Admin'
-      );
-      alert('Demo admin user created successfully!\nEmail: demo@zolara.com\nPassword: demo123');
-    } catch (error) {
-      console.error('Failed to create demo user:', error);
-      alert('Failed to create demo user. User might already exist.');
-    } finally {
-      setIsCreatingUser(false);
+  const renderActiveSection = () => {
+    switch (activeSection) {
+      case 'overview':
+        return (
+          <OverviewSection
+            userStats={userStats}
+            messageStats={messageStats}
+            callStats={callStats}
+            lastUpdated={lastUpdated || undefined}
+          />
+        );
+      case 'analytics':
+        return <AnalyticsSection callStats={callStats} />;
+      case 'firebase-analytics':
+        return (
+          <FirebaseAnalyticsSection
+            analyticsData={analyticsData}
+            realtimeData={realtimeData}
+          />
+        );
+      default:
+        return null;
     }
-  };
-
-  const formatLastUpdated = (date: Date): string => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins === 1) return '1 minute ago';
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours === 1) return '1 hour ago';
-    if (diffHours < 24) return `${diffHours} hours ago`;
-
-    return date.toLocaleString();
   };
 
   return (
@@ -119,15 +109,6 @@ export const DashboardPage: React.FC = () => {
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
-                onClick={createDemoUser}
-                disabled={isCreatingUser}
-                className="border-green-200 text-green-600 hover:bg-green-50"
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                {isCreatingUser ? 'Creating...' : 'Create Demo User'}
-              </Button>
-              <Button
-                variant="outline"
                 onClick={handleRefreshStats}
                 disabled={isLoading}
                 className="border-primary/20 text-primary hover:bg-primary/5"
@@ -144,250 +125,30 @@ export const DashboardPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        {/* Stats Overview */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">Overview</h2>
-              <div className="w-12 h-1 bg-primary rounded-full mt-1"></div>
+      {/* Main Layout with Sidebar */}
+      <div className="flex">
+        <DashboardSidebar
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
+
+        {/* Main Content */}
+        <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8">
+          {renderActiveSection()}
+        </main>
+      </div>
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/10 bg-opacity-10 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex items-center space-x-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <p className="text-gray-700">Loading statistics...</p>
             </div>
-            {lastUpdated && (
-              <p className="text-sm text-gray-500">
-                Last updated: {formatLastUpdated(lastUpdated)}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* User Stats */}
-            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                <Users className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary">{userStats.totalUsers.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">
-                  {userStats.activeUsers} currently active
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-chart-2 hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">New Users Today</CardTitle>
-                <Users className="h-4 w-4 text-chart-2" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-chart-2">{userStats.newUsersToday}</div>
-                <p className="text-xs text-muted-foreground">
-                  {userStats.newUsersThisWeek} this week
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Message Stats */}
-            <Card className="border-l-4 border-l-chart-3 hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Messages</CardTitle>
-                <MessageSquare className="h-4 w-4 text-chart-3" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-chart-3">{messageStats.totalMessages.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">
-                  {messageStats.messagesToday} today
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Call Stats */}
-            <Card className="border-l-4 border-l-chart-4 hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Calls</CardTitle>
-                <Phone className="h-4 w-4 text-chart-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-chart-4">{callStats.activeCalls}</div>
-                <p className="text-xs text-muted-foreground">
-                  {callStats.totalCalls} total calls
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
-
-        {/* Detailed Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* User Activity */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="border-b border-primary/10">
-              <CardTitle className="text-primary flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                User Activity
-              </CardTitle>
-              <CardDescription>User registration and activity metrics</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-primary/5 rounded-lg">
-                  <span className="text-sm font-medium text-primary">Total Registered Users</span>
-                  <span className="text-sm font-bold text-primary">{userStats.totalUsers.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-chart-2/10 rounded-lg">
-                  <span className="text-sm font-medium text-chart-2">Currently Active</span>
-                  <span className="text-sm font-bold text-chart-2">{userStats.activeUsers.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">New Users Today</span>
-                  <span className="text-sm text-gray-600">{userStats.newUsersToday}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">New Users This Week</span>
-                  <span className="text-sm text-gray-600">{userStats.newUsersThisWeek}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Communication Stats */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="border-b border-primary/10">
-              <CardTitle className="text-primary flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Communication
-              </CardTitle>
-              <CardDescription>Messaging and call statistics</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-sm font-medium mb-3 text-chart-3 flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4" />
-                    Messages
-                  </h4>
-                  <div className="space-y-2 pl-4">
-                    <div className="flex justify-between items-center p-2 bg-chart-3/10 rounded">
-                      <span className="text-sm">Total Messages</span>
-                      <span className="text-sm font-semibold text-chart-3">{messageStats.totalMessages.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Messages Today</span>
-                      <span className="text-sm text-gray-600">{messageStats.messagesToday}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Messages This Week</span>
-                      <span className="text-sm text-gray-600">{messageStats.messagesThisWeek}</span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium mb-3 text-chart-4 flex items-center gap-2">
-                    <Phone className="h-4 w-4" />
-                    Voice/Video Calls
-                  </h4>
-                  <div className="space-y-2 pl-4">
-                    <div className="flex justify-between items-center p-2 bg-chart-4/10 rounded">
-                      <span className="text-sm">Total Calls</span>
-                      <span className="text-sm font-semibold text-chart-4">{callStats.totalCalls}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Active Calls</span>
-                      <span className="text-sm text-gray-600">{callStats.activeCalls}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Avg Call Duration</span>
-                      <span className="text-sm text-gray-600">{Math.round(callStats.averageCallDuration / 60)}m</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Charts Section */}
-        <div className="mt-8">
-          <div className="mb-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Activity className="w-4 h-4 text-white" />
-              </div>
-              <h2 className="text-lg font-medium text-gray-900">Analytics & Trends</h2>
-            </div>
-            <p className="text-sm text-gray-500">Visual insights and performance metrics</p>
-            <div className="w-16 h-1 bg-gradient-to-r from-primary to-chart-2 rounded-full mt-2"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <UserGrowthChart />
-            <MessageActivityChart />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <CallDistributionChart />
-            <PerformanceMetricsChart />
-          </div>
-        </div>
-
-        {/* Firebase Analytics Section */}
-        {analyticsData && realtimeData && (
-          <div className="mt-8">
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-4 h-4 text-white" />
-                </div>
-                <h2 className="text-lg font-medium text-gray-900">Firebase Analytics</h2>
-              </div>
-              <p className="text-sm text-gray-500">Real-time analytics and user behavior insights</p>
-              <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mt-2"></div>
-            </div>
-            <AnalyticsDashboard analyticsData={analyticsData} realtimeData={realtimeData} />
-          </div>
-        )}
-
-        {/* Current Session Stats (if available) */}
-        {callStats.currentSessionStats && (
-          <div className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Current Session Statistics</CardTitle>
-                <CardDescription>Real-time statistics from active call session</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{callStats.currentSessionStats.userCount}</div>
-                    <p className="text-sm text-gray-600">Users in Session</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{Math.round(callStats.currentSessionStats.duration / 60)}m</div>
-                    <p className="text-sm text-gray-600">Session Duration</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{Math.round(callStats.currentSessionStats.receiveBitrate / 1000)}kbps</div>
-                    <p className="text-sm text-gray-600">Receive Bitrate</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="fixed inset-0 bg-black/10 bg-opacity-10 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <div className="flex items-center space-x-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                <p className="text-gray-700">Loading statistics...</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+      )}
     </div>
   );
 };
