@@ -9,6 +9,7 @@ import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
 import permissionRoutes from './routes/permission';
 import roleRoutes from './routes/role';
+import agentRoutes from './routes/agent';
 import { attachTraceId } from './middlewares/trace';
 import { errorHandler } from './middlewares/error-handler';
 import { seedData } from './scripts/seed.data';
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/roles', roleRoutes);
+app.use('/api/agent', agentRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

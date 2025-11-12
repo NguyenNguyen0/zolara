@@ -12,6 +12,7 @@
     "test": "yarn reset-emulators && cross-env NODE_ENV=test FIRESTORE_EMULATOR_HOST=localhost:8080 FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
+    "@google/genai": "^1.29.0",
     "@repo/types": "*",
     "agora-access-token": "^2.0.4",
     "chalk": "^5.6.0",
