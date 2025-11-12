@@ -34,6 +34,33 @@ const permissions: Omit<Permission, 'id' | 'createdAt' | 'createdBy' | 'updatedA
 	{ apiPath: '/api/permissions', method: 'POST', module: 'ACCESS-CONTROLLER', name: 'Tạo Permission', active: true },
 	{ apiPath: '/api/permissions/{id}', method: 'PUT', module: 'ACCESS-CONTROLLER', name: 'Cập nhật Permission', active: true },
 	{ apiPath: '/api/permissions/{id}', method: 'DELETE', module: 'ACCESS-CONTROLLER', name: 'Xóa Permission theo id', active: true },
+
+	// FRIEND module
+	{ apiPath: '/api/friends', method: 'POST', module: 'FRIEND', name: 'Gửi lời mời kết bạn', active: true },
+	{ apiPath: '/api/friends/{requestId}', method: 'PUT', module: 'FRIEND', name: 'Chấp nhận/Từ chối lời mời kết bạn', active: true },
+	{ apiPath: '/api/friends', method: 'GET', module: 'FRIEND', name: 'Lấy danh sách bạn bè', active: true },
+	{ apiPath: '/api/friends/requests', method: 'GET', module: 'FRIEND', name: 'Lấy danh sách lời mời kết bạn nhận được', active: true },
+	{ apiPath: '/api/friends/sent', method: 'GET', module: 'FRIEND', name: 'Lấy danh sách lời mời kết bạn đã gửi', active: true },
+	{ apiPath: '/api/friends/{friendId}', method: 'DELETE', module: 'FRIEND', name: 'Xóa bạn bè', active: true },
+	{ apiPath: '/api/friends/requests/{requestId}', method: 'DELETE', module: 'FRIEND', name: 'Huỷ lời mời kết bạn đã gửi', active: true },
+	{ apiPath: '/api/friends/suggestions', method: 'GET', module: 'FRIEND', name: 'Lấy gợi ý kết bạn', active: true },
+
+	// CONVERSATION module
+	{ apiPath: '/api/conversations', method: 'POST', module: 'CONVERSATION', name: 'Tạo cuộc trò chuyện', active: true },
+	{ apiPath: '/api/conversations', method: 'GET', module: 'CONVERSATION', name: 'Lấy danh sách cuộc trò chuyện', active: true },
+	{ apiPath: '/api/conversations/{id}', method: 'GET', module: 'CONVERSATION', name: 'Lấy chi tiết cuộc trò chuyện', active: true },
+	{ apiPath: '/api/conversations/{id}', method: 'PUT', module: 'CONVERSATION', name: 'Cập nhật cuộc trò chuyện', active: true },
+	{ apiPath: '/api/conversations/{id}', method: 'DELETE', module: 'CONVERSATION', name: 'Xóa cuộc trò chuyện', active: true },
+	{ apiPath: '/api/conversations/{id}/seen', method: 'PATCH', module: 'CONVERSATION', name: 'Đánh dấu đã xem', active: true },
+	{ apiPath: '/api/conversations/{id}/participants', method: 'POST', module: 'CONVERSATION', name: 'Thêm thành viên vào nhóm', active: true },
+	{ apiPath: '/api/conversations/{id}/participants/{userId}', method: 'DELETE', module: 'CONVERSATION', name: 'Xóa thành viên khỏi nhóm', active: true },
+	{ apiPath: '/api/conversations/{conversationId}/messages', method: 'GET', module: 'CONVERSATION', name: 'Lấy tin nhắn trong cuộc trò chuyện', active: true },
+
+	// MESSAGE module
+	{ apiPath: '/api/messages', method: 'POST', module: 'MESSAGE', name: 'Gửi tin nhắn', active: true },
+	{ apiPath: '/api/messages/{id}', method: 'GET', module: 'MESSAGE', name: 'Lấy chi tiết tin nhắn', active: true },
+	{ apiPath: '/api/messages/{id}', method: 'PUT', module: 'MESSAGE', name: 'Chỉnh sửa tin nhắn', active: true },
+	{ apiPath: '/api/messages/{id}', method: 'DELETE', module: 'MESSAGE', name: 'Xóa tin nhắn', active: true },
 ];
 
 // Role data - using numeric IDs as in SQL (stored as string in Firestore)
@@ -139,6 +166,30 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 					permissionMap.get('/api/users/{id}:GET') || '',
 					// Update own profile
 					permissionMap.get('/api/users/{id}:PUT') || '',
+					// Friend permissions
+					permissionMap.get('/api/friends:POST') || '',
+					permissionMap.get('/api/friends/{requestId}:PUT') || '',
+					permissionMap.get('/api/friends:GET') || '',
+					permissionMap.get('/api/friends/requests:GET') || '',
+					permissionMap.get('/api/friends/sent:GET') || '',
+					permissionMap.get('/api/friends/{friendId}:DELETE') || '',
+					permissionMap.get('/api/friends/requests/{requestId}:DELETE') || '',
+					permissionMap.get('/api/friends/suggestions:GET') || '',
+					// Conversation permissions
+					permissionMap.get('/api/conversations:POST') || '',
+					permissionMap.get('/api/conversations:GET') || '',
+					permissionMap.get('/api/conversations/{id}:GET') || '',
+					permissionMap.get('/api/conversations/{id}:PUT') || '',
+					permissionMap.get('/api/conversations/{id}:DELETE') || '',
+					permissionMap.get('/api/conversations/{id}/seen:PATCH') || '',
+					permissionMap.get('/api/conversations/{id}/participants:POST') || '',
+					permissionMap.get('/api/conversations/{id}/participants/{userId}:DELETE') || '',
+					permissionMap.get('/api/conversations/{conversationId}/messages:GET') || '',
+					// Message permissions
+					permissionMap.get('/api/messages:POST') || '',
+					permissionMap.get('/api/messages/{id}:GET') || '',
+					permissionMap.get('/api/messages/{id}:PUT') || '',
+					permissionMap.get('/api/messages/{id}:DELETE') || '',
 				].filter((id) => id !== ''),
 			};
 
