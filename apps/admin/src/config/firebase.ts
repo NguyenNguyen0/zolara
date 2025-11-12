@@ -25,41 +25,48 @@ export const db = getFirestore(app);
 let analytics: ReturnType<typeof getAnalytics> | null = null;
 
 // Only initialize analytics if supported and not in development mode
-if (!import.meta.env.DEV && typeof window !== 'undefined') {
-  try {
-    isSupported().then((supported) => {
-      if (supported) {
-        analytics = getAnalytics(app);
-        console.log('Firebase Analytics initialized');
-      } else {
-        console.warn('Firebase Analytics is not supported in this environment');
-      }
-    }).catch((error) => {
-      console.warn('Failed to check Analytics support:', error);
-    });
-  } catch (error) {
-    console.warn('Failed to initialize Firebase Analytics:', error);
-  }
+if (
+	import.meta.env.VITE_NODE_ENV !== 'development' &&
+	typeof window !== 'undefined'
+) {
+	try {
+		isSupported()
+			.then((supported) => {
+				if (supported) {
+					analytics = getAnalytics(app);
+					console.log('Firebase Analytics initialized');
+				} else {
+					console.warn(
+						'Firebase Analytics is not supported in this environment',
+					);
+				}
+			})
+			.catch((error) => {
+				console.warn('Failed to check Analytics support:', error);
+			});
+	} catch (error) {
+		console.warn('Failed to initialize Firebase Analytics:', error);
+	}
 }
 
 export { analytics };
 
 // Connect to emulators in development
-if (import.meta.env.DEV) {
-  try {
-    // Connect to Auth emulator
-    connectAuthEmulator(auth, 'http://localhost:9099', {
-      disableWarnings: true,
-    });
+if (import.meta.env.VITE_NODE_ENV === 'development') {
+	try {
+		// Connect to Auth emulator
+		connectAuthEmulator(auth, 'http://localhost:9099', {
+			disableWarnings: true,
+		});
 
-    // Connect to Firestore emulator
-    connectFirestoreEmulator(db, 'localhost', 9098);
+		// Connect to Firestore emulator
+		connectFirestoreEmulator(db, 'localhost', 9098);
 
-    console.log('Connected to Firebase Emulators in development mode');
-  } catch (error) {
-    console.warn('Firebase Emulator connection failed:', error);
-    // App will continue with production Firebase
-  }
+		console.log('Connected to Firebase Emulators in development mode');
+	} catch (error) {
+		console.warn('Firebase Emulator connection failed:', error);
+		// App will continue with production Firebase
+	}
 }
 
 export default app;
