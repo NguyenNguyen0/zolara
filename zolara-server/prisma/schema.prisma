@@ -1,0 +1,376 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+model User {
+  id               String            @id @default(uuid()) @map("user_id") @db.Uuid
+  email            String?           @unique
+  phoneNumber      String?           @unique
+  passwordHash     String            @map("password_hash")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  userInfo         UserInfo?         @relation(name: "UserToUserInfo")
+  infoId           String?           @map("info_id") @db.Uuid
+  refreshTokens    RefreshToken[]    @relation(name: "RefreshTokenToUser")
+  qrCodes          QrCode[]          @relation(name: "QrCodeToUser")
+  posts            Post[]            @relation(name: "PostToUser")
+  stories          Story[]           @relation(name: "StoryToUser")
+  groupMembers     GroupMember[]     @relation(name: "GroupMemberToUser")
+  cloudFiles       CloudStorage[]    @relation(name: "CloudStorageToUser")
+  pinnedItems      PinnedItem[]      @relation(name: "PinnedItemToUser")
+  sentFriends      Friend[]          @relation(name: "SenderUser")
+  receivedFriends  Friend[]          @relation(name: "ReceiverUser")
+  contacts         Contact[]         @relation(name: "UserContacts")
+  contactOf        Contact[]         @relation(name: "ContactUser")
+  settings         UserSetting[]     @relation(name: "UserToUserSetting")
+  postReactions    PostReaction[]    @relation(name: "PostReactionToUser")
+  hiddenPosts      HiddenPost[]      @relation(name: "HiddenPostToUser")
+  addedBy          GroupMember[]     @relation(name: "AddedBy")
+  notifications    Notification[]    @relation(name: "NotificationToUser")
+  sentMessages     Message[]         @relation(name: "SentMessage")
+  receivedMessages Message[]         @relation(name: "ReceivedMessage")
+  comments         Comment[]         @relation(name: "CommentToUser")
+  initiatedCalls   Call[]            @relation(name: "CallInitiator")
+  callParticipants CallParticipant[] @relation(name: "CallParticipantUser")
+
+  @@map("users")
+}
+
+model UserInfo {
+  id                String    @id @default(uuid()) @map("info_id") @db.Uuid
+  fullName          String?   @map("full_name")
+  dateOfBirth       DateTime? @map("date_of_birth")
+  gender            Gender?
+  bio               String?   @map("bio")
+  blockStrangers    Boolean   @default(false) @map("block_strangers")
+  profilePictureUrl String?   @map("profile_picture_url")
+  statusMessage     String?   @map("status_message")
+  lastSeen          DateTime? @map("last_seen")
+  coverImgUrl       String?   @map("cover_img_url")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  userAuth          User      @relation(name: "UserToUserInfo", fields: [id], references: [id], onDelete: Cascade)
+
+  @@map("user_infors")
+}
+
+model Friend {
+  id         String       @id @default(uuid()) @map("friendship_id") @db.Uuid
+  sender     User         @relation(name: "SenderUser", fields: [senderId], references: [id])
+  senderId   String       @map("sender_id") @db.Uuid
+  receiver   User         @relation(name: "ReceiverUser", fields: [receiverId], references: [id])
+  receiverId String       @map("receiver_id") @db.Uuid
+  status     FriendStatus @default(PENDING)
+  introduce  String?      @map("introduced_by")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  @@map("friends")
+}
+
+model UserSetting {
+  id                  String   @id @default(uuid()) @map("setting_id") @db.Uuid
+  userId              String   @map("user_id") @db.Uuid
+  user                User     @relation(name: "UserToUserSetting", fields: [userId], references: [id])
+  notificationEnabled Boolean  @default(true) @map("notification_enabled")
+  darkMode            Boolean  @default(false) @map("dark_mode")
+  lastUpdated         DateTime @default(now()) @map("last_updated")
+
+  @@map("user_settings")
+}
+
+model Post {
+  id           String         @id @default(uuid()) @map("post_id") @db.Uuid
+  userId       String         @map("user_id") @db.Uuid
+  user         User           @relation(name: "PostToUser", fields: [userId], references: [id])
+  content      String?
+  media        Json?
+  privacyLevel String         @default("public") @map("privacy_level")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  reactions    PostReaction[] @relation(name: "PostToPostReaction")
+  hiddenBy     HiddenPost[]   @relation(name: "HiddenPostToPost")
+  comments     Comment[]      @relation(name: "CommentToPost")
+
+  @@map("posts")
+}
+
+model Story {
+  id        String   @id @default(uuid()) @map("story_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(name: "StoryToUser", fields: [userId], references: [id])
+  mediaUrl  String   @map("media_url")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("stories")
+}
+
+model Group {
+  id        String        @id @default(uuid()) @map("group_id") @db.Uuid
+  name      String        @map("group_name")
+  creatorId String        @map("creator_id") @db.Uuid
+  avatarUrl String?       @map("avatar_url")
+  createdAt DateTime      @default(now()) @map("created_at")
+  members   GroupMember[] @relation(name: "GroupToGroupMember")
+  messages  Message[]     @relation(name: "GroupMessages")
+  calls     Call[]        @relation(name: "GroupCalls")
+
+  @@map("groups")
+}
+
+model GroupMember {
+  id        String    @id @default(uuid()) @map("membership_id") @db.Uuid
+  groupId   String    @map("group_id") @db.Uuid
+  group     Group     @relation(name: "GroupToGroupMember", fields: [groupId], references: [id])
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(name: "GroupMemberToUser", fields: [userId], references: [id])
+  role      GroupRole @default(MEMBER)
+  joinedAt  DateTime  @default(now()) @map("joined_at")
+  addedBy   User      @relation(name: "AddedBy", fields: [addedById], references: [id])
+  addedById String    @map("added_by_id") @db.Uuid
+
+  @@map("group_members")
+}
+
+model CloudStorage {
+  id         String   @id @default(uuid()) @map("file_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  user       User     @relation(name: "CloudStorageToUser", fields: [userId], references: [id])
+  fileName   String   @map("file_name")
+  fileUrl    String   @map("file_url")
+  fileType   String?  @map("file_type")
+  fileSize   Int?     @map("file_size")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  @@map("cloud_storage")
+}
+
+model PinnedItem {
+  id       String      @id @default(uuid()) @map("pinned_id") @db.Uuid
+  userId   String      @map("user_id") @db.Uuid
+  user     User        @relation(name: "PinnedItemToUser", fields: [userId], references: [id])
+  itemType MessageType @map("item_type")
+  itemId   String      @map("item_id") @db.Uuid
+  pinnedAt DateTime    @default(now()) @map("pinned_at")
+
+  @@map("pinned_items")
+}
+
+model Contact {
+  id            String   @id @default(uuid()) @map("contact_id") @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  user          User     @relation(name: "UserContacts", fields: [userId], references: [id])
+  contactUserId String   @map("contact_user_id") @db.Uuid
+  contactUser   User     @relation(name: "ContactUser", fields: [contactUserId], references: [id])
+  nickname      String?
+  addedAt       DateTime @default(now()) @map("added_at")
+
+  @@map("contacts")
+}
+
+model PostReaction {
+  id           String       @id @default(uuid()) @map("reaction_id") @db.Uuid
+  postId       String       @map("post_id") @db.Uuid
+  post         Post         @relation(name: "PostToPostReaction", fields: [postId], references: [id])
+  userId       String       @map("user_id") @db.Uuid
+  user         User         @relation(name: "PostReactionToUser", fields: [userId], references: [id])
+  reactionType ReactionType @map("reaction_type")
+  reactedAt    DateTime     @default(now()) @map("reacted_at")
+
+  @@map("post_reactions")
+}
+
+model HiddenPost {
+  id       String   @id @default(uuid()) @map("hidden_post_id") @db.Uuid
+  userId   String   @map("user_id") @db.Uuid
+  user     User     @relation(name: "HiddenPostToUser", fields: [userId], references: [id])
+  postId   String   @map("post_id") @db.Uuid
+  post     Post     @relation(name: "HiddenPostToPost", fields: [postId], references: [id])
+  hiddenAt DateTime @default(now()) @map("hidden_at")
+
+  @@map("hidden_posts")
+}
+
+model RefreshToken {
+  id         String      @id @default(uuid()) @map("refresh_token_id") @db.Uuid
+  token      String      @unique
+  userId     String      @map("user_id") @db.Uuid
+  user       User        @relation(name: "RefreshTokenToUser", fields: [userId], references: [id], onDelete: Cascade)
+  deviceName String?     @map("device_name")
+  deviceType DeviceType? @map("device_type")
+  ipAddress  String?     @map("ip_address")
+  userAgent  String?     @map("user_agent")
+  isRevoked  Boolean     @default(false) @map("is_revoked")
+  expiresAt  DateTime    @map("expires_at")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model QrCode {
+  id        String       @id @default(uuid()) @map("qr_token_id") @db.Uuid
+  qrToken   String       @unique @map("qr_token")
+  userId    String?      @map("user_id") @db.Uuid
+  user      User?        @relation(name: "QrCodeToUser", fields: [userId], references: [id])
+  status    QrCodeStatus @default(PENDING)
+  expiresAt DateTime     @map("expires_at")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("qr_codes")
+}
+
+model Notification {
+  id        String   @id @default(uuid()) @map("notification_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(name: "NotificationToUser", fields: [userId], references: [id])
+  type      String   @map("notification_type")
+  content   Json     @map("notification_content")
+  read      Boolean  @default(false) @map("is_read")
+  reference Json?    @map("reference_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+model Message {
+  id               String       @id @default(uuid()) @map("message_id") @db.Uuid
+  content          Json         @map("content")
+  senderId         String       @map("sender_id") @db.Uuid
+  sender           User         @relation(name: "SentMessage", fields: [senderId], references: [id])
+  receiverId       String?      @map("receiver_id") @db.Uuid
+  receiver         User?        @relation(name: "ReceivedMessage", fields: [receiverId], references: [id])
+  groupId          String?      @map("group_id") @db.Uuid
+  group            Group?       @relation(name: "GroupMessages", fields: [groupId], references: [id])
+  recalled         Boolean      @default(false) @map("is_recalled")
+  deletedBy        String[]     @map("deleted_by")
+  repliedTo        String?      @map("replied_to") @db.Uuid
+  reactions        Json[]       @map("reactions")
+  readBy           String[]     @map("read_by")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+  messageType      MessageType? @default(USER)
+  // Thêm các trường mới
+  forwardedFrom    String?      @map("forwarded_from") @db.Uuid
+  forwardedMessage Message?     @relation("ForwardedMessages", fields: [forwardedFrom], references: [id])
+  forwards         Message[]    @relation("ForwardedMessages")
+
+  @@map("messages")
+}
+
+model Comment {
+  id        String  @id @default(uuid()) @map("comment_id") @db.Uuid
+  postId    String  @map("post_id") @db.Uuid
+  post      Post    @relation(name: "CommentToPost", fields: [postId], references: [id])
+  userId    String  @map("user_id") @db.Uuid
+  user      User    @relation(name: "CommentToUser", fields: [userId], references: [id])
+  content   String  @map("content")
+  repliedTo String? @map("replied_to") @db.Uuid
+  reactions Json[]  @map("reactions")
+
+  @@map("comments")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum GroupRole {
+  LEADER
+  CO_LEADER
+  MEMBER
+}
+
+enum MessageType {
+  GROUP
+  USER
+}
+
+enum DeviceType {
+  MOBILE
+  TABLET
+  WEB
+  DESKTOP
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}
+
+enum QrCodeStatus {
+  PENDING
+  SCANNED
+  CONFIRMED
+  EXPIRED
+  CANCELLED
+  FRIEND_REQUEST
+  FRIEND_CONFIRMED
+}
+
+enum ReactionType {
+  LIKE
+  LOVE
+  HAHA
+  WOW
+  SAD
+  ANGRY
+}
+
+enum CallType {
+  AUDIO
+  VIDEO
+}
+
+enum CallStatus {
+  RINGING
+  ONGOING
+  ENDED
+  MISSED
+  REJECTED
+}
+
+model Call {
+  id           String            @id @default(uuid()) @map("call_id") @db.Uuid
+  initiatorId  String            @map("initiator_id") @db.Uuid
+  initiator    User              @relation(name: "CallInitiator", fields: [initiatorId], references: [id])
+  groupId      String?           @map("group_id") @db.Uuid
+  group        Group?            @relation(name: "GroupCalls", fields: [groupId], references: [id])
+  type         CallType          @default(AUDIO)
+  status       CallStatus        @default(RINGING)
+  startedAt    DateTime          @default(now()) @map("started_at")
+  endedAt      DateTime?         @map("ended_at")
+  duration     Int?              @map("duration_seconds")
+  participants CallParticipant[] @relation(name: "CallToParticipant")
+  roomId       String            @unique @map("room_id")
+
+  @@map("calls")
+}
+
+model CallParticipant {
+  id       String    @id @default(uuid()) @map("participant_id") @db.Uuid
+  callId   String    @map("call_id") @db.Uuid
+  call     Call      @relation(name: "CallToParticipant", fields: [callId], references: [id], onDelete: Cascade)
+  userId   String    @map("user_id") @db.Uuid
+  user     User      @relation(name: "CallParticipantUser", fields: [userId], references: [id])
+  joinedAt DateTime  @default(now()) @map("joined_at")
+  leftAt   DateTime? @map("left_at")
+  status   String    @default("connected") // connected, disconnected
+
+  @@unique([callId, userId])
+  @@map("call_participants")
+}

@@ -1,0 +1,2415 @@
+{
+	"info": {
+		"_postman_id": "6e239d29-3628-4e3c-8c06-b25e9d42daa4",
+		"name": "Zolara API",
+		"description": "Complete API collection for Zolara Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40740215"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register - Initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.registrationId) {",
+									"        pm.collectionVariables.set('registrationId', response.registrationId);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"nvminh1624@gmail.com\",\n  \"phoneNumber\": \"0353999798\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register/initiate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"initiate"
+							]
+						},
+						"description": "Initiate registration process. Choose EMAIL or SMS verification."
+					},
+					"response": []
+				},
+				{
+					"name": "Register - Verify OTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.verified) {",
+									"        console.log('OTP verified successfully');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"registrationId\": \"{{registrationId}}\",\n  \"otp\": \"132551\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"verify"
+							]
+						},
+						"description": "Verify OTP code sent via email or SMS"
+					},
+					"response": []
+				},
+				{
+					"name": "Register - Complete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.accessToken) {",
+									"        pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    }",
+									"    if (response.refreshToken) {",
+									"        pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"    }",
+									"    if (response.user && response.user.id) {",
+									"        pm.collectionVariables.set('userId', response.user.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"registrationId\": \"{{registrationId}}\",\n  \"password\": \"sapassword\",\n  \"fullName\": \"Minh Nguyen Van\",\n  \"dateOfBirth\": \"2004-02-16\",\n  \"gender\": \"MALE\",\n  \"bio\": \"Programming crazy\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register/complete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"complete"
+							]
+						},
+						"description": "Complete registration with user details"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.accessToken) {",
+									"        pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    }",
+									"    if (response.refreshToken) {",
+									"        pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"    }",
+									"    if (response.user && response.user.id) {",
+									"        pm.collectionVariables.set('userId', response.user.id);",
+									"    }",
+									"    if (response.deviceId) {",
+									"        pm.collectionVariables.set('deviceId', response.deviceId);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-device-name",
+								"value": "My Device",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"nvminh1624@gmail.com\",\n  \"password\": \"12345678\",\n  \"deviceType\": \"WEB\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email/phone and password"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.accessToken) {",
+									"        pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    }",
+									"    if (response.refreshToken) {",
+									"        pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\",\n  \"deviceId\": \"{{deviceId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh access token using refresh token"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "refresh-token",
+								"value": "{{refreshToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout and invalidate refresh token"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password - Initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.resetId) {",
+									"        pm.collectionVariables.set('resetId', response.resetId);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"nvminh1624@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						},
+						"description": "Initiate forgot password process"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password - Verify OTP",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resetId\": \"{{resetId}}\",\n  \"otp\": \"439104\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password",
+								"verify"
+							]
+						},
+						"description": "Verify OTP for password reset"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password - Reset",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resetId\": \"{{resetId}}\",\n  \"newPassword\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password/reset",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password",
+								"reset"
+							]
+						},
+						"description": "Reset password with new password"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"sapassword123\",\n  \"newPassword\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Change password for authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Basic Info",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Paul Nguyen Dev\",\n  \"dateOfBirth\": \"2004-02-16\",\n  \"gender\": \"MALE\",\n  \"bio\": \"Senior Software Developer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-basic-info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-basic-info"
+							]
+						},
+						"description": "Update user basic information"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Picture",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/F:/personal/2.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-profile-picture",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-profile-picture"
+							]
+						},
+						"description": "Update profile picture"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cover Image",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/F:/personal/ChatGPT Image Jun 17, 2025, 01_58_14 PM.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-cover-image",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-cover-image"
+							]
+						},
+						"description": "Update cover image"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Email - Initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.updateId) {",
+									"        pm.collectionVariables.set('updateId', response.updateId);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newEmail\": \"nvminh1602@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-email/initiate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-email",
+								"initiate"
+							]
+						},
+						"description": "Initiate email update process"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Email - Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"updateId\": \"{{updateId}}\",\n  \"otp\": \"943777\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-email/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-email",
+								"verify"
+							]
+						},
+						"description": "Verify OTP for email update"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Phone - Initiate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.updateId) {",
+									"        pm.collectionVariables.set('updateId', response.updateId);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newPhoneNumber\": \"0353999999\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-phone/initiate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-phone",
+								"initiate"
+							]
+						},
+						"description": "Initiate phone number update process"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Phone - Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"updateId\": \"{{updateId}}\",\n  \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/update-phone/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"update-phone",
+								"verify"
+							]
+						},
+						"description": "Verify OTP for phone number update"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Get list of all users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						},
+						"description": "Get user details by ID with privacy restrictions"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Basic Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id/basic-info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id",
+								"basic-info"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						},
+						"description": "Get user basic information"
+					},
+					"response": []
+				},
+				{
+					"name": "Search User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phoneNumber\": \"0353999798\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/search",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"search"
+							]
+						},
+						"description": "Search user by email or phone number"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Friends",
+			"item": [
+				{
+					"name": "Send Friend Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"receiverId\": \"user-id-here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/friends/request",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"request"
+							]
+						},
+						"description": "Send friend request to another user"
+					},
+					"response": []
+				},
+				{
+					"name": "Respond to Friend Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requestId\": \"request-id-here\",\n  \"action\": \"ACCEPT\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/friends/respond",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"respond"
+							]
+						},
+						"description": "Accept or reject friend request (action: ACCEPT or REJECT)"
+					},
+					"response": []
+				},
+				{
+					"name": "Block User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/block/:targetId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"block",
+								":targetId"
+							],
+							"variable": [
+								{
+									"key": "targetId",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Block a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/block/:targetId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"block",
+								":targetId"
+							],
+							"variable": [
+								{
+									"key": "targetId",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Unblock a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Received Friend Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/requests/received",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"requests",
+								"received"
+							]
+						},
+						"description": "Get list of received friend requests"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sent Friend Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/requests/sent",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"requests",
+								"sent"
+							]
+						},
+						"description": "Get list of sent friend requests"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Friend List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"list"
+							]
+						},
+						"description": "Get list of friends"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blocked Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/blocked",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"blocked"
+							]
+						},
+						"description": "Get list of blocked users"
+					},
+					"response": []
+				},
+				{
+					"name": "Unfriend",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/:friendId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								":friendId"
+							],
+							"variable": [
+								{
+									"key": "friendId",
+									"value": "422a4298-58d6-41d9-a28e-4025c19baf3a"
+								}
+							]
+						},
+						"description": "Remove a friend"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Friend Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/request/:requestId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"request",
+								":requestId"
+							],
+							"variable": [
+								{
+									"key": "requestId",
+									"value": "request-id-here"
+								}
+							]
+						},
+						"description": "Cancel sent friend request"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Relationship",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends/relationship/:targetId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends",
+								"relationship",
+								":targetId"
+							],
+							"variable": [
+								{
+									"key": "targetId",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Get relationship status with another user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Create Group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "My Group",
+									"type": "text"
+								},
+								{
+									"key": "creatorId",
+									"value": "{{userId}}",
+									"type": "text"
+								},
+								{
+									"key": "initialMembers",
+									"value": "[\"user-id-1\", \"user-id-2\"]",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups"
+							]
+						},
+						"description": "Create a new group with optional avatar"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"user"
+							]
+						},
+						"description": "Get all groups the user is a member of"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Get group details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Group Name\",\n  \"avatarUrl\": \"https://example.com/avatar.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Update group information (Leader only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Delete group (Leader only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"groupId\": \"group-id-here\",\n  \"userId\": \"user-id-here\",\n  \"role\": \"MEMBER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"members"
+							]
+						},
+						"description": "Add member to group"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Member",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:groupId/members/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"members",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								},
+								{
+									"key": "userId",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Remove member from group"
+					},
+					"response": []
+				},
+				{
+					"name": "Kick Member",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:groupId/members/:userId/kick",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"members",
+								":userId",
+								"kick"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								},
+								{
+									"key": "userId",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Kick member from group (Leader/Co-Leader)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Member Role",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"CO_LEADER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/:groupId/members/:userId/role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"members",
+								":userId",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								},
+								{
+									"key": "userId",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Update member role (Leader only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:groupId/leave",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"leave"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Leave group (Leader cannot leave)"
+					},
+					"response": []
+				},
+				{
+					"name": "Dissolve Group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:groupId/dissolve",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":groupId",
+								"dissolve"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Dissolve group completely (Leader only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Join Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"groupId\": \"group-id-here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/join",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"join"
+							]
+						},
+						"description": "Join group via link"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Group Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:id/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":id",
+								"info"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Get public group information"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group Avatar",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/:id/avatar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":id",
+								"avatar"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Update group avatar (Leader/Co-Leader)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Get Conversation List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/conversations?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Get list of conversations"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/user/:userIdB?page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"user",
+								":userIdB"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "userIdB",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Get messages between two users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/group/:groupId?page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"group",
+								":groupId"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Get messages in a group"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Messages in User Chat",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/user/:userIdB/search?searchText=hello&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"user",
+								":userIdB",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchText",
+									"value": "hello"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "userIdB",
+									"value": "user-id-here"
+								}
+							]
+						},
+						"description": "Search messages in user conversation"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Messages in Group",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/group/:groupId/search?searchText=hello&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"group",
+								":groupId",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchText",
+									"value": "hello"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "group-id-here"
+								}
+							]
+						},
+						"description": "Search messages in group"
+					},
+					"response": []
+				},
+				{
+					"name": "Send User Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "recipientId",
+									"value": "user-id-here",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Hello!",
+									"type": "text"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"user"
+							]
+						},
+						"description": "Send message to user with optional media files"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Group Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "groupId",
+									"value": "group-id-here",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Hello group!",
+									"type": "text"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/group",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"group"
+							]
+						},
+						"description": "Send message to group with optional media files"
+					},
+					"response": []
+				},
+				{
+					"name": "Recall Message",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/recall/:messageId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"recall",
+								":messageId"
+							],
+							"variable": [
+								{
+									"key": "messageId",
+									"value": "message-id-here"
+								}
+							]
+						},
+						"description": "Recall a sent message"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Message (Self Side)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/deleted-self-side/:messageId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"deleted-self-side",
+								":messageId"
+							],
+							"variable": [
+								{
+									"key": "messageId",
+									"value": "message-id-here"
+								}
+							]
+						},
+						"description": "Delete message for yourself only"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Message as Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/read/:messageId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"read",
+								":messageId"
+							],
+							"variable": [
+								{
+									"key": "messageId",
+									"value": "message-id-here"
+								}
+							]
+						},
+						"description": "Mark message as read"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Message as Unread",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/unread/:messageId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"unread",
+								":messageId"
+							],
+							"variable": [
+								{
+									"key": "messageId",
+									"value": "message-id-here"
+								}
+							]
+						},
+						"description": "Mark message as unread"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark All as Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/read-all/:type/:targetId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"read-all",
+								":type",
+								":targetId"
+							],
+							"variable": [
+								{
+									"key": "type",
+									"value": "USER",
+									"description": "USER or GROUP"
+								},
+								{
+									"key": "targetId",
+									"value": "user-or-group-id"
+								}
+							]
+						},
+						"description": "Mark all messages as read in a conversation"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Reaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"messageId\": \"message-id-here\",\n  \"reaction\": \"❤️\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/reaction",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"reaction"
+							]
+						},
+						"description": "Add reaction to message"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Reaction",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/messages/reaction/:messageId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"reaction",
+								":messageId"
+							],
+							"variable": [
+								{
+									"key": "messageId",
+									"value": "message-id-here"
+								}
+							]
+						},
+						"description": "Remove reaction from message"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Message Media",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "messageId",
+									"value": "message-id-here",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/media",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"media"
+							]
+						},
+						"description": "Upload media files for message"
+					},
+					"response": []
+				},
+				{
+					"name": "Forward Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"messageId\": \"message-id-here\",\n  \"targetUserIds\": [\"user-id-1\", \"user-id-2\"],\n  \"targetGroupIds\": [\"group-id-1\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/messages/forward",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"messages",
+								"forward"
+							]
+						},
+						"description": "Forward message to users or groups"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "Sync Contacts",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"contacts\": [\n    {\n      \"phoneNumber\": \"+84987654321\",\n      \"name\": \"John Doe\"\n    },\n    {\n      \"phoneNumber\": \"+84123456789\",\n      \"name\": \"Jane Smith\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts/sync",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts",
+								"sync"
+							]
+						},
+						"description": "Sync contacts from phone"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Contacts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/contacts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contacts"
+							]
+						},
+						"description": "Get user's synced contacts"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "QR Code",
+			"item": [
+				{
+					"name": "Generate QR Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.qrToken) {",
+									"        pm.collectionVariables.set('qrToken', response.qrToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/qrcode/generate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"qrcode",
+								"generate"
+							]
+						},
+						"description": "Generate new QR code for login"
+					},
+					"response": []
+				},
+				{
+					"name": "Get QR Status",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/qrcode/status/:qrToken",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"qrcode",
+								"status",
+								":qrToken"
+							],
+							"variable": [
+								{
+									"key": "qrToken",
+									"value": "{{qrToken}}"
+								}
+							]
+						},
+						"description": "Check QR code status"
+					},
+					"response": []
+				},
+				{
+					"name": "Scan QR Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"qrToken\": \"{{qrToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/qrcode/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"qrcode",
+								"scan"
+							]
+						},
+						"description": "Scan QR code with mobile device"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm QR Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"qrToken\": \"{{qrToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/qrcode/confirm",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"qrcode",
+								"confirm"
+							]
+						},
+						"description": "Confirm QR code login"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel QR Code",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"qrToken\": \"{{qrToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/qrcode/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"qrcode",
+								"cancel"
+							]
+						},
+						"description": "Cancel QR code login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Storage",
+			"item": [
+				{
+					"name": "Upload Files",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": [
+										"postman-cloud:///1f0c08ea-c689-4730-ba48-c77df571ac35",
+										"postman-cloud:///1f0c08ea-c18c-4980-9989-c22a0cae9f06"
+									]
+								},
+								{
+									"key": "path",
+									"value": "uploads/images",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/storage/upload/:bucket",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"storage",
+								"upload",
+								":bucket"
+							],
+							"variable": [
+								{
+									"key": "bucket",
+									"value": "avatars"
+								}
+							]
+						},
+						"description": "Upload files to storage bucket"
+					},
+					"response": []
+				},
+				{
+					"name": "Update File",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/storage/update/:bucket/:filepath",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"storage",
+								"update",
+								":bucket",
+								":filepath"
+							],
+							"variable": [
+								{
+									"key": "bucket",
+									"value": "zolara-bucket"
+								},
+								{
+									"key": "filepath",
+									"value": "uploads/images/file.jpg"
+								}
+							]
+						},
+						"description": "Update existing file in storage"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/storage/delete/avatars/f9a0b1c2-d3e4-5f6a-7b8c-9d0e1f2a3b4c/2fcec37a-73a0-44f2-8d87-647379c59fce.png",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"storage",
+								"delete",
+								"avatars",
+								"f9a0b1c2-d3e4-5f6a-7b8c-9d0e1f2a3b4c",
+								"2fcec37a-73a0-44f2-8d87-647379c59fce.png"
+							]
+						},
+						"description": "Delete file from storage"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Multiple Files",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paths\": [\n    \"uploads/images/file1.jpg\",\n    \"uploads/images/file2.jpg\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/storage/delete-multiple/:bucket",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"storage",
+								"delete-multiple",
+								":bucket"
+							],
+							"variable": [
+								{
+									"key": "bucket",
+									"value": "zolara-bucket"
+								}
+							]
+						},
+						"description": "Delete multiple files from storage"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "deviceId",
+			"value": ""
+		},
+		{
+			"key": "registrationId",
+			"value": ""
+		},
+		{
+			"key": "resetId",
+			"value": ""
+		},
+		{
+			"key": "updateId",
+			"value": ""
+		},
+		{
+			"key": "qrToken",
+			"value": ""
+		}
+	]
+}
