@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/agent/topics:
+ * /api/agent/topics:
  *   get:
  *     summary: Get suggested discussion topics
  *     tags: [Agent]
@@ -43,7 +43,7 @@ router.get('/topics', getTopics);
 
 /**
  * @swagger
- * /api/v1/agent/chat:
+ * /api/agent/chat:
  *   get:
  *     summary: Get AI chat response
  *     tags: [Agent]
@@ -82,7 +82,7 @@ router.get('/chat', getChat);
 
 /**
  * @swagger
- * /api/v1/agent/chat-stream:
+ * /api/agent/chat-stream:
  *   get:
  *     summary: Get streaming AI chat response
  *     tags: [Agent]
