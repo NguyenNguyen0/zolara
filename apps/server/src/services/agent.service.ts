@@ -9,6 +9,7 @@ import {
 import type {
 	GeminiContent,
 	AIConfig,
+	ChatMessage,
 } from '../types/agent';
 import dotenv from 'dotenv';
 
@@ -72,7 +73,7 @@ export const generateContentStream = async (
 // High-level function for standard chat response
 export const getChatResponse = async (
 	userMessage: string,
-	history?: string,
+	history?: string | ChatMessage[],
 ) => {
 	const { userMessage: validUserMessage, history: validHistory } =
 		validateChatParams(userMessage, history);
@@ -94,7 +95,7 @@ export const getChatResponse = async (
 // High-level function for streaming chat response
 export const getChatStreamResponse = async (
 	userMessage: string,
-	history: string | undefined,
+	history: string | ChatMessage[] | undefined,
 	res: any,
 ) => {
 	const { userMessage: validUserMessage, history: validHistory } =

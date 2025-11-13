@@ -81,8 +81,7 @@ export const getTopics = async (req: Request, res: Response) => {
 // Controller for getting chat response
 export const getChat = async (req: Request, res: Response) => {
 	try {
-		const userMessage = req.query.userMessage || req.query.message;
-		const history = req.query.history;
+		const { userMessage, history } = req.body;
 
 		if (!userMessage || typeof userMessage !== 'string') {
 			return createErrorResponse(
@@ -90,11 +89,11 @@ export const getChat = async (req: Request, res: Response) => {
 				400,
 				'Missing userMessage parameter',
 				'userMessage is required',
-				'/api/v1/agent/chat?userMessage=hello&history=[{"role":"user","content":"hi"},{"role":"assistant","content":"Hello!"}]',
+				'POST /api/v1/agent/chat with body: {"userMessage": "hello", "history": [{"role":"user","content":"hi"},{"role":"assistant","content":"Hello!"}]}',
 			);
 		}
 
-		const chatResponse = await getChatResponse(userMessage, typeof history === 'string' ? history : undefined);
+		const chatResponse = await getChatResponse(userMessage, history);
 		res.json(chatResponse);
 	} catch (error: any) {
 		console.error('Chat endpoint error:', error);
@@ -121,8 +120,7 @@ export const getChat = async (req: Request, res: Response) => {
 // Controller for streaming chat response
 export const getChatStream = async (req: Request, res: Response) => {
 	try {
-		const userMessage = req.query.userMessage || req.query.message;
-		const history = req.query.history;
+		const { userMessage, history } = req.body;
 
 		if (!userMessage || typeof userMessage !== 'string') {
 			return createErrorResponse(
@@ -130,11 +128,11 @@ export const getChatStream = async (req: Request, res: Response) => {
 				400,
 				'Missing userMessage parameter',
 				'userMessage is required',
-				'/api/v1/agent/chat-stream?userMessage=hello&history=[{"role":"user","content":"hi"},{"role":"assistant","content":"Hello!"}]',
+				'POST /api/v1/agent/chat-stream with body: {"userMessage": "hello", "history": [{"role":"user","content":"hi"},{"role":"assistant","content":"Hello!"}]}',
 			);
 		}
 
-		await getChatStreamResponse(userMessage, typeof history === 'string' ? history : undefined, res);
+		await getChatStreamResponse(userMessage, history, res);
 	} catch (error: any) {
 		console.error('Chat stream endpoint error:', error);
 

@@ -44,21 +44,32 @@ router.get('/topics', getTopics);
 /**
  * @swagger
  * /api/agent/chat:
- *   get:
+ *   post:
  *     summary: Get AI chat response
  *     tags: [Agent]
- *     parameters:
- *       - in: query
- *         name: userMessage
- *         required: true
- *         schema:
- *           type: string
- *         description: User's message
- *       - in: query
- *         name: history
- *         schema:
- *           type: string
- *         description: JSON string of conversation history
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userMessage
+ *             properties:
+ *               userMessage:
+ *                 type: string
+ *                 description: User's message
+ *               history:
+ *                 type: array
+ *                 description: Conversation history
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     role:
+ *                       type: string
+ *                       enum: [user, assistant]
+ *                     content:
+ *                       type: string
  *     responses:
  *       200:
  *         description: AI response
@@ -78,26 +89,37 @@ router.get('/topics', getTopics);
  *       400:
  *         description: Bad request
  */
-router.get('/chat', getChat);
+router.post('/chat', getChat);
 
 /**
  * @swagger
  * /api/agent/chat-stream:
- *   get:
+ *   post:
  *     summary: Get streaming AI chat response
  *     tags: [Agent]
- *     parameters:
- *       - in: query
- *         name: userMessage
- *         required: true
- *         schema:
- *           type: string
- *         description: User's message
- *       - in: query
- *         name: history
- *         schema:
- *           type: string
- *         description: JSON string of conversation history
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userMessage
+ *             properties:
+ *               userMessage:
+ *                 type: string
+ *                 description: User's message
+ *               history:
+ *                 type: array
+ *                 description: Conversation history
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     role:
+ *                       type: string
+ *                       enum: [user, assistant]
+ *                     content:
+ *                       type: string
  *     responses:
  *       200:
  *         description: Server-sent events stream
@@ -108,6 +130,7 @@ router.get('/chat', getChat);
  *       400:
  *         description: Bad request
  */
-router.get('/chat-stream', getChatStream);
+router.post('/chat-stream', getChatStream);
 
 export default router;
+ 
