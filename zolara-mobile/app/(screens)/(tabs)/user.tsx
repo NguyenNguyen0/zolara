@@ -8,8 +8,6 @@ import ContactItem from '@/src/components/item/contact.item';
 import { router } from 'expo-router';
 import { useTheme } from '@/src/hooks/useTheme';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/src/store';
 
 type SettingItemData = {
 	id: string;
@@ -22,8 +20,6 @@ export default function UserTab() {
 	const { isDark } = useTheme();
 	const { t } = useTranslation('user');
 	
-	// Lấy thông tin user từ Redux
-	const { user } = useSelector((state: RootState) => state.auth);
 
 	const SETTING_ITEMS: SettingItemData[] = [
 		{
@@ -55,15 +51,13 @@ export default function UserTab() {
 				<View className="ml-4">
 					<ContactItem
 						img={
-							user?.avatar
+							"https://avatars.githubusercontent.com/u/121565657?v=4"
 						}
 						name={
-							user?.firstName || user?.lastName
-								? `${user.firstName || ''} ${user.lastName || ''}`.trim() 
-								: user?.email?.split('@')[0] || 'User'
+							"Nguyen Van Minh"
 						}
-						email={user?.email || 'email@example.com'}
-						verified={user?.emailVerified || false}
+						email={'email@example.com'}
+						verified={false}
 						onPress={() =>
 							router.navigate('/(screens)/(user)/[id]')
 						}

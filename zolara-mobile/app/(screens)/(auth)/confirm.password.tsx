@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	View,
 	Text,
 	KeyboardAvoidingView,
 	Platform,
 	Alert,
-	ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -15,19 +14,12 @@ import ShareQuestion from '@/src/components/button/share.question';
 import { APP_COLOR } from '@/src/utils/constants';
 import ShareBack from '@/src/components/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginThunk } from '@/src/store/slices/authSlice';
-import type { AppDispatch, RootState } from '@/src/store';
 
 export default function ConfirmPassword() {
 	const { t } = useTranslation('confirm-password');
 	const router = useRouter();
 	const params = useLocalSearchParams();
 	const [password, setPassword] = useState('');
-
-	const dispatch = useDispatch<AppDispatch>();
-	const authState = useSelector((state: RootState) => state.auth);
-	const { isLoading, error } = authState;
 
 	const email = params.email as string;
 	const isLogin = params.isLogin === '1';
@@ -37,7 +29,6 @@ export default function ConfirmPassword() {
 		try {
 			if (isLogin) {
 				// Login với email và password
-				const result = await dispatch(loginThunk({ email, password })).unwrap();
 				// Login thành công - chuyển đến màn hình success
 				router.dismissAll();
 				router.replace({
@@ -62,7 +53,7 @@ export default function ConfirmPassword() {
 		}
 	};
 
-	const isNextDisabled = !password.trim() || isLoading;
+	const isNextDisabled = !password.trim();
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
@@ -97,7 +88,7 @@ export default function ConfirmPassword() {
 					{/* Next Button */}
 					<View>
 						<ShareButton
-							title={isLoading ? 'Loading...' : t('nextButton')}
+							title={t('nextButton')}
 							onPress={handleNext}
 							disabled={isNextDisabled}
 							buttonStyle={{
@@ -110,7 +101,7 @@ export default function ConfirmPassword() {
 									? APP_COLOR.DARK_MODE
 									: APP_COLOR.LIGHT_MODE,
 							}}
-							isLoading={isLoading}
+							isLoading={false}
 						/>
 					</View>
 
