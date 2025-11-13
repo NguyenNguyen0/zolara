@@ -1,8 +1,0 @@
-{
-	"title": "Enter Zolara Name",
-	"subtitle": "Please use your real name so everyone can easily recognize you",
-	"namePlaceholder": "Enter your name",
-	"continueButton": "Continue",
-	"rule1": "Length from 2 to 40 characters",
-	"rule2": "Does not contain numbers"
-}
