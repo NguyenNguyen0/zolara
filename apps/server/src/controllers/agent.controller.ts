@@ -1,28 +1,26 @@
 import { Request, Response } from 'express';
-import {z} from 'zod';
 import {
 	generateContent,
 	generateContentWithJsonSchema,
 	getChatResponse,
 	getChatStreamResponse,
-	writeSSEEvent,
 } from '../services/agent.service';
 import {
 	TopicsResponseSchema,
-	TopicsRequestSchema,
-	ChatRequestSchema,
 } from '../validations/agent.validation';
 import {
 	createErrorResponse,
 	getValidatedTopicsCount,
 	getValidatedTopic,
+	writeSSEEvent,
 } from '../utils/helpers/agent.helper';
+
 
 // Controller for getting suggested discussion topics
 export const getTopics = async (req: Request, res: Response) => {
 	try {
-		const count = getValidatedTopicsCount(req.query.count);
-		const topic = getValidatedTopic(req.query.topic);
+		const count = getValidatedTopicsCount(req.query.count as string);
+		const topic = getValidatedTopic(req.query.topic as string);
 
 		// First, search for current news
 		const searchResponse = await generateContent(
@@ -57,7 +55,7 @@ export const getTopics = async (req: Request, res: Response) => {
 		);
 
 		const topicResponse = TopicsResponseSchema.parse(
-			JSON.parse(formatResponse.text),
+			JSON.parse(formatResponse.text as string),
 		);
 
 		res.json(topicResponse);
@@ -71,7 +69,7 @@ export const getTopics = async (req: Request, res: Response) => {
 			'Kết quả hội nghị biến đổi khí hậu',
 			'Phát triển công nghệ AI trong năm 2025',
 			'Tình hình kinh tế thế giới hiện tại',
-		].slice(0, getValidatedTopicsCount(req.query.count));
+		].slice(0, getValidatedTopicsCount(req.query.count as string));
 
 		res.json({
 			topics: fallbackTopics,
@@ -86,7 +84,7 @@ export const getChat = async (req: Request, res: Response) => {
 		const userMessage = req.query.userMessage || req.query.message;
 		const history = req.query.history;
 
-		if (!userMessage) {
+		if (!userMessage || typeof userMessage !== 'string') {
 			return createErrorResponse(
 				res,
 				400,
@@ -96,9 +94,9 @@ export const getChat = async (req: Request, res: Response) => {
 			);
 		}
 
-		const chatResponse = await getChatResponse(userMessage, history);
+		const chatResponse = await getChatResponse(userMessage, typeof history === 'string' ? history : undefined);
 		res.json(chatResponse);
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Chat endpoint error:', error);
 
 		if (error.message.includes('Invalid history format')) {
@@ -126,7 +124,7 @@ export const getChatStream = async (req: Request, res: Response) => {
 		const userMessage = req.query.userMessage || req.query.message;
 		const history = req.query.history;
 
-		if (!userMessage) {
+		if (!userMessage || typeof userMessage !== 'string') {
 			return createErrorResponse(
 				res,
 				400,
@@ -136,7 +134,7 @@ export const getChatStream = async (req: Request, res: Response) => {
 			);
 		}
 
-		await getChatStreamResponse(userMessage, history, res);
+		await getChatStreamResponse(userMessage, typeof history === 'string' ? history : undefined, res);
 	} catch (error: any) {
 		console.error('Chat stream endpoint error:', error);
 

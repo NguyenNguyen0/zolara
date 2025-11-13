@@ -1,9 +1,13 @@
 import { GoogleGenAI } from '@google/genai';
 import { modelName, systemPrompt } from '../configs/agent';
+import {
+	convertHistoryToGeminiFormat,
+	validateChatParams,
+	setupSSEHeaders,
+	writeSSEEvent,
+} from '../utils/helpers/agent.helper';
 import type {
-	ChatMessage,
 	GeminiContent,
-	SSEEvent,
 	AIConfig,
 } from '../types/agent';
 import dotenv from 'dotenv';
@@ -14,55 +18,6 @@ const ai = new GoogleGenAI({
 	apiKey: process.env.GEMINI_API_KEY,
 });
 
-// Helper function to convert conversation history to Gemini format
-export const convertHistoryToGeminiFormat = (
-	history: ChatMessage[] | undefined,
-	userMessage: string,
-): GeminiContent[] => {
-	const contents = [];
-
-	// Add conversation history
-	if (history && Array.isArray(history)) {
-		for (const msg of history) {
-			contents.push({
-				role: msg.role === 'assistant' ? 'model' : 'user',
-				parts: [{ text: msg.content }],
-			});
-		}
-	}
-
-	// Add the new user message
-	contents.push({
-		role: 'user',
-		parts: [{ text: userMessage }],
-	});
-
-	return contents;
-};
-
-// Helper function to validate and parse chat parameters
-export const validateChatParams = (
-	userMessage: string,
-	history?: string | ChatMessage[],
-) => {
-	if (!userMessage) {
-		throw new Error('Missing userMessage parameter');
-	}
-
-	let parsedHistory = history;
-	if (typeof history === 'string') {
-		try {
-			parsedHistory = JSON.parse(history);
-		} catch (parseError) {
-			throw new Error(
-				'Invalid history format. Must be valid JSON array.',
-			);
-		}
-	}
-
-	return { userMessage, history: parsedHistory };
-};
-
 // Common AI configuration with Google Search
 const getDefaultAIConfig = (): AIConfig => ({
 	systemInstruction: systemPrompt,
@@ -70,19 +25,6 @@ const getDefaultAIConfig = (): AIConfig => ({
 	maxOutputTokens: 1000,
 	temperature: 0.7,
 });
-
-// Helper function to set up SSE headers
-export const setupSSEHeaders = (res: any) => {
-	res.setHeader('Content-Type', 'text/event-stream');
-	res.setHeader('Cache-Control', 'no-cache');
-	res.setHeader('Connection', 'keep-alive');
-	res.setHeader('Access-Control-Allow-Origin', '*');
-};
-
-// Helper function to write SSE events
-export const writeSSEEvent = (res: any, data: SSEEvent) => {
-	res.write(`data: ${JSON.stringify(data)}\n\n`);
-};
 
 export const generateContent = async (
 	contents: GeminiContent[] | string,
@@ -130,7 +72,7 @@ export const generateContentStream = async (
 // High-level function for standard chat response
 export const getChatResponse = async (
 	userMessage: string,
-	history?: string | ChatMessage[],
+	history?: string,
 ) => {
 	const { userMessage: validUserMessage, history: validHistory } =
 		validateChatParams(userMessage, history);
@@ -152,7 +94,7 @@ export const getChatResponse = async (
 // High-level function for streaming chat response
 export const getChatStreamResponse = async (
 	userMessage: string,
-	history: string | ChatMessage[] | undefined,
+	history: string | undefined,
 	res: any,
 ) => {
 	const { userMessage: validUserMessage, history: validHistory } =
