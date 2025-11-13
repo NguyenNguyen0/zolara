@@ -1,0 +1,15 @@
+{
+	"title": "Friend Requests",
+	"received": "Received",
+	"sent": "Sent",
+	"recallSuccess": "Recalled",
+	"recallMessage": "Friend request to {{name}} has been recalled",
+	"acceptSuccess": "Success",
+	"acceptMessage": "Friend request from {{name}} accepted",
+	"rejectSuccess": "Rejected",
+	"rejectMessage": "Friend request from {{name}} rejected",
+	"reject": "Reject",
+	"accept": "Accept",
+	"recall": "Recall"
+}
+

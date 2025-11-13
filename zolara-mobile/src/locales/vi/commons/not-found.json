@@ -1,0 +1,10 @@
+{
+	"title": "Không tìm thấy trang",
+	"errorCode": "404",
+	"subtitle": "Bạn đang nơi đâu?",
+	"description": "Trang bạn đang tìm kiếm hiện không khả dụng!",
+	"buttons": {
+		"goHome": "Về trang chủ",
+		"goBack": "Quay lại"
+	}
+}

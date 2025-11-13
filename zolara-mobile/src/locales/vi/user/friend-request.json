@@ -1,0 +1,15 @@
+{
+	"title": "Lời mời kết bạn",
+	"received": "Đã nhận",
+	"sent": "Đã gửi",
+	"recallSuccess": "Đã thu hồi",
+	"recallMessage": "Đã thu hồi lời mời kết bạn gửi đến {{name}}",
+	"acceptSuccess": "Thành công",
+	"acceptMessage": "Đã chấp nhận lời mời kết bạn từ {{name}}",
+	"rejectSuccess": "Đã từ chối",
+	"rejectMessage": "Đã từ chối lời mời kết bạn từ {{name}}",
+	"reject": "Từ chối",
+	"accept": "Đồng ý",
+	"recall": "Thu hồi"
+}
+

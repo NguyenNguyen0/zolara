@@ -1,0 +1,27 @@
+{
+	"title": "Notifications",
+	"header": "Notifications",
+	"content": "Notifications will appear here",
+	"new": "New",
+	"earlier": "Earlier",
+	"types": {
+		"login": "New login detected",
+		"add_friend": "sent you a friend request",
+		"comment": "commented on your post",
+		"invite_group": "invited you to a group chat",
+		"like": "liked your post",
+		"birthday": "has a birthday today"
+	},
+	"actions": {
+		"confirm": "Confirm",
+		"delete": "Delete",
+		"view": "View"
+	},
+	"time": {
+		"just_now": "Just now",
+		"minutes_ago": "{{count}}m",
+		"hours_ago": "{{count}}h",
+		"days_ago": "{{count}}d",
+		"weeks_ago": "{{count}}w"
+	}
+}
