@@ -8,5 +8,6 @@ export * from './conversation';
 export * from './message';
 export * from './express';
 export * from './agent';
+export * from './topic';
 export * from './response';
 

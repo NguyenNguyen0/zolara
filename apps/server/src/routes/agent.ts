@@ -1,13 +1,51 @@
 import express from 'express';
-import { getTopics, getChat, getChatStream } from '../controllers/agent.controller';
+import { generateTopics, getTopics, getChat, getChatStream } from '../controllers/agent.controller';
 
 const router = express.Router();
 
 /**
  * @swagger
  * /api/agent/topics:
+ *   post:
+ *     summary: Generate and store new discussion topics
+ *     tags: [Agent]
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               count:
+ *                 type: integer
+ *                 minimum: 10
+ *                 maximum: 20
+ *                 default: 10
+ *                 description: Number of topics to generate
+ *     responses:
+ *       200:
+ *         description: Topics generated and stored successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 generatedCount:
+ *                   type: number
+ *                 totalCount:
+ *                   type: number
+ *       500:
+ *         description: Failed to generate topics
+ */
+router.post('/topics', generateTopics);
+
+/**
+ * @swagger
+ * /api/agent/topics:
  *   get:
- *     summary: Get suggested discussion topics
+ *     summary: Get suggested discussion topics from stored collection
  *     tags: [Agent]
  *     parameters:
  *       - in: query
@@ -15,15 +53,9 @@ const router = express.Router();
  *         schema:
  *           type: integer
  *           minimum: 1
- *           maximum: 5
+ *           maximum: 10
  *           default: 3
  *         description: Number of topics to return
- *       - in: query
- *         name: topic
- *         schema:
- *           type: string
- *           default: "tin tức, drama"
- *         description: Topic category preference
  *     responses:
  *       200:
  *         description: List of suggested topics
@@ -38,6 +70,7 @@ const router = express.Router();
  *                     type: string
  *                 fallback:
  *                   type: boolean
+ *                   description: Whether fallback topics were used due to empty collection
  */
 router.get('/topics', getTopics);
 
@@ -133,4 +166,3 @@ router.post('/chat', getChat);
 router.post('/chat-stream', getChatStream);
 
 export default router;
- 

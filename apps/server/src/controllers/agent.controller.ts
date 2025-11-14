@@ -4,6 +4,8 @@ import {
 	generateContentWithJsonSchema,
 	getChatResponse,
 	getChatStreamResponse,
+	generateAndStoreTopics,
+	getStoredTopics,
 } from '../services/agent.service';
 import {
 	TopicsResponseSchema,
@@ -16,49 +18,42 @@ import {
 } from '../utils/helpers/agent.helper';
 
 
+export const generateTopics = async (req: Request, res: Response) => {
+	try {
+		const countParam = req.body.count || req.query.count;
+		const count = getValidatedTopicsCount(countParam as string);
+
+		// Validate count is within 10-20 range
+		const validatedCount = Math.min(Math.max(count, 10), 20);
+
+		// Get the current user ID from request (assumes auth middleware sets this)
+		const createdBy = req.user?.uid || 'system';
+
+		const result = await generateAndStoreTopics(validatedCount, createdBy);
+
+		res.json(result);
+	} catch (error: any) {
+		console.error('Generate topics endpoint error:', error);
+
+		return createErrorResponse(
+			res,
+			500,
+			'Failed to generate topics',
+			error.message || 'Unknown error',
+			'POST /api/agent/topics with body: {"count": 15}',
+		);
+	}
+};
+
+
 // Controller for getting suggested discussion topics
 export const getTopics = async (req: Request, res: Response) => {
 	try {
 		const count = getValidatedTopicsCount(req.query.count as string);
-		const topic = getValidatedTopic(req.query.topic as string);
 
-		// First, search for current news
-		const searchResponse = await generateContent(
-			`Tổng hợp ${count} chủ đề nóng hổi, đang được quan tâm nhất hiện nay ở Việt Nam và thế giới.
-            Ưu tiên các chủ đề về: thời sự, chiến sự, thiên tai, xu hướng mạng xã hội, công nghệ, chính trị, giải trí, thể thao.
-            Mỗi chủ đề nên ngắn gọn (dưới 20 ký tự), gợi tò mò và dễ hiểu.`,
-			{ tools: [{ googleSearch: {} }] },
-		);
+		const topicsResponse = await getStoredTopics(count);
 
-		// Then format the results using JSON schema
-		const TopicSchema = {
-			type: 'object',
-			properties: {
-				topics: {
-					type: 'array',
-					description: 'Danh sách chủ đề trò chuyện',
-					items: { type: 'string' },
-					minItems: 1,
-					maxItems: 5,
-				},
-			},
-			required: ['topics'],
-		};
-		const formatResponse = await generateContentWithJsonSchema(
-			`Từ nội dung sau, hãy tạo danh sách ${count} chủ đề tin tức thật hấp dẫn,
-                ví dụ như: "Chiến sự Ukraine", "Nội chiến Sudan", "Bão số 14", "OpenAI Agents SDK".
-                Tránh tiêu đề chung chung hoặc quá dài.
-                Đầu ra chỉ gồm tên chủ đề ngắn, rõ, hấp dẫn, đúng định dạng JSON.
-                Nội dung: ${searchResponse.text}
-            `,
-			TopicSchema,
-		);
-
-		const topicResponse = TopicsResponseSchema.parse(
-			JSON.parse(formatResponse.text as string),
-		);
-
-		res.json(topicResponse);
+		res.json(topicsResponse);
 	} catch (error: any) {
 		console.error('Topics endpoint error:', error);
 
