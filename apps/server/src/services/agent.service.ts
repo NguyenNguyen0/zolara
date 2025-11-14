@@ -126,24 +126,32 @@ export const getChatStreamResponse = async (
 	});
 
 	const responseStream = await generateContentStream(contents);
+	let totalResponse = '';
 
 	// Stream the response chunks
 	for await (const chunk of responseStream) {
 		if (chunk.text) {
+			totalResponse += chunk.text;
 			writeSSEEvent(res, {
 				type: 'chunk',
 				text: chunk.text,
 				timestamp: new Date().toISOString(),
 			});
+			// Force flush after each chunk
+			res.flush?.();
 		}
 	}
 
-	// Send completion event
+	// Ensure any final content is sent and send completion event
 	writeSSEEvent(res, {
 		type: 'complete',
-		message: 'Stream complete',
+		message: `Stream complete (${totalResponse.length} characters)`,
+		text: '', // Any final content (usually empty since we stream all chunks)
 		timestamp: new Date().toISOString(),
 	});
+
+	// Final flush before ending
+	res.flush?.();
 
 	res.end();
 };
