@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Custom CSS Variables for Zolara Brand */
+:root {
+  --primary-color: #8B5CF6;
+  --primary-50: #F5F3FF;
+  --primary-100: #EDE9FE;
+  --primary-200: #DDD6FE;
+  --primary-300: #C4B5FD;
+  --primary-400: #A78BFA;
+  --primary-500: #8B5CF6;
+  --primary-600: #7C3AED;
+  --primary-700: #6D28D9;
+  --primary-800: #5B21B6;
+  --primary-900: #4C1D95;
+}
+
+/* Ensure full height layout */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  color: #213547;
+  background-color: #ffffff;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+/* Remove default button styles to let TailwindCSS handle them */
