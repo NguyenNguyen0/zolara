@@ -1,0 +1,18 @@
+{
+  "title": "Trợ lý AI Zolara",
+  "status": "Trợ lý AI",
+  "topics": {
+    "title": "Chủ đề gợi ý",
+    "refresh": "Làm mới",
+    "loading": "Đang tải chủ đề...",
+    "empty": "Không có chủ đề nào khả dụng",
+    "retry": "Thử lại",
+    "prefix": "Hãy nói cho tôi biết về:"
+  },
+  "messages": {
+    "retry": "Chạm để thử lại",
+    "error": "Lỗi nội dung",
+    "placeholder": "Nhập tin nhắn...",
+    "loading": "Vui lòng chờ..."
+  }
+}

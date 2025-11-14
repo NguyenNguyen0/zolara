@@ -2,8 +2,8 @@ import axios from 'axios';
 import type { InternalAxiosRequestConfig, AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AppDispatch, RootState } from '@/src/store';
-import { updateTokenManually } from '@/src/store/slices/authSlice';
-import { logout } from '@/src/store/slices/authSlice';
+import { updateTokenManually, logout } from '@/src/store/slices/authSlice';
+import environment from './environment';
 
 // Types
 export interface ApiResponse<T> {
@@ -29,7 +29,7 @@ export const setupAxiosInterceptors = (dispatch: AppDispatch, getState: () => Ro
 
 // Cấu hình mặc định cho các request
 const instance = axios.create({
-	baseURL: 'http://10.0.2.2:3000', // Android Emulator: 10.0.2.2 = localhost của máy host
+	baseURL: environment.env.API_BASE_URL,
 	timeout: 10000,
 	headers: {
 		'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ instance.interceptors.response.use(
 			} catch (refreshError) {
 				// Refresh token thất bại -> logout
 				processQueue(refreshError, null);
-				
+
 				if (dispatchRef) {
 					dispatchRef(logout());
 				}

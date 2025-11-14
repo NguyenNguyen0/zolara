@@ -107,6 +107,9 @@ import viAccountSecurity from '@/src/locales/vi/user/account-security.json';
 import enSupport from '@/src/locales/en/user/support.json';
 import viSupport from '@/src/locales/vi/user/support.json';
 
+import enChatbot from '@/src/locales/en/user/chatbot.json';
+import viChatbot from '@/src/locales/vi/user/chatbot.json';
+
 const LANGUAGE_DETECTOR = {
 	type: 'languageDetector' as const,
 	async: true,
@@ -175,6 +178,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			about: enAbout,
 			'account-security': enAccountSecurity,
 			support: enSupport,
+			chatbot: enChatbot,
 		},
 		vi: {
 			common: viCommon,
@@ -211,6 +215,7 @@ i18n.use(LANGUAGE_DETECTOR)
 			about: viAbout,
 			'account-security': viAccountSecurity,
 			support: viSupport,
+			chatbot: viChatbot,
 		},
 		},
 
@@ -249,6 +254,7 @@ i18n.use(LANGUAGE_DETECTOR)
 		'about',
 		'account-security',
 		'support',
+		'chatbot',
 	],
 		defaultNS: 'common',
 
