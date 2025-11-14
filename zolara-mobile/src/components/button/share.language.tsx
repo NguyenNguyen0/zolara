@@ -1,14 +1,16 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { View, Image, Text } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { Ionicons } from '@expo/vector-icons';
-import { APP_COLOR } from '@/src/utils/constants';
 import SharePicker, { PickerItem } from '@/src/components/input/share.picker';
+import { useLanguage } from '@/src/hooks/useLanguage';
+import { APP_COLOR } from '@/src/utils/constants';
+import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Image, Text, View } from 'react-native';
 
 const ShareLanguage: React.FC = () => {
-	const { i18n, t } = useTranslation('language');
+	const { t } = useTranslation('language');
+	const { language, setLanguage } = useLanguage();
 	const [open, setOpen] = useState(false);
-	const [selectedLanguage, setSelectedLanguage] = useState<string | null>(i18n.language);
+	const [selectedLanguage, setSelectedLanguage] = useState<string | null>(language);
 	const isInitialMount = useRef(true);
 
 	const languageItems: PickerItem[] = useMemo(() => [
@@ -50,8 +52,8 @@ const ShareLanguage: React.FC = () => {
 			return;
 		}
 		
-		if (selectedLanguage && selectedLanguage !== i18n.language) {
-			i18n.changeLanguage(selectedLanguage);
+		if (selectedLanguage && selectedLanguage !== language) {
+			setLanguage(selectedLanguage as 'en' | 'vi');
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedLanguage]);

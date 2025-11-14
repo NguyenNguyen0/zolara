@@ -1,12 +1,12 @@
-import { APP_COLOR } from '@/src/utils/constants';
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, Text, Alert } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useRouter } from 'expo-router';
 import ShareInput from '@/src/components/input/share.input';
+import { useTheme } from '@/src/hooks/useTheme';
+import { APP_COLOR } from '@/src/utils/constants';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import debounce from 'debounce';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
 interface HeaderProps {
 	title?: string;
@@ -147,15 +147,15 @@ export default function NavigateHeader({
 
 						{/* Icons - Right Side */}
 						{hasRightIcons && (
-							<View className="flex-row gap-1">
-								{showSearch && (
-									<TouchableOpacity
-										onPress={() =>
-											router.navigate(
-												'/(screens)/(user)/search',
-											)
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
+						<View className="flex-row gap-1">
+							{showSearch && (
+								<TouchableOpacity
+									onPress={() =>
+										router.push(
+											'/(user)/search',
+										)
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="search"
@@ -182,14 +182,14 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
-								{showCreateGroup && (
-									<TouchableOpacity
-										onPress={() =>
-											router.navigate(
-												'/(screens)/(user)/group.create',
-											)
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
+							{showCreateGroup && (
+								<TouchableOpacity
+									onPress={() =>
+										router.push(
+											'/(user)/group.create',
+										)
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="groups"
@@ -198,14 +198,14 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
-								{showAddFriend && (
-									<TouchableOpacity
-										onPress={() =>
-											router.navigate(
-												'/(screens)/(user)/friend.request/add.friend',
-											)
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
+							{showAddFriend && (
+								<TouchableOpacity
+									onPress={() =>
+										router.push(
+											'/(user)/friend.request/add.friend',
+										)
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="person-add-alt-1"
@@ -214,14 +214,14 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
-								{showSettings && (
-									<TouchableOpacity
-										onPress={() =>
-											router.navigate(
-												'/(screens)/(user)/setting',
-											)
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
+							{showSettings && (
+								<TouchableOpacity
+									onPress={() =>
+										router.push(
+											'/(user)/setting',
+										)
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="settings"
@@ -257,14 +257,14 @@ export default function NavigateHeader({
 										/>
 									</TouchableOpacity>
 								)}
-								{showChatbot && (
-									<TouchableOpacity
-										onPress={() =>
-											router.navigate(
-												'/(screens)/(user)/chatbot',
-											)
-										}
-										className="w-10 h-10 rounded-full items-center justify-center"
+							{showChatbot && (
+								<TouchableOpacity
+									onPress={() =>
+										router.push(
+											'/(user)/chatbot',
+										)
+									}
+									className="w-10 h-10 rounded-full items-center justify-center"
 									>
 										<MaterialIcons
 											name="child-care"

@@ -1,17 +1,30 @@
 import '@/src/config/i18n';
+import { useAuth } from '@/src/hooks/useAuth';
+import { useLanguage } from '@/src/hooks/useLanguage';
 import { useTheme } from '@/src/hooks/useTheme';
-import { store } from '@/src/store';
 import { APP_COLOR } from '@/src/utils/constants';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider } from 'react-redux';
 import './global.css';
 
 function RootLayoutContent() {
 	const { isDark } = useTheme();
+	useLanguage();
+	const isAuthenticated = useAuth();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (isAuthenticated === null) return;
+		if (isAuthenticated) {
+			router.replace('/(screens)/(tabs)/conversation');
+		} else if (!isAuthenticated) {
+			router.replace('/(screens)/(auth)/welcome');
+		}
+	}, [isAuthenticated]);
 
 	return (
 		<>
@@ -34,9 +47,7 @@ export default function RootLayout() {
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<SafeAreaProvider>
-				<Provider store={store}>
-					<RootLayoutContent />
-				</Provider>
+				<RootLayoutContent />
 			</SafeAreaProvider>
 		</GestureHandlerRootView>
 	);

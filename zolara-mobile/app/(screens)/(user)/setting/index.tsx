@@ -1,13 +1,14 @@
-import NavigateHeader from '@/src/components/commons/navigate.header';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, ScrollView, Alert } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useTheme } from '@/src/hooks/useTheme';
 import ShareButton from '@/src/components/button/share.button';
-import { APP_COLOR } from '@/src/utils/constants';
+import NavigateHeader from '@/src/components/commons/navigate.header';
 import SettingItem from '@/src/components/item/setting.item';
+import { useTheme } from '@/src/hooks/useTheme';
+import { useAuthStore } from '@/src/store/authStore';
+import { APP_COLOR } from '@/src/utils/constants';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { Alert, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type SettingItemData = {
 	id: string;
@@ -19,8 +20,27 @@ type SettingItemData = {
 export default function Setting() {
 	const { isDark } = useTheme();
 	const { t } = useTranslation('setting');
+	const { logout } = useAuthStore();
+
 	const handleLogout = async () => {
-		router.navigate('/(auth)/welcome');
+		Alert.alert(
+			t('logout'),
+			t('logoutConfirmation'),
+			[
+				{
+					text: t('cancel'),
+					style: 'cancel',
+				},
+				{
+					text: t('confirm'),
+					onPress: async () => {
+						await logout();
+					},
+					style: 'destructive',
+				},
+			],
+			{ cancelable: true }
+		);
 	};
 
 	const SETTING_ITEMS: SettingItemData[] = [

@@ -5,6 +5,9 @@
 	"aboutZolara": "About Zolara",
 	"chatbotAI": "Zolara AI Assistant",
 	"contactSupport": "Contact Support",
-	"logout": "Logout"
+	"logout": "Logout",
+	"logoutConfirmation": "Are you sure you want to logout?",
+	"cancel": "Cancel",
+	"confirm": "Confirm"
 }
 

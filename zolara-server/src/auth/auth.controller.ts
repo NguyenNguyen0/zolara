@@ -8,6 +8,7 @@ import {
   BadRequestException,
   Logger,
   Put,
+  Get,
   UseGuards,
   UploadedFile,
   UseInterceptors,

@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import {
-	View,
-	Text,
-	KeyboardAvoidingView,
-	Platform,
-	Alert,
-} from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import ShareInput from '@/src/components/input/share.input';
+import ShareBack from '@/src/components/button/share.back';
 import ShareButton from '@/src/components/button/share.button';
 import ShareQuestion from '@/src/components/button/share.question';
+import ShareInput from '@/src/components/input/share.input';
+import { useAuthStore } from '@/src/store/authStore';
 import { APP_COLOR } from '@/src/utils/constants';
-import ShareBack from '@/src/components/button/share.back';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+	Alert,
+	KeyboardAvoidingView,
+	Platform,
+	Text,
+	View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ConfirmPassword() {
@@ -20,15 +21,19 @@ export default function ConfirmPassword() {
 	const router = useRouter();
 	const params = useLocalSearchParams();
 	const [password, setPassword] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
+	const { login } = useAuthStore();
 
 	const email = params.email as string;
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
 	const handleNext = async () => {
+		setIsLoading(true);
 		try {
 			if (isLogin) {
 				// Login với email và password
+				await login(email, password);
 				// Login thành công - chuyển đến màn hình success
 				router.dismissAll();
 				router.replace({
@@ -45,11 +50,13 @@ export default function ConfirmPassword() {
 				});
 			}
 		} catch (error: any) {
-			const errorMessage = error || 'Authentication failed';
+			const errorMessage = error?.response?.data?.message || error?.message || 'Authentication failed';
 			Alert.alert(
 				'Error',
-				(isLogin ? 'Sign in' : 'Sign up') + ' failed: ' + errorMessage,
+				(isLogin ? 'Đăng nhập thất bại' : 'Đăng ký thất bại') + ': ' + errorMessage,
 			);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -101,7 +108,7 @@ export default function ConfirmPassword() {
 									? APP_COLOR.DARK_MODE
 									: APP_COLOR.LIGHT_MODE,
 							}}
-							isLoading={false}
+							isLoading={isLoading}
 						/>
 					</View>
 

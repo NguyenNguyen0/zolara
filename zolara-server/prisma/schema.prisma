@@ -28,7 +28,6 @@ model User {
   receivedFriends  Friend[]          @relation(name: "ReceiverUser")
   contacts         Contact[]         @relation(name: "UserContacts")
   contactOf        Contact[]         @relation(name: "ContactUser")
-  settings         UserSetting[]     @relation(name: "UserToUserSetting")
   postReactions    PostReaction[]    @relation(name: "PostReactionToUser")
   hiddenPosts      HiddenPost[]      @relation(name: "HiddenPostToUser")
   addedBy          GroupMember[]     @relation(name: "AddedBy")
@@ -72,17 +71,6 @@ model Friend {
   updatedAt  DateTime     @updatedAt @map("updated_at")
 
   @@map("friends")
-}
-
-model UserSetting {
-  id                  String   @id @default(uuid()) @map("setting_id") @db.Uuid
-  userId              String   @map("user_id") @db.Uuid
-  user                User     @relation(name: "UserToUserSetting", fields: [userId], references: [id])
-  notificationEnabled Boolean  @default(true) @map("notification_enabled")
-  darkMode            Boolean  @default(false) @map("dark_mode")
-  lastUpdated         DateTime @default(now()) @map("last_updated")
-
-  @@map("user_settings")
 }
 
 model Post {

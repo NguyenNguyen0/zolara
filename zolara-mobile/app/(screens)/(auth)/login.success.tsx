@@ -1,22 +1,30 @@
-import React from 'react';
-import { View, Text, Image } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { APP_COLOR } from '@/src/utils/constants';
 import ShareButton from '@/src/components/button/share.button';
+import { useAuthStore } from '@/src/store/authStore';
+import { APP_COLOR } from '@/src/utils/constants';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginSuccess = () => {
 	const { t } = useTranslation('login-success');
 	const params = useLocalSearchParams();
-	const email = params.email as string;
-	const password = params.password as string;
-	const isLogin = params.isLogin === '1';
-	const isSignup = params.isSignup === '1';
+	const { user, userInfo, fetchUserInfo } = useAuthStore();
+
+	useEffect(() => {
+		// Fetch user info khi component mount
+		if (user && !userInfo) {
+			fetchUserInfo();
+		}
+	}, [user]);
 
 	const handleDone = () => {
 		router.replace('/(screens)/(tabs)/conversation');
 	};
+
+	// Lấy tên từ userInfo hoặc user
+	const displayName = userInfo?.fullName || user?.fullName || 'User';
 
 	return (
 		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
@@ -29,15 +37,23 @@ const LoginSuccess = () => {
 				{/* Main Content */}
 				<View className="flex-1 items-center justify-center">
 					<View className="relative mb-5">
-						<Image
-							source={require('@/src/assets/brand/logo.png')}
-							className="w-40 h-40"
-							resizeMode='contain'
-						/>
+						{userInfo?.profilePictureUrl ? (
+							<Image
+								source={{ uri: userInfo.profilePictureUrl }}
+								className="w-40 h-40 rounded-full"
+								resizeMode='cover'
+							/>
+						) : (
+							<Image
+								source={require('@/src/assets/brand/logo.png')}
+								className="w-40 h-40"
+								resizeMode='contain'
+							/>
+						)}
 					</View>
 
 					<Text className="text-2xl font-semibold mb-2 text-center text-secondary-dark dark:text-secondary-light">
-						{t('userName')}
+						{displayName}
 					</Text>
 					<Text className="text-base text-center text-secondary-dark dark:text-secondary-light">
 						{t('successMessage')}

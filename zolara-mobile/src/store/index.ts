@@ -1,11 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
-import themeReducer from "./slices/themeSlice";
+/**
+ * Zustand Store Exports
+ * All application state management using Zustand
+ */
 
-export const store = configureStore({
-  reducer: {
-    theme: themeReducer,
-  },
-});
+export { useLanguageStore, type Language } from './languageStore';
+export { useThemeStore, type Theme } from './themeStore';
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+// Re-export hooks for convenience
+export { useLanguage } from '@/src/hooks/useLanguage';
+export { useTheme } from '@/src/hooks/useTheme';
+

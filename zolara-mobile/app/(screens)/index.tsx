@@ -1,7 +1,6 @@
-import { Redirect } from 'expo-router';
 
 const RootPage = () => {
-	return <Redirect href="/(screens)/(auth)/welcome" />;
+	return <></>;
 };
 
 export default RootPage;

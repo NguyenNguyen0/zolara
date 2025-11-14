@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { CacheService } from '../cache/cache.service';
@@ -30,6 +31,7 @@ export class AuthService {
     private cacheService: CacheService,
     private authGateway: AuthGateway,
     private storageService: StorageService,
+    private configService: ConfigService,
   ) {}
 
   async login(identifier: string, password: string, deviceInfo: any) {
@@ -138,7 +140,10 @@ export class AuthService {
 
     const refreshToken = uuidv4();
     const refreshTokenExpiry = new Date();
-    refreshTokenExpiry.setDate(refreshTokenExpiry.getDate() + 30);
+    const refreshTokenDays = Number(
+      this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRES_DAYS') || 30,
+    );
+    refreshTokenExpiry.setDate(refreshTokenExpiry.getDate() + refreshTokenDays);
 
     const refreshTokenRecord = await this.prisma.refreshToken.create({
       data: {
@@ -266,12 +271,15 @@ export class AuthService {
     this.logger.debug('Generated registration data', { registrationId });
 
     // Store registration data and OTP in Redis
+    const otpExpirySeconds = Number(
+      this.configService.get<number>('OTP_EXPIRY_SECONDS') || 300,
+    );
     await this.cacheService.set(
       `registration:${registrationId}`,
       JSON.stringify(data),
-      300,
+      otpExpirySeconds,
     );
-    await this.cacheService.set(`otp:${registrationId}`, otp, 300);
+    await this.cacheService.set(`otp:${registrationId}`, otp, otpExpirySeconds);
 
     // Send OTP via email if email is provided
     if (data.email) {
@@ -325,7 +333,7 @@ export class AuthService {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create user with userInfo and userSettings
+    // Create user with userInfo
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -338,16 +346,9 @@ export class AuthService {
             gender: data.gender,
           },
         },
-        settings: {
-          create: {
-            notificationEnabled: true,
-            darkMode: false,
-          },
-        },
       },
       include: {
         userInfo: true,
-        settings: true,
       },
     });
 
@@ -396,6 +397,9 @@ export class AuthService {
     const resetId = uuidv4();
 
     // Store reset data and OTP in Redis
+    const otpExpirySeconds = Number(
+      this.configService.get<number>('OTP_EXPIRY_SECONDS') || 300,
+    );
     await this.cacheService.set(
       `reset:${resetId}`,
       JSON.stringify({
@@ -403,12 +407,12 @@ export class AuthService {
         phoneNumber: user.phoneNumber,
         email: user.email,
       }),
-      300, // 5 minutes expiry
+      otpExpirySeconds, // 5 minutes expiry
     );
     await this.cacheService.set(
       `reset_otp:${resetId}`,
       otp,
-      300, // 5 minutes expiry
+      otpExpirySeconds, // 5 minutes expiry
     );
 
     // Send OTP via email if email exists
@@ -658,18 +662,21 @@ export class AuthService {
     const updateId = uuidv4();
 
     // Store update data and OTP in Redis
+    const otpExpirySeconds = Number(
+      this.configService.get<number>('OTP_EXPIRY_SECONDS') || 300,
+    );
     await this.cacheService.set(
       `update_email:${updateId}`,
       JSON.stringify({
         userId,
         newEmail: updateDto.newEmail,
       }),
-      300, // 5 minutes expiry
+      otpExpirySeconds, // 5 minutes expiry
     );
     await this.cacheService.set(
       `update_email_otp:${updateId}`,
       otp,
-      300, // 5 minutes expiry
+      otpExpirySeconds, // 5 minutes expiry
     );
 
     // Send OTP via email to the new email address
@@ -714,18 +721,21 @@ export class AuthService {
     const updateId = uuidv4();
 
     // Store update data and OTP in Redis
+    const otpExpirySeconds = Number(
+      this.configService.get<number>('OTP_EXPIRY_SECONDS') || 300,
+    );
     await this.cacheService.set(
       `update_phone:${updateId}`,
       JSON.stringify({
         userId,
         newPhoneNumber: updateDto.newPhoneNumber,
       }),
-      300, // 5 minutes expiry
+      otpExpirySeconds, // 5 minutes expiry
     );
     await this.cacheService.set(
       `update_phone_otp:${updateId}`,
       otp,
-      300, // 5 minutes expiry
+      otpExpirySeconds, // 5 minutes expiry
     );
 
     this.logger.log(`Phone update OTP initiated for ${updateDto.newPhoneNumber}`);

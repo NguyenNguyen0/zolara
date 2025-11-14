@@ -4,7 +4,6 @@ import { hash } from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function deleteAllData() {
-  await prisma.userSetting.deleteMany({});
   await prisma.refreshToken.deleteMany({});
   await prisma.notification.deleteMany({});
   await prisma.message.deleteMany({});
@@ -34,11 +33,9 @@ function addDays(date: Date, days: number): Date {
 async function main() {
   const users = await createUsers();
   await createFriendships(users);
-  await createUserSettings(users);
 }
 
 async function createUsers() {
-  await prisma.userSetting.deleteMany({});
   await prisma.refreshToken.deleteMany({});
   await prisma.notification.deleteMany({});
   await prisma.message.deleteMany({});
@@ -473,64 +470,6 @@ async function createFriendships(users: any[]) {
   for (const friendship of friendships) {
     await prisma.friend.create({
       data: friendship,
-    });
-  }
-}
-
-async function createUserSettings(users: any[]) {
-  await prisma.userSetting.deleteMany({});
-
-  const settings = [
-    {
-      userId: users[0].id,
-      notificationEnabled: true,
-      darkMode: true,
-    },
-    {
-      userId: users[1].id,
-      notificationEnabled: true,
-      darkMode: false,
-    },
-    {
-      userId: users[2].id,
-      notificationEnabled: false,
-      darkMode: true,
-    },
-    {
-      userId: users[3].id,
-      notificationEnabled: true,
-      darkMode: true,
-    },
-    {
-      userId: users[9].id,
-      notificationEnabled: true,
-      darkMode: false,
-    },
-    {
-      userId: users[10].id,
-      notificationEnabled: true,
-      darkMode: true,
-    },
-    {
-      userId: users[11].id,
-      notificationEnabled: false,
-      darkMode: false,
-    },
-    {
-      userId: users[12].id,
-      notificationEnabled: true,
-      darkMode: true,
-    },
-    {
-      userId: users[13].id,
-      notificationEnabled: false,
-      darkMode: true,
-    },
-  ];
-
-  for (const setting of settings) {
-    await prisma.userSetting.create({
-      data: setting,
     });
   }
 }

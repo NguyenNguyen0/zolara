@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Text, View } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
-import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
 import SharePicker, { PickerItem } from '@/src/components/input/share.picker';
+import { useTheme } from '@/src/hooks/useTheme';
+import { APP_COLOR } from '@/src/utils/constants';
+import { Feather, Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Text, View } from 'react-native';
 
-type ThemeMode = 'light' | 'dark' | 'system';
+type ThemeMode = 'light' | 'dark';
 
 const ShareTheme: React.FC = () => {
 	const { theme, setTheme, isDark } = useTheme();
@@ -26,12 +26,7 @@ const ShareTheme: React.FC = () => {
 			value: 'dark',
 			icon: <Feather name="moon" size={24} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />
 		},
-		{ 
-			label: t('system'), 
-			value: 'system',
-			icon: <MaterialIcons name="smartphone" size={24} color={isDark ? APP_COLOR.LIGHT_MODE : APP_COLOR.DARK_MODE} />
-		},
-	], [t]);
+	], [t, isDark]);
 
 	const [items, setItems] = useState(themeItems);
 
@@ -47,7 +42,7 @@ const ShareTheme: React.FC = () => {
 			return;
 		}
 		
-		if (selectedTheme && (selectedTheme === 'light' || selectedTheme === 'dark' || selectedTheme === 'system') && selectedTheme !== theme) {
+		if (selectedTheme && (selectedTheme === 'light' || selectedTheme === 'dark') && selectedTheme !== theme) {
 			setTheme(selectedTheme as ThemeMode);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,8 +55,6 @@ const ShareTheme: React.FC = () => {
 				return <Feather name="sun" size={20} color={color} />;
 			case 'dark':
 				return <Feather name="moon" size={20} color={color} />;
-			case 'system':
-				return <MaterialIcons name="smartphone" size={20} color={color} />;
 			default:
 				return <Feather name="sun" size={20} color={color} />;
 		}

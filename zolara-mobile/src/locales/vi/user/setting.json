@@ -5,6 +5,9 @@
 	"aboutZolara": "Thông tin về Zolara",
 	"chatbotAI": "Trợ lý ảo Zolara AI",
 	"contactSupport": "Liên hệ hỗ trợ",
-	"logout": "Đăng xuất"
+	"logout": "Đăng xuất",
+	"logoutConfirmation": "Bạn có chắc chắn muốn đăng xuất?",
+	"cancel": "Hủy",
+	"confirm": "Xác nhận"
 }
 
