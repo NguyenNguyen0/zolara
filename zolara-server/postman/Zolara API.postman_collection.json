@@ -2193,6 +2193,92 @@
 			]
 		},
 		{
+			"name": "Agent",
+			"item": [
+				{
+					"name": "Chat with AI Agent",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"Hello! How can you help me with the Zolara messaging app?\",\n  \"history\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Hi there!\",\n      \"timestamp\": \"2024-01-01T00:00:00Z\"\n    },\n    {\n      \"role\": \"assistant\",\n      \"content\": \"Hello! I'm Zolara AI Assistant. How can I help you?\",\n      \"timestamp\": \"2024-01-01T00:00:05Z\"\n    }\n  ],\n  \"sessionId\": \"my-chat-session-123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/agent/chat",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"chat"
+							]
+						},
+						"description": "Send a message to the AI agent and receive a complete response. No authentication required. Supports conversation history and session tracking."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent Configuration",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/agent/config",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"config"
+							]
+						},
+						"description": "Get current AI agent configuration settings including model, temperature, max tokens, and system prompt."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent Status",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/agent/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agent",
+								"status"
+							]
+						},
+						"description": "Check if the AI agent service is available and properly configured. Returns availability status and configuration state."
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Storage",
 			"item": [
 				{
