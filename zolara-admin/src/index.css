@@ -1,56 +1,122 @@
 @import "tailwindcss";
 
-/* Custom CSS Variables for Zolara Brand */
 :root {
-  --primary-color: #8B5CF6;
-  --primary-50: #F5F3FF;
-  --primary-100: #EDE9FE;
-  --primary-200: #DDD6FE;
-  --primary-300: #C4B5FD;
-  --primary-400: #A78BFA;
-  --primary-500: #8B5CF6;
-  --primary-600: #7C3AED;
-  --primary-700: #6D28D9;
-  --primary-800: #5B21B6;
-  --primary-900: #4C1D95;
+  --color-primary: #8B5CF6;
+  --color-secondary: '';
+  --color-transparent: transparent;
+  --color-light-mode: #ffffff;
+  --color-dark-mode: #1f2937;
+  --color-gray-200: #e5e7eb;
+  --color-gray-700: #374151;
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #8B5CF6;
+  --primary-foreground: #ffffff;
+  --secondary: #f8fafc;
+  --secondary-foreground: #1f2937;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --accent: #f8fafc;
+  --accent-foreground: #1f2937;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #8B5CF6;
+  --chart-1: #2563eb;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ef4444;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #8B5CF6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8fafc;
+  --sidebar-accent-foreground: #1f2937;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #8B5CF6;
+  
+  /* Primary color shades */
+  --primary-50: #faf5ff;
+  --primary-100: #f3e8ff;
+  --primary-200: #e9d5ff;
+  --primary-300: #d8b4fe;
+  --primary-400: #c084fc;
+  --primary-500: #a855f7;
+  --primary-600: #9333ea;
+  --primary-700: #7e22ce;
+  --primary-800: #6b21a8;
+  --primary-900: #581c87;
 }
 
-/* Ensure full height layout */
-html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+/* Custom Login Page Styles */
+.bg-linear-to-br {
+  background: linear-gradient(to bottom right, var(--primary-50), var(--primary-100), var(--primary-200));
 }
 
-html {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.bg-linear-to-r {
+  background: linear-gradient(to right, var(--primary-600), var(--primary-700));
 }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  color: #213547;
-  background-color: #ffffff;
+.from-primary-600 {
+  --tw-gradient-from: var(--primary-600);
+  --tw-gradient-to: rgb(147 51 234 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
-#root {
-  min-height: 100vh;
+.to-primary-700 {
+  --tw-gradient-to: var(--primary-700);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+.hover\:from-primary-700:hover {
+  --tw-gradient-from: var(--primary-700);
+  --tw-gradient-to: rgb(126 34 206 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
-/* Remove default button styles to let TailwindCSS handle them */
+.hover\:to-primary-800:hover {
+  --tw-gradient-to: var(--primary-800);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}

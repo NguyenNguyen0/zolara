@@ -107,17 +107,17 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-purple-100 to-purple-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-700 p-4 rounded-2xl shadow-lg ring-4 ring-primary-200 ring-opacity-50">
+            <div className="bg-gradient-to-br from-purple-500 to-purple-700 p-4 rounded-2xl shadow-lg ring-4 ring-purple-200 ring-opacity-50">
               <img src="/logo.svg" alt="Zolara Logo" className="h-10 w-10" />
             </div>
           </div>
           <h1 className="mt-8 text-4xl font-extrabold text-gray-900 tracking-tight">
-            Welcome to <span className="text-primary-600">Zolara</span>
+            Welcome to <span className="text-purple-600">Zolara</span>
           </h1>
           <p className="mt-3 text-base text-gray-600 font-medium">
             Sign in to access your admin dashboard
@@ -125,7 +125,7 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-2xl shadow-2xl border border-primary-100 p-10 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-2xl border border-purple-100 p-10 backdrop-blur-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* General Error */}
             {errors.general && (
@@ -138,15 +138,15 @@ const Login = () => {
             )}
 
             {/* Demo Credentials Notice */}
-            <div className="bg-gradient-to-r from-primary-50 to-primary-100 border-2 border-primary-200 rounded-xl p-5 shadow-sm">
+            <div className="bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-200 rounded-xl p-5 shadow-sm">
               <div className="flex items-center mb-3">
-                <div className="h-3 w-3 bg-primary-500 rounded-full mr-2"></div>
-                <p className="text-sm font-semibold text-primary-800">
+                <div className="h-3 w-3 bg-purple-500 rounded-full mr-2"></div>
+                <p className="text-sm font-semibold text-purple-800">
                   Demo Credentials
                 </p>
               </div>
-              <div className="bg-white rounded-lg p-3 mb-4 border border-primary-200">
-                <p className="text-xs font-mono text-primary-700 leading-relaxed">
+              <div className="bg-white rounded-lg p-3 mb-4 border border-purple-200">
+                <p className="text-xs font-mono text-purple-700 leading-relaxed">
                   <span className="font-semibold">Email:</span> admin@zolara.com<br />
                   <span className="font-semibold">Password:</span> password
                 </p>
@@ -154,7 +154,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={fillDemoCredentials}
-                className="w-full text-sm bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                className="w-full text-sm bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
               >
                 Fill Demo Data
               </button>
@@ -166,7 +166,7 @@ const Login = () => {
                 Email Address
               </label>
               <div className="relative">
-                <PersonIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary-400" />
+                <PersonIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
                 <input
                   id="email"
                   name="email"
@@ -174,10 +174,10 @@ const Login = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`block w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
+                  className={`block w-full pl-12 pr-4 py-2 border-2 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
                     errors.email 
                       ? 'border-red-300 bg-red-50 focus:ring-red-200' 
-                      : 'border-gray-200 bg-white hover:border-primary-300'
+                      : 'border-gray-200 bg-white hover:border-purple-300'
                   }`}
                   placeholder="Enter your email address"
                 />
@@ -193,7 +193,7 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-                <LockClosedIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary-400" />
+                <LockClosedIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
                 <input
                   id="password"
                   name="password"
@@ -201,17 +201,17 @@ const Login = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`block w-full pl-12 pr-14 py-4 border-2 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
+                  className={`block w-full pl-12 pr-14 py-2 border-2 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
                     errors.password 
                       ? 'border-red-300 bg-red-50 focus:ring-red-200' 
-                      : 'border-gray-200 bg-white hover:border-primary-300'
+                      : 'border-gray-200 bg-white hover:border-purple-300'
                   }`}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-primary-600 transition-colors p-1 rounded-md hover:bg-primary-50"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-600 transition-colors p-1 rounded-md hover:bg-purple-50"
                 >
                   {showPassword ? (
                     <EyeNoneIcon className="h-5 w-5" />
@@ -234,15 +234,15 @@ const Login = () => {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={handleInputChange}
-                  className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-2 border-gray-300 rounded-lg bg-white"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-2 border-gray-300 rounded bg-white"
                 />
-                <label htmlFor="remember-me" className="ml-3 block text-sm font-medium text-gray-700">
+                <label htmlFor="remember-me" className="ml-2 block text-sm font-medium text-gray-700">
                   Remember me for 30 days
                 </label>
               </div>
               <button
                 type="button"
-                className="text-sm text-primary-600 hover:text-primary-700 font-semibold hover:underline transition-all duration-200"
+                className="text-sm text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-all duration-200"
                 onClick={() => alert('Forgot password functionality not implemented')}
               >
                 Forgot password?
@@ -253,10 +253,10 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full flex justify-center py-4 px-6 border border-transparent rounded-xl shadow-lg text-base font-semibold text-white transition-all duration-200 transform ${
+              className={`w-full flex justify-center py-3 px-6 border border-transparent rounded-xl shadow-lg text-base font-semibold text-white transition-all duration-200 transform ${
                 isLoading
                   ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:ring-4 focus:ring-primary-200 hover:shadow-xl hover:-translate-y-0.5'
+                  : 'bg-linear-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 focus:ring-4 focus:ring-purple-200 hover:shadow-xl hover:-translate-y-0.5'
               }`}
             >
               {isLoading ? (
@@ -273,9 +273,9 @@ const Login = () => {
           {/* Footer */}
           <div className="mt-8 text-center">
             <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
-              <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
+              <div className="h-px bg-linear-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
               <span className="font-medium">© 2025 Zolara Admin. All rights reserved.</span>
-              <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
+              <div className="h-px bg-linear-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
             </div>
           </div>
         </div>
