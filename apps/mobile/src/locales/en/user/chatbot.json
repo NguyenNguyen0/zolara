@@ -1,0 +1,18 @@
+{
+  "title": "Zolara AI Assistant",
+  "status": "AI Assistant",
+  "topics": {
+    "title": "Suggested Topics",
+    "refresh": "Refresh",
+    "loading": "Loading topics...",
+    "empty": "No topics available",
+    "retry": "Try again",
+    "prefix": "Tell me about:"
+  },
+  "messages": {
+    "retry": "Tap to retry",
+    "error": "Content error",
+    "placeholder": "Type a message...",
+    "loading": "Please wait..."
+  }
+}

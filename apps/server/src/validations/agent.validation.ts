@@ -16,10 +16,15 @@ export const ChatRequestSchema = z.object({
 	history: z.union([z.string(), ChatHistorySchema]).optional(),
 });
 
-// Schema for topics request query parameters
+// Schema for topics request query parameters (GET)
 export const TopicsRequestSchema = z.object({
-	count: z.coerce.number().int().min(1).max(5).default(3),
+	count: z.coerce.number().int().min(1).max(10).default(3),
 	topic: z.string().default('tin tức, drama'),
+});
+
+// Schema for generate topics request (POST)
+export const GenerateTopicsRequestSchema = z.object({
+	count: z.coerce.number().int().min(10).max(20).default(10),
 });
 
 // Schema for topics response
@@ -27,9 +32,16 @@ export const TopicsResponseSchema = z.object({
 	topics: z
 		.array(z.string())
 		.min(1)
-		.max(5)
+		.max(10)
 		.describe('Danh sách chủ đề trò chuyện'),
 	fallback: z.boolean().optional(),
+});
+
+// Schema for generate topics response
+export const GenerateTopicsResponseSchema = z.object({
+	message: z.string(),
+	generatedCount: z.number(),
+	totalCount: z.number(),
 });
 
 // Schema for validating Gemini content format

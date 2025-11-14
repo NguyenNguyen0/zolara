@@ -56,6 +56,7 @@ export default ({ config }) => ({
 		FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
 		FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
 		AGORA_APP_ID: process.env.AGORA_APP_ID,
-		BUILD_VARIANT: process.env.NODE_ENV || 'development'
+		API_BASE_URL: process.env.API_BASE_URL,
+		BUILD_VARIANT: process.env.NODE_ENV || 'development',
 	},
 });

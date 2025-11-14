@@ -1,6 +1,8 @@
 import { auth, db, testFirebaseConnection } from '../configs/firebase';
 import { Permission, Role } from '../types';
 import { Timestamp } from 'firebase-admin/firestore';
+import { generateAndStoreTopics } from '../services/agent.service';
+import { isTopicsCollectionEmpty } from '../services/topic.service';
 
 // Permission data based on the API table
 const permissions: Omit<Permission, 'id' | 'createdAt' | 'createdBy' | 'updatedAt' | 'updatedBy'>[] = [
@@ -61,6 +63,12 @@ const permissions: Omit<Permission, 'id' | 'createdAt' | 'createdBy' | 'updatedA
 	{ apiPath: '/api/messages/{id}', method: 'GET', module: 'MESSAGE', name: 'Lấy chi tiết tin nhắn', active: true },
 	{ apiPath: '/api/messages/{id}', method: 'PUT', module: 'MESSAGE', name: 'Chỉnh sửa tin nhắn', active: true },
 	{ apiPath: '/api/messages/{id}', method: 'DELETE', module: 'MESSAGE', name: 'Xóa tin nhắn', active: true },
+
+	// AGENT module
+	{ apiPath: '/api/agent/topics', method: 'GET', module: 'AGENT', name: 'Lấy danh sách chủ đề trò chuyện', active: true },
+	{ apiPath: '/api/agent/topics', method: 'POST', module: 'AGENT', name: 'Tạo chủ đề trò chuyện', active: true },
+	{ apiPath: '/api/agent/chat', method: 'POST', module: 'AGENT', name: 'Chat với AI', active: true },
+	{ apiPath: '/api/agent/chat-stream', method: 'POST', module: 'AGENT', name: 'Chat stream với AI', active: true },
 ];
 
 // Role data - using numeric IDs as in SQL (stored as string in Firestore)
@@ -190,6 +198,10 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 					permissionMap.get('/api/messages/{id}:GET') || '',
 					permissionMap.get('/api/messages/{id}:PUT') || '',
 					permissionMap.get('/api/messages/{id}:DELETE') || '',
+					// Agent permissions
+					permissionMap.get('/api/agent/topics:GET') || '',
+					permissionMap.get('/api/agent/chat:POST') || '',
+					permissionMap.get('/api/agent/chat-stream:POST') || '',
 				].filter((id) => id !== ''),
 			};
 
@@ -376,11 +388,31 @@ export const seedData = async (adminUserId?: string): Promise<void> => {
 			}
 		}
 
+		// Step 6: Seed Topics if collection is empty
+		console.log('📝 Checking topics collection...');
+		const topicsEmpty = await isTopicsCollectionEmpty();
+		let topicsCount = 0;
+
+		if (topicsEmpty) {
+			console.log('📝 Seeding topics...');
+			try {
+				const result = await generateAndStoreTopics(15, 'system');
+				topicsCount = result.totalCount;
+				console.log(`  ✓ Generated and stored ${result.generatedCount} topics`);
+			} catch (error: any) {
+				console.error(`  ❌ Error generating topics:`, error.message);
+				// Don't fail the entire seeding process for topics
+			}
+		} else {
+			console.log('⏭️  Topics collection already has data, skipping...');
+		}
+
 		console.log('✅ Seeding completed successfully!');
 		console.log(`   - Permissions: ${permissionIds.length}`);
 		console.log(`   - Roles: ${roles.length}`);
 		console.log(`   - Admin Users: ${adminUsers.length}`);
 		console.log(`   - Regular Users: ${regularUsers.length}`);
+		console.log(`   - Topics: ${topicsCount > 0 ? topicsCount : 'existing data'}`);
 	} catch (error: any) {
 		console.error('❌ Error seeding permissions and roles:', error);
 		throw error;

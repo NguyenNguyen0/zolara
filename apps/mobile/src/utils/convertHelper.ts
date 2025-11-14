@@ -41,8 +41,9 @@ export const getOnlineStatusText = (
 /**
  * Format timestamp for display
  */
-export const formatTimestamp = (date: Date): string => {
-	return date.toLocaleTimeString('en-US', {
+export const formatTimestamp = (date: Date | string): string => {
+	const dateObj = typeof date === 'string' ? new Date(date) : date;
+	return dateObj.toLocaleTimeString('en-US', {
 		hour: '2-digit',
 		minute: '2-digit',
 		hour12: false,
@@ -55,8 +56,9 @@ export const formatTimestamp = (date: Date): string => {
 /**
  * Format time for message bubble
  */
-export const formatMessageTime = (date: Date): string => {
-	return date.toLocaleTimeString('en-US', {
+export const formatMessageTime = (date: Date | string): string => {
+	const dateObj = typeof date === 'string' ? new Date(date) : date;
+	return dateObj.toLocaleTimeString('en-US', {
 		hour: '2-digit',
 		minute: '2-digit',
 		hour12: false,
@@ -103,8 +105,9 @@ export const getStatusColor = (
 	switch (status) {
 		case 'stranger':
 		case 'friend_request':
-		case 'chatbot':
 			return 'bg-primary';
+		case 'chatbot':
+			return 'bg-primary border-white border-2';
 		case 'friend':
 			return 'bg-green-500';
 		default:
