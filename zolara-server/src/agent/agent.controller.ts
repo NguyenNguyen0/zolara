@@ -8,6 +8,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { Public } from '../auth/public.decorator';
 import { AgentService } from './agent.service';
 import { AgentChatDto } from './dto/agent-chat.dto';
 import { AgentResponse, AgentConfig } from './interfaces/agent.interface';
@@ -19,6 +20,7 @@ export class AgentController {
 
   constructor(private readonly agentService: AgentService) {}
 
+  @Public()
   @Post('chat')
   @ApiOperation({
     summary: 'Chat with AI Agent',
@@ -101,6 +103,7 @@ export class AgentController {
     }
   }
 
+  @Public()
   @Get('config')
   @ApiOperation({
     summary: 'Get Agent Configuration',
@@ -138,6 +141,7 @@ export class AgentController {
     return this.agentService.getConfig();
   }
 
+  @Public()
   @Get('status')
   @ApiOperation({
     summary: 'Get Agent Status',

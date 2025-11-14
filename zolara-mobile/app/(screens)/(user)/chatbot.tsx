@@ -1,6 +1,6 @@
 import MessageHeader from '@/src/components/ui/message.header';
 import MessageTime from '@/src/components/ui/message.time';
-import MessageItem from '@/src/components/item/message.item';
+import ChatbotMessageItem from '@/src/components/item/chatbot.message.item';
 import MessageInput from '@/src/components/ui/message.input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -21,14 +21,17 @@ interface User {
 	id: string;
 	name: string;
 	avatar?: string;
+	isAgent?: boolean;
 }
 
 interface Message {
 	id: string;
 	content: string;
 	userId: string;
-	timestamp: Date;
+	timestamp: string; // ISO string for consistency with ChatbotMessageItem
 	type?: 'text' | 'image' | 'sticker';
+	isStreaming?: boolean;
+	error?: string;
 }
 
 type ConversationType = 'GROUP' | 'FRIEND' | 'STRANGER' | 'CHATBOT';
@@ -53,7 +56,18 @@ export default function Chatbot() {
 	// const currentUserId = useSelector((state: RootState) => state.auth.user?.id);
 	const currentUserId = '4'; // Temporary mock ID - replace with Redux
 
-	const [conversation] = useState<Conversation>(MOCK_CHATBOT_CHAT);
+	// Initialize conversation with agent configuration
+	const [conversation] = useState<Conversation>({
+		...MOCK_CHATBOT_CHAT,
+		members: MOCK_CHATBOT_CHAT.members.map(member => ({
+			...member,
+			isAgent: member.id === '7', // Mark the AI assistant as agent
+		})),
+		messages: MOCK_CHATBOT_CHAT.messages.map(msg => ({
+			...msg,
+			timestamp: msg.timestamp.toISOString(), // Convert to ISO string
+		}))
+	});
 
 	const isGroupConversation = conversation.type === 'GROUP';
 
@@ -63,8 +77,9 @@ export default function Chatbot() {
 		prevMsg?: Message,
 	): boolean => {
 		if (!prevMsg) return true;
-		const timeDiff =
-			currentMsg.timestamp.getTime() - prevMsg.timestamp.getTime();
+		const currentTime = new Date(currentMsg.timestamp).getTime();
+		const prevTime = new Date(prevMsg.timestamp).getTime();
+		const timeDiff = currentTime - prevTime;
 		return timeDiff / (1000 * 60) >= TIME_GAP.TIMESTAMP_SEPARATOR;
 	};
 
@@ -75,8 +90,9 @@ export default function Chatbot() {
 	): boolean => {
 		if (!prevMsg) return true;
 		if (currentMsg.userId !== prevMsg.userId) return true;
-		const timeDiff =
-			currentMsg.timestamp.getTime() - prevMsg.timestamp.getTime();
+		const currentTime = new Date(currentMsg.timestamp).getTime();
+		const prevTime = new Date(prevMsg.timestamp).getTime();
+		const timeDiff = currentTime - prevTime;
 		return timeDiff / (1000 * 60) >= TIME_GAP.AVATAR_SHOW;
 	};
 
@@ -87,12 +103,14 @@ export default function Chatbot() {
 	): boolean => {
 		if (!nextMsg) return true;
 		if (currentMsg.userId !== nextMsg.userId) return true;
-		const timeDiff =
-			nextMsg.timestamp.getTime() - currentMsg.timestamp.getTime();
+		const currentTime = new Date(currentMsg.timestamp).getTime();
+		const nextTime = new Date(nextMsg.timestamp).getTime();
+		const timeDiff = nextTime - currentTime;
 		return timeDiff / (1000 * 60) >= TIME_GAP.TIME_SHOW;
 	};
 
-	const formatTimestamp = (date: Date): string => {
+	const formatTimestamp = (timestamp: string): string => {
+		const date = new Date(timestamp);
 		return date.toLocaleTimeString('en-US', {
 			hour: '2-digit',
 			minute: '2-digit',
@@ -123,13 +141,14 @@ export default function Chatbot() {
 
 		return (
 			<>
-				<MessageItem
+				<ChatbotMessageItem
 					message={item}
 					user={user}
 					isMe={isMe}
 					isGroup={isGroupConversation}
 					showAvatar={showAvatar}
 					showTime={showTime}
+					onRetry={() => console.log('Retry message:', item.id)}
 				/>
 				{showTimestamp && (
 					<MessageTime time={formatTimestamp(item.timestamp)} />
@@ -168,36 +187,49 @@ export default function Chatbot() {
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
-		<MessageHeader
-			name={conversation.name}
-			status={getHeaderStatus()}
-			onlineStatus={getOnlineStatus()}
-			isGroup={isGroupConversation}
-			showCallButtons={false}
-			onCall={() => console.log('Call pressed')}
-			onVideoCall={() => console.log('Video call pressed')}
-			onMenu={() => console.log('Menu pressed')}
-			onAcceptFriendRequest={() =>
-				console.log('Accept friend request')
-			}
-		/>
+			{/* AI Chatbot Header */}
+			<MessageHeader
+				name={conversation.name}
+				status={getHeaderStatus()}
+				onlineStatus={getOnlineStatus()}
+				isGroup={isGroupConversation}
+				showCallButtons={false}
+				onCall={() => console.log('Call pressed')}
+				onVideoCall={() => console.log('Video call pressed')}
+				onMenu={() => console.log('Menu pressed')}
+				onAcceptFriendRequest={() =>
+					console.log('Accept friend request')
+				}
+			/>
+
+			{/* Main Chat Interface */}
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				style={{ flex: 1 }}
 			>
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<View className="flex-1">
+						{/* Messages List */}
 						<FlatList
 							data={[...conversation.messages].reverse()}
 							renderItem={renderItem}
 							keyExtractor={(item) => item.id}
 							className="flex-1 bg-light-mode dark:bg-dark-mode"
-							contentContainerStyle={{ paddingVertical: 16 }}
+							contentContainerStyle={{ 
+								paddingVertical: 16,
+								paddingHorizontal: 4 
+							}}
 							inverted
 							showsVerticalScrollIndicator={false}
+							removeClippedSubviews={true}
+							maxToRenderPerBatch={10}
+							windowSize={10}
+							initialNumToRender={15}
 						/>
 					</View>
 				</TouchableWithoutFeedback>
+				
+				{/* Message Input */}
 				<MessageInput />
 			</KeyboardAvoidingView>
 		</SafeAreaView>

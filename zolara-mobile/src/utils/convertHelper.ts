@@ -103,8 +103,9 @@ export const getStatusColor = (
 	switch (status) {
 		case 'stranger':
 		case 'friend_request':
-		case 'chatbot':
 			return 'bg-primary';
+		case 'chatbot':
+			return 'bg-purple-500';
 		case 'friend':
 			return 'bg-green-500';
 		default:
