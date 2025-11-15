@@ -93,26 +93,13 @@ const Login = () => {
     }
   };
 
-  const demoCredentials = {
-    email: 'admin@zolara.com',
-    password: 'password'
-  };
-
-  const fillDemoCredentials = () => {
-    setFormData(prev => ({
-      ...prev,
-      email: demoCredentials.email,
-      password: demoCredentials.password
-    }));
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-purple-100 to-purple-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center">
-            <div className="bg-gradient-to-br from-purple-500 to-purple-700 p-4 rounded-2xl shadow-lg ring-4 ring-purple-200 ring-opacity-50">
+            <div className="bg-linear-to-br from-purple-500 to-purple-700 p-4 rounded-2xl shadow-lg ring-4 ring-purple-200 ring-opacity-50">
               <img src="/logo.svg" alt="Zolara Logo" className="h-10 w-10" />
             </div>
           </div>
@@ -136,29 +123,6 @@ const Login = () => {
                 </div>
               </div>
             )}
-
-            {/* Demo Credentials Notice */}
-            <div className="bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-200 rounded-xl p-5 shadow-sm">
-              <div className="flex items-center mb-3">
-                <div className="h-3 w-3 bg-purple-500 rounded-full mr-2"></div>
-                <p className="text-sm font-semibold text-purple-800">
-                  Demo Credentials
-                </p>
-              </div>
-              <div className="bg-white rounded-lg p-3 mb-4 border border-purple-200">
-                <p className="text-xs font-mono text-purple-700 leading-relaxed">
-                  <span className="font-semibold">Email:</span> admin@zolara.com<br />
-                  <span className="font-semibold">Password:</span> password
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="w-full text-sm bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
-              >
-                Fill Demo Data
-              </button>
-            </div>
 
             {/* Email Field */}
             <div>
@@ -271,7 +235,7 @@ const Login = () => {
           </form>
 
           {/* Footer */}
-          <div className="mt-8 text-center">
+          <div className="mt-4 text-center">
             <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
               <div className="h-px bg-linear-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
               <span className="font-medium">© 2025 Zolara Admin. All rights reserved.</span>

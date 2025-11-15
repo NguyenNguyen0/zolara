@@ -73,7 +73,9 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               <Users className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">{userStats.totalUsers.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-primary">
+                {userStats.totalUsers.toLocaleString()}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {userStats.activeUsers} currently active
               </p>
@@ -82,11 +84,15 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
 
           <Card className="border-l-4 border-l-chart-2 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">New Users Today</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                New Users Today
+              </CardTitle>
               <Users className="h-4 w-4 text-chart-2" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-chart-2">{userStats.newUsersToday}</div>
+              <div className="text-2xl font-bold text-chart-2">
+                {userStats.newUsersToday}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {userStats.newUsersThisWeek} this week
               </p>
@@ -96,11 +102,15 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           {/* Message Stats */}
           <Card className="border-l-4 border-l-chart-3 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Messages</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Messages
+              </CardTitle>
               <MessageSquare className="h-4 w-4 text-chart-3" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-chart-3">{messageStats.totalMessages.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-chart-3">
+                {messageStats.totalMessages.toLocaleString()}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {messageStats.messagesToday} today
               </p>
@@ -110,11 +120,15 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           {/* Call Stats */}
           <Card className="border-l-4 border-l-chart-4 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Calls</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Active Calls
+              </CardTitle>
               <Phone className="h-4 w-4 text-chart-4" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-chart-4">{callStats.activeCalls}</div>
+              <div className="text-2xl font-bold text-chart-4">
+                {callStats.activeCalls}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {callStats.totalCalls} total calls
               </p>
@@ -132,25 +146,39 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               <Users className="h-5 w-5" />
               User Activity
             </CardTitle>
-            <CardDescription>User registration and activity metrics</CardDescription>
+            <CardDescription>
+              User registration and activity metrics
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 bg-primary/5 rounded-lg">
-                <span className="text-sm font-medium text-primary">Total Registered Users</span>
-                <span className="text-sm font-bold text-primary">{userStats.totalUsers.toLocaleString()}</span>
+                <span className="text-sm font-medium text-primary">
+                  Total Registered Users
+                </span>
+                <span className="text-sm font-bold text-primary">
+                  {userStats.totalUsers.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-chart-2/10 rounded-lg">
-                <span className="text-sm font-medium text-chart-2">Currently Active</span>
-                <span className="text-sm font-bold text-chart-2">{userStats.activeUsers.toLocaleString()}</span>
+                <span className="text-sm font-medium text-chart-2">
+                  Currently Active
+                </span>
+                <span className="text-sm font-bold text-chart-2">
+                  {userStats.activeUsers.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium">New Users Today</span>
-                <span className="text-sm text-gray-600">{userStats.newUsersToday}</span>
+                <span className="text-sm text-gray-600">
+                  {userStats.newUsersToday}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium">New Users This Week</span>
-                <span className="text-sm text-gray-600">{userStats.newUsersThisWeek}</span>
+                <span className="text-sm text-gray-600">
+                  {userStats.newUsersThisWeek}
+                </span>
               </div>
             </div>
           </CardContent>
@@ -175,15 +203,21 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 <div className="space-y-2 pl-4">
                   <div className="flex justify-between items-center p-2 bg-chart-3/10 rounded">
                     <span className="text-sm">Total Messages</span>
-                    <span className="text-sm font-semibold text-chart-3">{messageStats.totalMessages.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-chart-3">
+                      {messageStats.totalMessages.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Messages Today</span>
-                    <span className="text-sm text-gray-600">{messageStats.messagesToday}</span>
+                    <span className="text-sm text-gray-600">
+                      {messageStats.messagesToday}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Messages This Week</span>
-                    <span className="text-sm text-gray-600">{messageStats.messagesThisWeek}</span>
+                    <span className="text-sm text-gray-600">
+                      {messageStats.messagesThisWeek}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -195,15 +229,21 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 <div className="space-y-2 pl-4">
                   <div className="flex justify-between items-center p-2 bg-chart-4/10 rounded">
                     <span className="text-sm">Total Calls</span>
-                    <span className="text-sm font-semibold text-chart-4">{callStats.totalCalls}</span>
+                    <span className="text-sm font-semibold text-chart-4">
+                      {callStats.totalCalls}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Active Calls</span>
-                    <span className="text-sm text-gray-600">{callStats.activeCalls}</span>
+                    <span className="text-sm text-gray-600">
+                      {callStats.activeCalls}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Avg Call Duration</span>
-                    <span className="text-sm text-gray-600">{Math.round(callStats.averageCallDuration / 60)}m</span>
+                    <span className="text-sm text-gray-600">
+                      {Math.round(callStats.averageCallDuration / 60)}m
+                    </span>
                   </div>
                 </div>
               </div>

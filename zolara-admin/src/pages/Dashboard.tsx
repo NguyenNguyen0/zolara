@@ -37,9 +37,12 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-linear-to-br from-white to-purple-50 flex">
       {/* Sidebar */}
-      <DashboardSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <DashboardSidebar
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
