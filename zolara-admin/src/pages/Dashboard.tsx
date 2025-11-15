@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExitIcon } from '@radix-ui/react-icons';
 import { DashboardSidebar, type DashboardSection } from '../components/DashboardSidebar';
+import { DashboardHeader } from '../components/DashboardHeader';
 import { OverviewSection } from '../components/OverviewSection';
 import { AnalyticsSection } from '../components/AnalyticsSection';
-import { Button } from '../components/ui/Button';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../hooks/useAuth';
 
@@ -12,6 +11,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
   const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   // Get dashboard data from hook
   const { userStats, messageStats, callStats, lastUpdated, isLoading } = useDashboard();
@@ -33,47 +33,33 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-white to-purple-50 flex">
-      {/* Sidebar */}
-      <DashboardSidebar
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-      />
+    <div className="min-h-screen bg-linear-to-br from-white to-purple-50">
+      {/* Sidebar - Fixed Position */}
+      <div className="fixed top-0 left-0 h-full z-30">
+        <DashboardSidebar
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          isMinimized={!isSidebarOpen}
+          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
+      </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Navigation */}
-        <nav className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {activeSection === "overview"
-                    ? "Overview Dashboard"
-                    : "Analytics Dashboard"}
-                </h1>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">
-                  Welcome, {getUserName()}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-gray-600 hover:text-red-600"
-                  title="Logout"
-                >
-                  <ExitIcon className="h-4 w-4 mr-1" />
-                  Logout
-                </Button>
-              </div>
-            </div>
-          </div>
-        </nav>
+      <div
+        className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? 'ml-64' : 'ml-16'
+        }`}
+      >
+        {/* Navigation - Fixed Position */}
+        <DashboardHeader
+          activeSection={activeSection}
+          userName={getUserName()}
+          onLogout={handleLogout}
+          isSidebarOpen={isSidebarOpen}
+        />
 
-        {/* Dashboard Content */}
-        <div className="flex-1 max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
+        {/* Dashboard Content - Account for fixed nav */}
+        <div className="flex-1 mx-auto py-6 sm:px-6 lg:px-8 w-full mt-16">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
