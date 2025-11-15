@@ -4,10 +4,10 @@ FROM node:20-alpine AS build-stage
 WORKDIR /app
 
 # Copy package files first
-COPY package*.json ./
+COPY zolara-server/package*.json ./
 
 # Copy prisma directory before npm install (needed for postinstall prisma generate)
-COPY prisma ./prisma/
+COPY zolara-server/prisma ./prisma/
 
 # Install ALL dependencies (including dev dependencies)
 RUN npm install
@@ -16,7 +16,7 @@ RUN npm install
 RUN npx prisma generate
 
 # Copy source code and build application
-COPY . .
+COPY zolara-server/. .
 RUN npm run build && ls -la dist
 
 # Production stage
@@ -28,13 +28,13 @@ RUN apk add --no-cache postgresql-client python3 make g++ cronie
 WORKDIR /app
 
 # Copy package files and install ONLY production dependencies
-COPY package*.json ./
+COPY zolara-server/package*.json ./
 RUN npm install --omit=dev --ignore-scripts && \
     npm install -g ts-node typescript && \
     npm rebuild bcrypt --build-from-source
 
 # Copy Prisma files
-COPY prisma ./prisma/
+COPY zolara-server/prisma ./prisma/
 RUN npx prisma generate
 
 # Copy built application from builder
