@@ -3,12 +3,16 @@ FROM node:20-alpine AS build-stage
 
 WORKDIR /app
 
-# Copy package files and install ALL dependencies (including dev dependencies)
+# Copy package files first
 COPY package*.json ./
+
+# Copy prisma directory before npm install (needed for postinstall prisma generate)
+COPY prisma ./prisma/
+
+# Install ALL dependencies (including dev dependencies)
 RUN npm install
 
-# Copy Prisma schema and generate client
-COPY prisma ./prisma/
+# Explicitly generate Prisma client
 RUN npx prisma generate
 
 # Copy source code and build application

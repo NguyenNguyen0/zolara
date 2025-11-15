@@ -6,7 +6,7 @@
   },
   "deploy": {
     "numReplicas": 1,
-    "startCommand": "npm run db:setup && npm run db:seed && npm start",
+    "startCommand": "npm run db:migrate && npm run db:seed && npm run start:prod",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10,
     "healthcheckPath": "/",
