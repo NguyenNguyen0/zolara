@@ -6,9 +6,11 @@ import { OverviewSection } from '../components/OverviewSection';
 import { AnalyticsSection } from '../components/AnalyticsSection';
 import { Button } from '../components/ui/Button';
 import { useDashboard } from '../hooks/useDashboard';
+import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { user, logout, isAuthenticated } = useAuth();
   const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
   
   // Get dashboard data from hook
@@ -16,24 +18,18 @@ const Dashboard: React.FC = () => {
 
   // Check if user is authenticated
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    if (!isAuthenticated) {
       navigate('/');
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    logout();
     navigate('/');
   };
 
   const getUserName = () => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      return JSON.parse(user).name;
-    }
-    return 'Admin';
+    return user?.name || 'Admin';
   };
 
   return (

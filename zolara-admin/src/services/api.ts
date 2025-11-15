@@ -1,13 +1,6 @@
 import axios from 'axios';
 
 // Types
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
 interface UserParams {
   page?: number;
   limit?: number;
@@ -22,11 +15,17 @@ interface CreateUserData {
 
 interface UpdateUserData extends Partial<CreateUserData> {}
 
+interface LoginCredentials {
+  email?: string;
+  phoneNumber?: string;
+  password: string;
+  deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
+  deviceName?: string;
+}
+
 // Create an axios instance with default configuration
 const api = axios.create({
-  baseURL: import.meta.env.PROD 
-    ? 'https://api.zolara.com' 
-    : 'http://localhost:3001/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -64,6 +63,10 @@ api.interceptors.response.use(
 
 // API methods
 export const apiService = {
+  // Auth
+  login: (credentials: LoginCredentials) => api.post('/auth/login', credentials),
+  refreshToken: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
+  
   // Dashboard data
   getDashboardData: () => api.get('/dashboard'),
   

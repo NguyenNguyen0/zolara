@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   PersonIcon, 
@@ -6,6 +6,7 @@ import {
   EyeOpenIcon, 
   EyeNoneIcon 
 } from '@radix-ui/react-icons';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginFormData {
   email: string;
@@ -15,6 +16,7 @@ interface LoginFormData {
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated, error: authError, clearError } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -23,6 +25,20 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Update errors when authError changes
+  useEffect(() => {
+    if (authError) {
+      setErrors(prev => ({ ...prev, general: authError }));
+    }
+  }, [authError]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -34,6 +50,9 @@ const Login = () => {
     // Clear errors when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+    if (authError) {
+      clearError();
     }
   };
 
@@ -65,29 +84,22 @@ const Login = () => {
 
     setIsLoading(true);
     setErrors({});
+    clearError();
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call the login function from AuthContext
+      await login({
+        email: formData.email,
+        password: formData.password,
+        deviceType: 'WEB',
+        deviceName: 'Zolara Admin Dashboard'
+      });
 
-      // Mock authentication - In real app, you would call your API
-      if (formData.email === 'admin@zolara.com' && formData.password === 'password') {
-        // Store auth token (in real app, get from API response)
-        localStorage.setItem('authToken', 'mock-jwt-token');
-        localStorage.setItem('user', JSON.stringify({
-          id: '1',
-          name: 'Admin User',
-          email: formData.email,
-          role: 'admin'
-        }));
-
-        // Navigate to dashboard
-        navigate('/dashboard');
-      } else {
-        setErrors({ general: 'Invalid email or password' });
-      }
-    } catch {
-      setErrors({ general: 'Login failed. Please try again.' });
+      // Navigate to dashboard on success (will also happen via useEffect)
+      navigate('/dashboard');
+    } catch (error) {
+      // Error is already set in AuthContext and displayed via useEffect
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
