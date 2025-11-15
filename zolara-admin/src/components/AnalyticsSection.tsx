@@ -26,15 +26,15 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
     <div className="space-y-8">
       {/* Charts Section */}
       <div>
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Activity className="w-4 h-4 text-white" />
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Activity className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-lg font-medium text-gray-900">Analytics & Trends</h2>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Analytics & Trends</h2>
           </div>
-          <p className="text-sm text-gray-500">Visual insights and performance metrics</p>
-          <div className="w-16 h-1 bg-linear-to-r from-primary to-chart-2 rounded-full mt-2"></div>
+          <p className="text-sm text-gray-600 font-medium ml-13">Visual insights and performance metrics</p>
+          <div className="w-24 h-1.5 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 rounded-full mt-3 ml-13 shadow-md"></div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

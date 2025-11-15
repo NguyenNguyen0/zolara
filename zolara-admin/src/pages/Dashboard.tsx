@@ -33,7 +33,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       {/* Sidebar - Fixed Position */}
       <div className="fixed top-0 left-0 h-full z-30">
         <DashboardSidebar
@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
         />
 
         {/* Dashboard Content - Account for fixed nav */}
-        <div className="flex-1 mx-auto py-6 sm:px-6 lg:px-8 w-full mt-16">
+        <div className="flex-1 mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full mt-16">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
               <div className="text-center">

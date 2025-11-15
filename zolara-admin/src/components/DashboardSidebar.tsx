@@ -34,18 +34,23 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   return (
     <div
       className={cn(
-        'bg-white border-r border-gray-200 h-screen overflow-y-auto transition-all duration-300 ease-in-out',
+        'bg-white/90 backdrop-blur-md border-r border-purple-200 h-screen overflow-y-auto transition-all duration-300 ease-in-out shadow-xl',
         isMinimized ? 'w-16' : 'w-64'
       )}
     >
       {/* Header with Toggle Button */}
-      <div className={cn('p-4 border-b border-gray-100 flex items-center', isMinimized ? 'justify-center' : 'justify-between')}>
+      <div className={cn('p-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-blue-50 flex items-center', isMinimized ? 'justify-center' : 'justify-between')}>
         {!isMinimized && (
-          <h3 className="text-lg font-semibold text-gray-900">Dashboard</h3>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+              <Activity className="w-4 h-4 text-white" />
+            </div>
+            <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Dashboard</h3>
+          </div>
         )}
         <button
           onClick={onToggle}
-          className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+          className="p-2 rounded-lg text-purple-600 hover:bg-purple-100 hover:text-purple-700 transition-all duration-200 hover:scale-110"
           title={isMinimized ? 'Expand Sidebar' : 'Minimize Sidebar'}
         >
           {isMinimized ? (
@@ -71,36 +76,46 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                 key={item.id}
                 onClick={() => onSectionChange(item.id)}
                 className={cn(
-                  'w-full flex items-center rounded-lg text-left transition-all duration-200',
+                  'w-full flex items-center rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02]',
                   isMinimized ? 'justify-center p-3' : 'gap-3 px-4 py-3',
                   isActive
-                    ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-2 border-purple-300 shadow-lg'
+                    : 'text-gray-600 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:text-purple-600 border-2 border-transparent'
                 )}
                 title={isMinimized ? item.label : undefined}
               >
-                <Icon
-                  className={cn(
-                    'w-5 h-5 shrink-0',
-                    isMinimized ? '' : 'mt-0.5',
-                    isActive ? 'text-primary' : 'text-gray-400'
-                  )}
-                />
+                <div className={cn(
+                  'rounded-lg p-1.5 transition-all duration-200',
+                  isActive ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-md' : 'bg-gray-100'
+                )}>
+                  <Icon
+                    className={cn(
+                      'w-4 h-4 shrink-0',
+                      isActive ? 'text-white' : 'text-gray-500'
+                    )}
+                  />
+                </div>
                 {!isMinimized && (
                   <>
                     <div className="flex-1 min-w-0">
                       <div className={cn(
-                        'font-medium text-sm',
-                        isActive ? 'text-primary' : 'text-gray-900'
+                        'font-semibold text-sm',
+                        isActive ? 'text-purple-700' : 'text-gray-900'
                       )}>
                         {item.label}
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className={cn(
+                        'text-xs mt-0.5',
+                        isActive ? 'text-purple-600' : 'text-gray-500'
+                      )}>
                         {item.description}
                       </div>
                     </div>
                     {isActive && (
-                      <div className="w-2 h-2 bg-primary rounded-full shrink-0 mt-2"></div>
+                      <div className="flex flex-col gap-1">
+                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-pulse"></div>
+                        <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                      </div>
                     )}
                   </>
                 )}
@@ -112,16 +127,19 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
 
       {/* Optional: Add section summary or quick stats */}
       {!isMinimized && (
-        <div className="px-4 py-4 border-t border-gray-100 mt-8">
-          <div className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-3">
-            Quick Info
+        <div className="px-4 py-4 border-t border-purple-100 mt-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg mx-2">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-gradient-to-b from-purple-600 to-blue-600 rounded-full"></div>
+            <div className="text-xs text-purple-700 uppercase tracking-wide font-bold">
+              Quick Info
+            </div>
           </div>
-          <div className="space-y-2 text-sm text-gray-600">
+          <div className="space-y-2 text-sm text-gray-700 leading-relaxed">
             {activeSection === 'overview' && (
-              <p>View user statistics, activity metrics, and system overview.</p>
+              <p className="pl-3 border-l-2 border-purple-300">View user statistics, activity metrics, and system overview.</p>
             )}
             {activeSection === 'analytics' && (
-              <p>Explore visual charts, trends, and performance analytics.</p>
+              <p className="pl-3 border-l-2 border-blue-300">Explore visual charts, trends, and performance analytics.</p>
             )}
           </div>
         </div>
