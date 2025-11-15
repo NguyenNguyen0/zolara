@@ -67,8 +67,8 @@ export const apiService = {
   login: (credentials: LoginCredentials) => api.post('/auth/login', credentials),
   refreshToken: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
   
-  // Dashboard data
-  getDashboardData: () => api.get('/dashboard'),
+  // Dashboard
+  getDashboardStats: () => api.get('/dashboard/stats'),
   
   // User management
   getUsers: (params?: UserParams) => api.get('/users', { params }),

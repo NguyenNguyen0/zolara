@@ -6,7 +6,7 @@ import {
   EyeOpenIcon, 
   EyeNoneIcon 
 } from '@radix-ui/react-icons';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginFormData {
   email: string;
@@ -26,10 +26,10 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated (only on mount or when actually authenticated)
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -47,7 +47,6 @@ const Login = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
     
-    // Clear errors when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -77,32 +76,27 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation(); // Prevent any form submission behavior
     
     if (!validateForm()) {
       return;
     }
 
     setIsLoading(true);
-    setErrors({});
+    setErrors(prev => ({ ...prev, email: undefined, password: undefined }));
     clearError();
 
-    try {
-      // Call the login function from AuthContext
-      await login({
-        email: formData.email,
-        password: formData.password,
-        deviceType: 'WEB',
-        deviceName: 'Zolara Admin Dashboard'
-      });
+    const success = await login({
+      email: formData.email,
+      password: formData.password,
+      deviceType: 'WEB',
+      deviceName: 'Zolara Admin Dashboard'
+    });
 
-      // Navigate to dashboard on success (will also happen via useEffect)
-      navigate('/dashboard');
-    } catch (error) {
-      // Error is already set in AuthContext and displayed via useEffect
-      console.error('Login error:', error);
-    } finally {
+    if (!success) {
       setIsLoading(false);
     }
+    // If successful, isAuthenticated will be true and useEffect will handle navigation
   };
 
   return (

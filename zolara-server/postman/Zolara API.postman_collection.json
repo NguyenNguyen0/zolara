@@ -2193,6 +2193,30 @@
 			]
 		},
 		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"stats"
+							]
+						},
+						"description": "Get comprehensive dashboard statistics including user stats, message stats, call stats, and chart data for analytics"
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Agent",
 			"item": [
 				{

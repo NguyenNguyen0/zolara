@@ -6,7 +6,7 @@ import { OverviewSection } from '../components/OverviewSection';
 import { AnalyticsSection } from '../components/AnalyticsSection';
 import { Button } from '../components/ui/Button';
 import { useDashboard } from '../hooks/useDashboard';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();

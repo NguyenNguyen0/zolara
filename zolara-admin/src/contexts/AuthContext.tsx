@@ -1,42 +1,9 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { apiService } from '../services/api';
 import { AxiosError } from 'axios';
-
-// Types
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-interface LoginCredentials {
-  email?: string;
-  phoneNumber?: string;
-  password: string;
-  deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
-  deviceName?: string;
-}
-
-interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-}
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  logout: () => void;
-  error: string | null;
-  clearError: () => void;
-}
-
-// Create the context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from './AuthContext.context';
+import type { User, LoginCredentials, AuthResponse, AuthContextType } from './AuthContext.types';
 
 // Provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -93,15 +60,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Update state
       setUser(data.user);
       setIsAuthenticated(true);
+      setIsLoading(false);
+      return true; // Return success
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
       const errorMessage = 
         axiosError.response?.data?.message || 
         'Login failed. Please check your credentials and try again.';
       setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
       setIsLoading(false);
+      return false; // Return failure
     }
   };
 
@@ -134,13 +102,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-// Custom hook to use the auth context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };
