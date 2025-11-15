@@ -1,0 +1,11 @@
+# in development mode
+
+## how to install ?????????????????
+
+docker-compose up -d postgres redis
+
+npx prisma migrate deploy
+
+npm run db:seed
+
+npm run dev
