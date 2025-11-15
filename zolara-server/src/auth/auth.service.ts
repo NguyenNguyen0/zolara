@@ -738,7 +738,9 @@ export class AuthService {
       otpExpirySeconds, // 5 minutes expiry
     );
 
-    this.logger.log(`Phone update OTP initiated for ${updateDto.newPhoneNumber}`);
+    this.logger.log(
+      `Phone update OTP initiated for ${updateDto.newPhoneNumber}`,
+    );
     return {
       message: 'OTP sent successfully to your new phone number',
       updateId,
