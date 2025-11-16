@@ -11,10 +11,9 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 } from 'react-native';
-import { useState } from 'react';
-import {
-	MOCK_CHATBOT_CHAT,
-} from '@/src/mocks/conversation';
+import { useEffect, useRef } from 'react';
+import { useChatbotStore } from '@/src/store/chatbotStore';
+import { useAuthStore } from '@/src/store/authStore';
 
 // Types
 interface User {
@@ -34,16 +33,6 @@ interface Message {
 	error?: string;
 }
 
-type ConversationType = 'GROUP' | 'FRIEND' | 'STRANGER' | 'CHATBOT';
-
-interface Conversation {
-	id: string;
-	name: string;
-	type: ConversationType;
-	members: User[];
-	messages: Message[];
-}
-
 // Constants
 const TIME_GAP = {
 	TIMESTAMP_SEPARATOR: 30, // minutes
@@ -51,25 +40,41 @@ const TIME_GAP = {
 	TIME_SHOW: 5, // minutes
 } as const;
 
+// Agent user configuration
+const AGENT_USER: User = {
+	id: 'agent',
+	name: 'Zolara AI',
+	avatar: 'https://i.pravatar.cc/150?img=49',
+	isAgent: true,
+};
+
 export default function Chatbot() {
-	// TODO: Get current user ID from Redux
-	// const currentUserId = useSelector((state: RootState) => state.auth.user?.id);
-	const currentUserId = '4'; // Temporary mock ID - replace with Redux
+	const flatListRef = useRef<FlatList>(null);
+	
+	// Get stores
+	const { user } = useAuthStore();
+	const currentUserId = user?.userId || 'user';
+	
+	const {
+		messages,
+		isConnected,
+		isTyping,
+		connect,
+		disconnect,
+		sendMessage,
+	} = useChatbotStore();
 
-	// Initialize conversation with agent configuration
-	const [conversation] = useState<Conversation>({
-		...MOCK_CHATBOT_CHAT,
-		members: MOCK_CHATBOT_CHAT.members.map(member => ({
-			...member,
-			isAgent: member.id === '7', // Mark the AI assistant as agent
-		})),
-		messages: MOCK_CHATBOT_CHAT.messages.map(msg => ({
-			...msg,
-			timestamp: msg.timestamp.toISOString(), // Convert to ISO string
-		}))
-	});
+	// Connect to agent service on mount
+	useEffect(() => {
+		console.log('Chatbot component mounted, connecting to agent service...');
+		connect();
 
-	const isGroupConversation = conversation.type === 'GROUP';
+		// Cleanup on unmount
+		return () => {
+			console.log('Chatbot component unmounting, disconnecting...');
+			disconnect();
+		};
+	}, [connect, disconnect]);
 
 	// Check if timestamp separator should be shown (every 30 minutes)
 	const shouldShowTimestamp = (
@@ -121,23 +126,54 @@ export default function Chatbot() {
 		});
 	};
 
+	const handleSendMessage = async (message: string) => {
+		if (!message.trim() || !isConnected) {
+			console.warn('Cannot send message: empty or not connected');
+			return;
+		}
+
+		try {
+			await sendMessage(message.trim());
+			// Scroll to bottom after sending
+			setTimeout(() => {
+				flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+			}, 100);
+		} catch (error) {
+			console.error('Failed to send message:', error);
+		}
+	};
+
+	const handleRetry = async (messageId: string) => {
+		const message = messages.find(m => m.id === messageId);
+		if (message && message.error) {
+			// Find the user message that triggered this error
+			const messageIndex = messages.findIndex(m => m.id === messageId);
+			if (messageIndex > 0) {
+				const previousMessage = messages[messageIndex - 1];
+				if (previousMessage.userId === currentUserId) {
+					await handleSendMessage(previousMessage.content);
+				}
+			}
+		}
+	};
+
 	const renderItem = ({ item, index }: { item: Message; index: number }) => {
 		// Since we reversed the array for inverted FlatList, we need to reverse the logic
-		const reversedMessages = [...conversation.messages].reverse();
-		const nextMsg = index > 0 ? reversedMessages[index - 1] : undefined; // Next in display = prev in reversed array
+		const reversedMessages = [...messages].reverse();
+		const nextMsg = index > 0 ? reversedMessages[index - 1] : undefined;
 		const prevMsg =
 			index < reversedMessages.length - 1
 				? reversedMessages[index + 1]
-				: undefined; // Prev in display = next in reversed array
+				: undefined;
 
 		const showTimestamp = shouldShowTimestamp(item, prevMsg);
 		const showAvatar = shouldShowAvatar(item, prevMsg);
 		const showTime = shouldShowTime(item, nextMsg);
 
-		const user =
-			conversation.members.find((m) => m.id === item.userId) ||
-			conversation.members[0];
 		const isMe = item.userId === currentUserId;
+		const user = isMe
+			? { id: currentUserId, name: 'You', avatar: undefined }
+			: AGENT_USER;
 
 		return (
 			<>
@@ -145,10 +181,10 @@ export default function Chatbot() {
 					message={item}
 					user={user}
 					isMe={isMe}
-					isGroup={isGroupConversation}
+					isGroup={false}
 					showAvatar={showAvatar}
 					showTime={showTime}
-					onRetry={() => console.log('Retry message:', item.id)}
+					onRetry={() => handleRetry(item.id)}
 				/>
 				{showTimestamp && (
 					<MessageTime time={formatTimestamp(item.timestamp)} />
@@ -157,42 +193,24 @@ export default function Chatbot() {
 		);
 	};
 
-	// Map conversation type to header status
 	const getHeaderStatus = (): 'stranger' | 'friend' | 'friend_request' | 'chatbot' => {
-		switch (conversation.type) {
-			case 'GROUP':
-			case 'FRIEND':
-				return 'friend';
-			case 'STRANGER':
-				return 'friend_request';
-			case 'CHATBOT':
-				return 'chatbot';
-			default:
-				return 'stranger';
-		}
+		return 'chatbot';
 	};
 
 	const getOnlineStatus = (): string => {
-		if (conversation.type === 'GROUP') {
-			return `${conversation.members.length} members`;
-		}
-		if (conversation.type === 'FRIEND') {
-			return 'Online Just Now';
-		}
-		if (conversation.type === 'CHATBOT') {
-			return 'AI Assistant';
-		}
-		return '';
+		if (!isConnected) return 'Offline';
+		if (isTyping) return 'Typing...';
+		return 'AI Assistant • Online';
 	};
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
 			{/* AI Chatbot Header */}
 			<MessageHeader
-				name={conversation.name}
+				name="Zolara AI Assistant"
 				status={getHeaderStatus()}
 				onlineStatus={getOnlineStatus()}
-				isGroup={isGroupConversation}
+				isGroup={false}
 				showCallButtons={false}
 				onCall={() => console.log('Call pressed')}
 				onVideoCall={() => console.log('Video call pressed')}
@@ -211,7 +229,8 @@ export default function Chatbot() {
 					<View className="flex-1">
 						{/* Messages List */}
 						<FlatList
-							data={[...conversation.messages].reverse()}
+							ref={flatListRef}
+							data={[...messages].reverse()}
 							renderItem={renderItem}
 							keyExtractor={(item) => item.id}
 							className="flex-1 bg-light-mode dark:bg-dark-mode"
@@ -230,7 +249,17 @@ export default function Chatbot() {
 				</TouchableWithoutFeedback>
 				
 				{/* Message Input */}
-				<MessageInput />
+				<MessageInput 
+					onSend={handleSendMessage}
+					disabled={!isConnected}
+					placeholder={
+						!isConnected 
+							? 'Connecting to AI...' 
+							: isTyping 
+							? 'AI is typing...' 
+							: 'Message Zolara AI...'
+					}
+				/>
 			</KeyboardAvoidingView>
 		</SafeAreaView>
 	);

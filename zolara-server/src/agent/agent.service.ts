@@ -246,9 +246,14 @@ Nhiệm vụ của bạn là ** trò chuyện tự nhiên, tích cực và hữu
         messages[messages.length - 1].content,
       );
 
+      let contentChunks = 0;
+      let totalContent = '';
+      
       for await (const chunk of result.stream) {
         const chunkText = chunk.text();
         if (chunkText) {
+          contentChunks++;
+          totalContent += chunkText;
           yield {
             type: 'content',
             content: chunkText,
@@ -258,13 +263,19 @@ Nhiệm vụ của bạn là ** trò chuyện tự nhiên, tích cực và hữu
         }
       }
 
+      // Log final content length for debugging
+      this.logger.log(
+        `Agent stream content complete for session: ${sessionId}, chunks: ${contentChunks}, total length: ${totalContent.length}`,
+      );
+
+      // Yield done signal after all content chunks
       yield {
         type: 'done',
         sessionId,
         timestamp: new Date().toISOString(),
       };
 
-      this.logger.log(`Agent stream completed for session: ${sessionId}`);
+      this.logger.log(`Agent stream done signal sent for session: ${sessionId}`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

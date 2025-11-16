@@ -5,6 +5,7 @@
 
 export { useLanguageStore, type Language } from './languageStore';
 export { useThemeStore, type Theme } from './themeStore';
+export { useChatbotStore } from './chatbotStore';
 
 // Re-export hooks for convenience
 export { useLanguage } from '@/src/hooks/useLanguage';
