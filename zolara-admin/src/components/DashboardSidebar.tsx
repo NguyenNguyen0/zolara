@@ -39,13 +39,13 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
       )}
     >
       {/* Header with Toggle Button */}
-      <div className={cn('p-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-blue-50 flex items-center', isMinimized ? 'justify-center' : 'justify-between')}>
+      <div className={cn('p-4 border-b border-purple-100 bg-purple-50 flex items-center', isMinimized ? 'justify-center' : 'justify-between')}>
         {!isMinimized && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
-              <Activity className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center shadow-md">
+              <Activity className="w-4 h-4 text-primary" />
             </div>
-            <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Dashboard</h3>
+            <h3 className="text-lg font-bold text-primary">Dashboard</h3>
           </div>
         )}
         <button
@@ -79,14 +79,14 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                   'w-full flex items-center rounded-xl text-left transition-all duration-200 transform hover:scale-[1.02]',
                   isMinimized ? 'justify-center p-3' : 'gap-3 px-4 py-3',
                   isActive
-                    ? 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-2 border-purple-300 shadow-lg'
-                    : 'text-gray-600 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:text-purple-600 border-2 border-transparent'
+                    ? 'bg-purple-100 text-purple-700 border-2 border-purple-300 shadow-lg'
+                    : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent'
                 )}
                 title={isMinimized ? item.label : undefined}
               >
                 <div className={cn(
                   'rounded-lg p-1.5 transition-all duration-200',
-                  isActive ? 'bg-gradient-to-br from-purple-600 to-blue-600 shadow-md' : 'bg-gray-100'
+                  isActive ? 'bg-primary shadow-md' : 'bg-gray-100'
                 )}>
                   <Icon
                     className={cn(
@@ -127,9 +127,9 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
 
       {/* Optional: Add section summary or quick stats */}
       {!isMinimized && (
-        <div className="px-4 py-4 border-t border-purple-100 mt-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg mx-2">
+        <div className="px-4 py-4 border-t border-purple-100 mt-8 bg-purple-50 rounded-lg mx-2">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4 bg-gradient-to-b from-purple-600 to-blue-600 rounded-full"></div>
+            <div className="w-1 h-4 bg-primary rounded-full"></div>
             <div className="text-xs text-purple-700 uppercase tracking-wide font-bold">
               Quick Info
             </div>

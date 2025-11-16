@@ -64,22 +64,19 @@ const Dashboard: React.FC = () => {
 
         {/* Dashboard Content - Account for fixed nav */}
         <div className="flex-1 mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full mt-16">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                <p className="mt-4 text-gray-600">Loading dashboard data...</p>
-              </div>
-            </div>
-          ) : activeSection === "overview" ? (
+          {activeSection === "overview" ? (
             <OverviewSection
               userStats={userStats}
               messageStats={messageStats}
               callStats={callStats}
               lastUpdated={lastUpdated}
+              isLoading={isLoading}
             />
           ) : (
-            <AnalyticsSection callStats={callStats} />
+            <AnalyticsSection 
+              callStats={callStats} 
+              isLoading={isLoading}
+            />
           )}
         </div>
       </div>

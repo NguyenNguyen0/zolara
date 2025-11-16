@@ -29,8 +29,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex items-center gap-3">
-              <div className="w-1 h-8 bg-gradient-to-b from-purple-600 to-blue-600 rounded-full"></div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <div className="w-1 h-8 bg-primary rounded-full"></div>
+              <h1 className="text-2xl font-bold text-primary">
                 {activeSection === "overview"
                   ? "Overview Dashboard"
                   : "Analytics Dashboard"}
@@ -38,7 +38,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+            <div className="flex items-center gap-3 px-4 py-2 bg-purple-50 rounded-lg border border-purple-200">
               <div className="flex items-center gap-2">
                 {avatarUrl ? (
                   <img 
@@ -47,8 +47,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     className="w-8 h-8 rounded-full object-cover border-2 border-purple-300"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center border-2 border-purple-300">
-                    <PersonIcon className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center border-2 border-purple-300">
+                    <PersonIcon className="w-5 h-5 text-primary" />
                   </div>
                 )}
                 <div className="flex flex-col">
