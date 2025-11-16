@@ -63,19 +63,22 @@ export const useChatbotStore = create<ChatbotState & ChatbotActions>((set, get) 
           set({ isConnected: true, error: null });
           console.log("Successfully connected to agent service");
           
-          // Send welcome message from agent
-          const welcomeMessageId = generateMessageId();
-          const welcomeMessage: AgentMessage = {
-            id: welcomeMessageId,
-            content: "👋 Xin chào! Tôi là **Zolara AI Assistant**. Tôi có thể giúp gì cho bạn hôm nay?",
-            userId: "agent",
-            timestamp: new Date().toISOString(),
-            type: "text",
-          };
-          
-          set((state) => ({
-            messages: [...state.messages, welcomeMessage],
-          }));
+          // Only send welcome message if messages array is empty
+          const currentState = get();
+          if (currentState.messages.length === 0) {
+            const welcomeMessageId = generateMessageId();
+            const welcomeMessage: AgentMessage = {
+              id: welcomeMessageId,
+              content: "👋 Xin chào! Tôi là **Zolara AI Assistant**. Tôi có thể giúp gì cho bạn hôm nay?",
+              userId: "agent",
+              timestamp: new Date().toISOString(),
+              type: "text",
+            };
+            
+            set((state) => ({
+              messages: [...state.messages, welcomeMessage],
+            }));
+          }
         } else {
           set({ 
             isConnected: false, 
