@@ -1,4 +1,17 @@
 import axios from 'axios';
+import { getApiBaseUrl } from '../lib/config';
+
+// Runtime environment config interface
+interface RuntimeEnv {
+  VITE_API_BASE_URL?: string;
+}
+
+// Extend Window interface
+declare global {
+  interface Window {
+    _env_?: RuntimeEnv;
+  }
+}
 
 // Types
 interface UserParams {
@@ -25,16 +38,18 @@ interface LoginCredentials {
 
 // Create an axios instance with default configuration
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and set baseURL dynamically
 api.interceptors.request.use(
   (config) => {
+    // Set baseURL dynamically on each request
+    config.baseURL = getApiBaseUrl();
+    
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

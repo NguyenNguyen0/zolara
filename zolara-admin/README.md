@@ -144,6 +144,64 @@ npm run dev
 
 5. Open your browser and navigate to `http://localhost:5173`
 
+## 🐳 Docker & Deployment
+
+### Docker Build & Run
+
+The application supports runtime environment variable configuration for Docker deployments:
+
+1. **Build the Docker image:**
+```bash
+docker build -t zolara-admin .
+```
+
+2. **Run with custom API URL:**
+```bash
+docker run -p 8080:80 -e VITE_API_BASE_URL=https://api.yourserver.com/api/v1 zolara-admin
+```
+
+3. **Using docker-compose:**
+```yaml
+version: '3.8'
+services:
+  admin:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - VITE_API_BASE_URL=https://api.yourserver.com/api/v1
+      - PORT=80
+```
+
+### Railway Deployment
+
+The project is configured for Railway deployment with automatic environment variable injection:
+
+1. **Connect your GitHub repository to Railway**
+
+2. **Set environment variables in Railway dashboard:**
+   - `VITE_API_BASE_URL` - Your API backend URL (e.g., `https://api.yourapp.com/api/v1`)
+   - `PORT` - Will be automatically set by Railway
+
+3. **Deploy:**
+   Railway will automatically detect the `Dockerfile` and build your application.
+
+### How Runtime Configuration Works
+
+The application uses a runtime configuration injection system:
+
+- **Development**: Uses `.env` file with Vite's `import.meta.env`
+- **Production (Docker/Railway)**: 
+  1. Environment variables are injected at container startup
+  2. `docker-entrypoint.sh` generates `env-config.js` with runtime values
+  3. Application reads from `window._env_` object
+  4. Falls back to build-time values if runtime config is unavailable
+
+This approach allows you to:
+- Use the same Docker image across different environments
+- Change API URL without rebuilding
+- Deploy to Railway with environment-specific configuration
+
 ### Build for Production
 
 ```bash
