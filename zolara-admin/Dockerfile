@@ -25,7 +25,7 @@ RUN apk add --no-cache gettext
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration template
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 
 # Copy env config template
 COPY public/env-config.template.js /usr/share/nginx/html/env-config.template.js
@@ -34,8 +34,12 @@ COPY public/env-config.template.js /usr/share/nginx/html/env-config.template.js
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Set default environment variable
+# Set default environment variables
 ENV VITE_API_BASE_URL=http://localhost:3000/api/v1
+ENV PORT=8080
+
+# Expose port
+EXPOSE $PORT
 
 # Use custom entrypoint
 ENTRYPOINT ["/docker-entrypoint.sh"]
