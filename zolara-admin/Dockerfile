@@ -21,11 +21,14 @@ FROM nginx:alpine
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx configuration template
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# Expose port 80
-EXPOSE 80
+# Set default port
+ENV PORT=80
 
-# Start nginx
+# Expose port
+EXPOSE $PORT
+
+# Start nginx with environment variable substitution
 CMD ["nginx", "-g", "daemon off;"]
