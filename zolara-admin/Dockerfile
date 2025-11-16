@@ -24,11 +24,5 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Copy nginx configuration template
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# Set default port
-ENV PORT=5173
-
-# Expose port
-EXPOSE $PORT
-
 # Start nginx with environment variable substitution
 CMD ["nginx", "-g", "daemon off;"]
