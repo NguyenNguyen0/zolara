@@ -149,7 +149,7 @@ const Login = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`block w-full pl-12 pr-4 py-2 border-2 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
+                  className={`block w-full pl-12 pr-4 py-2 border-2 rounded-xl outline-0 focus:ring-2 focus:ring-purple-200 focus:border-purple-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
                     errors.email
                       ? "border-red-300 bg-red-50 focus:ring-red-200"
                       : "border-gray-200 bg-white hover:border-purple-300"
@@ -181,7 +181,7 @@ const Login = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`block w-full pl-12 pr-14 py-2 border-2 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
+                  className={`block w-full pl-12 pr-14 py-2 border-2 rounded-xl outline-0 focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all duration-200 text-gray-900 placeholder-gray-400 font-medium ${
                     errors.password
                       ? "border-red-300 bg-red-50 focus:ring-red-200"
                       : "border-gray-200 bg-white hover:border-purple-300"
@@ -191,7 +191,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-600 transition-colors p-1 rounded-md hover:bg-purple-50"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-600 transition-colors p-1 rounded-md hover:bg-purple-50 cursor-pointer"
                 >
                   {showPassword ? (
                     <EyeNoneIcon className="h-5 w-5" />

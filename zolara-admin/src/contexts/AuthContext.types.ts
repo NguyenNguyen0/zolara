@@ -1,9 +1,17 @@
 // Types
 export interface User {
-  id: string;
-  name: string;
+  id?: string;
+  userId?: string;
+  name?: string;
   email: string;
-  role: string;
+  role?: string;
+  fullName?: string;
+  profilePictureUrl?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  bio?: string;
+  statusMessage?: string;
+  coverImgUrl?: string;
 }
 
 export interface LoginCredentials {
@@ -25,7 +33,8 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   error: string | null;
   clearError: () => void;
+  fetchUserProfile: (userId?: string) => Promise<Partial<User> | null>;
 }

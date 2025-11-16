@@ -26,7 +26,7 @@ interface CreateUserData {
   role: string;
 }
 
-interface UpdateUserData extends Partial<CreateUserData> {}
+type UpdateUserData = Partial<CreateUserData>
 
 interface LoginCredentials {
   email?: string;
@@ -80,6 +80,7 @@ api.interceptors.response.use(
 export const apiService = {
   // Auth
   login: (credentials: LoginCredentials) => api.post('/auth/login', credentials),
+  logout: () => api.post('/auth/logout'),
   refreshToken: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
   
   // Dashboard
@@ -87,6 +88,8 @@ export const apiService = {
   
   // User management
   getUsers: (params?: UserParams) => api.get('/users', { params }),
+  getUserById: (id: string) => api.get(`/users/${id}`),
+  getUserBasicInfo: (id: string) => api.get(`/users/${id}/basic-info`),
   createUser: (userData: CreateUserData) => api.post('/users', userData),
   updateUser: (id: string, userData: UpdateUserData) => api.put(`/users/${id}`, userData),
   deleteUser: (id: string) => api.delete(`/users/${id}`),

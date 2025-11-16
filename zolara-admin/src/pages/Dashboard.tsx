@@ -9,7 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, fetchUserProfile } = useAuth();
   const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -23,13 +23,17 @@ const Dashboard: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  // Fetch user profile on mount
+  useEffect(() => {
+    if (isAuthenticated && (user?.id || user?.userId)) {
+      fetchUserProfile();      
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, user?.id, user?.userId]);
 
-  const getUserName = () => {
-    return user?.name || 'Admin';
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
 
   return (
@@ -53,7 +57,7 @@ const Dashboard: React.FC = () => {
         {/* Navigation - Fixed Position */}
         <DashboardHeader
           activeSection={activeSection}
-          userName={getUserName()}
+          user={user}
           onLogout={handleLogout}
           isSidebarOpen={isSidebarOpen}
         />

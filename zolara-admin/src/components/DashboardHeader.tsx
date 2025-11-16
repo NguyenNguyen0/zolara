@@ -1,21 +1,25 @@
 import React from "react";
-import { ExitIcon } from "@radix-ui/react-icons";
+import { ExitIcon, PersonIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/Button";
 import type { DashboardSection } from "./DashboardSidebar";
+import type { User } from "../contexts/AuthContext.types";
 
 interface DashboardHeaderProps {
   activeSection: DashboardSection;
-  userName: string;
+  user: User | null;
   onLogout: () => void;
   isSidebarOpen: boolean;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   activeSection,
-  userName,
+  user,
   onLogout,
   isSidebarOpen,
 }) => {
+  const displayName = user?.fullName || user?.name || 'Admin';
+  const avatarUrl = user?.profilePictureUrl;
+
   return (
     <nav
       className="bg-white/80 backdrop-blur-md shadow-lg border-b border-purple-100 fixed top-0 right-0 left-0 z-20 transition-all duration-300 ease-in-out"
@@ -34,12 +38,24 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-700 font-medium">
-                Welcome,
-                <span className="text-purple-600 font-semibold"> {userName}</span>
-              </span>
+            <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+              <div className="flex items-center gap-2">
+                {avatarUrl ? (
+                  <img 
+                    src={avatarUrl} 
+                    alt={displayName}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-purple-300"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center border-2 border-purple-300">
+                    <PersonIcon className="w-5 h-5 text-white" />
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-500 font-medium">Welcome back</span>
+                  <span className="text-sm text-purple-600 font-semibold">{displayName}</span>
+                </div>
+              </div>
             </div>
             <Button
               variant="ghost"
