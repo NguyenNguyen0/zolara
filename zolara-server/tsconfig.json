@@ -12,7 +12,6 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "ignoreDeprecations": "6.0",
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,

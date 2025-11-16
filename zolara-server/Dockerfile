@@ -61,4 +61,4 @@ COPY --from=build-stage /app/tsconfig.json ./
 EXPOSE 3000
 
 # Start application with database setup and seeding
-CMD npm run db:setup && npm run db:seed && npm start
+CMD npm run db:setup && (npm run db:seed || true) && npm start
