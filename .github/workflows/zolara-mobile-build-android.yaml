@@ -20,20 +20,36 @@ on:
         description: 'Custom API URL (optional - overrides profile default)'
         required: false
 
+defaults:
+  run:
+    working-directory: zolara-mobile
+
 jobs:
   build-android:
     runs-on: ubuntu-latest
     
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+    
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate Expo Token
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "❌ EXPO_TOKEN is required but not set"
+            exit 1
+          fi
+          echo "✅ EXPO_TOKEN is configured"
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18.x  # Recommended by Expo
           cache: 'npm'
           cache-dependency-path: zolara-mobile/package-lock.json
 
@@ -42,10 +58,10 @@ jobs:
         with:
           expo-version: latest
           eas-version: latest
+          eas-cache: true  # Enable EAS caching
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        working-directory: zolara-mobile
         run: npm ci
 
       - name: Determine build profile and API URL
@@ -76,17 +92,51 @@ jobs:
             API_URL="${{ secrets.EXPO_PUBLIC_API_URL_DEV || 'http://10.0.2.2:3000/api/v1' }}"
           fi
           
+          # Validate API URL format
+          if [[ ! "$API_URL" =~ ^https?:// ]]; then
+            echo "❌ Invalid API URL format: $API_URL"
+            exit 1
+          fi
+          
           echo "api_url=$API_URL" >> $GITHUB_OUTPUT
-          echo "Using build profile: $PROFILE"
-          echo "Using API URL: $API_URL"
+          echo "✅ Using build profile: $PROFILE"
+          echo "✅ Using API URL: $API_URL"
 
+      - name: Verify EAS Configuration
+        run: |
+          if ! eas build:list --limit=1 --non-interactive > /dev/null 2>&1; then
+            echo "❌ EAS configuration error or authentication failed"
+            exit 1
+          fi
+          echo "✅ EAS configuration verified"
 
       - name: Run EAS Build (Android)
-        working-directory: zolara-mobile
         run: |
-          eas build --platform android --profile ${{ steps.build-config.outputs.build_profile }} --non-interactive --clear-cache
+          echo "🚀 Starting EAS build for Android..."
+          eas build \
+            --platform android \
+            --profile ${{ steps.build-config.outputs.build_profile }} \
+            --non-interactive \
+            --clear-cache \
+            --message "Build from ${{ github.ref_name }} by ${{ github.actor }}"
         env:
           EXPO_PUBLIC_API_URL: ${{ steps.build-config.outputs.api_url }}
+
+      - name: Build Success Notification
+        if: success()
+        run: |
+          echo "🎉 Build completed successfully!"
+          echo "Check your EAS Dashboard: https://expo.dev/"
+
+      - name: Build Failure Notification  
+        if: failure()
+        run: |
+          echo "💥 Build failed!"
+          echo "Check the logs above for details"
+          echo "Common issues:"
+          echo "- Invalid EAS configuration"
+          echo "- Missing dependencies" 
+          echo "- API URL connectivity issues"
 
       - name: Build Summary
         if: always()
@@ -96,5 +146,7 @@ jobs:
           echo "- **API URL**: ${{ steps.build-config.outputs.api_url }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Platform**: Android" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check your [EAS Dashboard](https://expo.dev/) for build details and download links." >> $GITHUB_STEP_SUMMARY
+          echo "📱 Check your [EAS Dashboard](https://expo.dev/) for build details and download links." >> $GITHUB_STEP_SUMMARY
