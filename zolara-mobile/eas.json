@@ -1,0 +1,47 @@
+{
+  "cli": {
+    "version": ">= 16.23.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "projectRoot": "zolara-mobile",
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "$EXPO_PUBLIC_API_URL"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "projectRoot": "zolara-mobile",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "$EXPO_PUBLIC_API_URL"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "projectRoot": "zolara-mobile",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "$EXPO_PUBLIC_API_URL"
+      }
+    },
+    "apk": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "$EXPO_PUBLIC_API_URL"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

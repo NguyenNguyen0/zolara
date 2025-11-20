@@ -1,0 +1,100 @@
+name: Build Android App with EAS
+
+on:
+  push:
+    paths:
+      - 'zolara-mobile/**'
+    branches: [dev-admin, main]
+  workflow_dispatch:
+    inputs:
+      build_profile:
+        description: 'Build profile (development, preview, production)'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - development
+          - preview
+          - production
+      api_url:
+        description: 'Custom API URL (optional - overrides profile default)'
+        required: false
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: zolara-mobile/package-lock.json
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: zolara-mobile
+        run: npm ci
+
+      - name: Determine build profile and API URL
+        id: build-config
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PROFILE="${{ github.event.inputs.build_profile }}"
+            CUSTOM_API_URL="${{ github.event.inputs.api_url }}"
+          else
+            # Auto-select profile based on branch
+            if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              PROFILE="production"
+            else
+              PROFILE="preview"
+            fi
+          fi
+          
+          echo "build_profile=$PROFILE" >> $GITHUB_OUTPUT
+          
+          # Set API URL based on profile or custom input
+          if [ -n "$CUSTOM_API_URL" ]; then
+            API_URL="$CUSTOM_API_URL"
+          elif [ "$PROFILE" = "production" ]; then
+            API_URL="${{ secrets.EXPO_PUBLIC_API_URL_PROD || 'https://api.zolara.com/api/v1' }}"
+          elif [ "$PROFILE" = "preview" ]; then
+            API_URL="${{ secrets.EXPO_PUBLIC_API_URL_STAGING || 'https://api-staging.zolara.com/api/v1' }}"
+          else
+            API_URL="${{ secrets.EXPO_PUBLIC_API_URL_DEV || 'http://10.0.2.2:3000/api/v1' }}"
+          fi
+          
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+          echo "Using build profile: $PROFILE"
+          echo "Using API URL: $API_URL"
+
+
+      - name: Run EAS Build (Android)
+        working-directory: zolara-mobile
+        run: |
+          eas build --platform android --profile ${{ steps.build-config.outputs.build_profile }} --non-interactive --clear-cache
+        env:
+          EXPO_PUBLIC_API_URL: ${{ steps.build-config.outputs.api_url }}
+
+      - name: Build Summary
+        if: always()
+        run: |
+          echo "## 🚀 Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Profile**: ${{ steps.build-config.outputs.build_profile }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API URL**: ${{ steps.build-config.outputs.api_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Platform**: Android" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check your [EAS Dashboard](https://expo.dev/) for build details and download links." >> $GITHUB_STEP_SUMMARY
