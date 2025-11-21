@@ -1,29 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	View,
 	Text,
-	StatusBar,
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
+	Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import ShareButton from '@/src/components/button/share.button';
-import { APP_COLOR } from '@/src/utils/constants';
-import { useTheme } from '@/src/hooks/useTheme';
-import ShareDatePicker from '@/src/components/input/share.datepicker';
-import ShareBack from '@/src/components/button/share.back';
+import ShareButton from '@/components/customize/button/share.button';
+import { APP_COLOR } from '@/utils/constants';
+import ShareDatePicker from '@/components/customize/input/share.datepicker';
+import ShareBack from '@/components/customize/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SharePicker, { PickerItem } from '@/src/components/input/share.picker';
+import SharePicker, { PickerItem } from '@/components/customize/input/share.picker';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useAuthStore } from '@/store/authStore';
 
 export default function SignUpDetail() {
-	const { t } = useTranslation('signup-detail');
-	const { t: tGender } = useTranslation('gender');
 	const router = useRouter();
-	const { isDark } = useTheme();
 	const params = useLocalSearchParams();
+	const { completeRegistration } = useAuthStore();
 
 	const name = params.name as string;
 	const email = params.email as string;
@@ -31,58 +28,89 @@ export default function SignUpDetail() {
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
-	const [birthday, setBirthday] = useState('');
+	const [dateOfBirth, setDateOfBirth] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	
 	// Gender dropdown state
 	const [openGender, setOpenGender] = useState(false);
 	const [genderItems, setGenderItems] = useState<PickerItem[]>([
-		{ label: tGender('other'), value: 'other', icon: <></> },
-		{ label: tGender('male'), value: 'male', icon: <MaterialIcons name="male" size={24} color="black" /> },
-		{ label: tGender('female'), value: 'female', icon: <MaterialIcons name="female" size={24} color="black" /> },
+		{ label: 'Khác', value: 'OTHER', icon: <></> },
+		{ label: 'Nam', value: 'MALE', icon: <MaterialIcons name="male" size={24} color="black" /> },
+		{ label: 'Nữ', value: 'FEMALE', icon: <MaterialIcons name="female" size={24} color="black" /> },
 	]);
-	const [gender, setGender] = useState<string | null>(genderItems[0].value); // Set default to first item
+	const [gender, setGender] = useState<string | null>('MALE'); // Set default to MALE
 
-	const handleContinue = () => {
-		console.log('Signup Detail - Continue:', {
-			name,
-			email,
-			password,
-			birthday,
-			gender,
-			isLogin,
-			isSignup,
-		});
+	// Tự động chọn item đầu tiên (Nam - MALE)
+	useEffect(() => {
+		if (!gender) {
+			setGender('MALE');
+		}
+	}, []);
 
-		router.navigate({
-			pathname: '/(screens)/(auth)/signup.avatar',
-			params: {
-				name,
-				email,
-				password,
-				birthday,
+	const handleContinue = async () => {
+		if (!dateOfBirth || !gender) {
+			Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin');
+			return;
+		}
+
+		if (!password || !name) {
+			Alert.alert('Lỗi', 'Thiếu thông tin cần thiết');
+			return;
+		}
+
+		setIsLoading(true);
+		try {
+			await completeRegistration({
+				password: password as string,
+				fullName: name as string,
+				dateOfBirth,
 				gender,
-				isLogin: isLogin ? 1 : 0,
-				isSignup: isSignup ? 1 : 0,
-			},
-		});
+			});
+			Alert.alert('Thành công', 'Đăng ký thành công', [
+				{
+					text: 'Đăng nhập',
+					onPress: () => router.replace('/(screens)/(auth)/login.email' as any),
+				},
+			]);
+		} catch (error: any) {
+			// Handle error message - convert array to string if needed
+			let errorMessage = 'Đã có lỗi xảy ra';
+			if (error?.response?.data?.message) {
+				const message = error.response.data.message;
+				if (Array.isArray(message)) {
+					errorMessage = message.join(', ');
+				} else if (typeof message === 'string') {
+					errorMessage = message;
+				}
+			} else if (error?.message) {
+				errorMessage = error.message;
+			}
+			Alert.alert('Lỗi', errorMessage);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
-	const isNextDisabled = !birthday.trim() || !gender;
+	const isNextDisabled = !dateOfBirth.trim() || !gender;
 	const [date, setDate] = useState(new Date());
 
 	const formatDate = (d: Date) => {
 		try {
-			return d.toLocaleDateString('vi-VN');
-		} catch {
-			const day = String(d.getDate()).padStart(2, '0');
-			const month = String(d.getMonth() + 1).padStart(2, '0');
+			// Format to ISO date string (YYYY-MM-DD) for API
 			const year = d.getFullYear();
-			return `${day}/${month}/${year}`;
+			const month = String(d.getMonth() + 1).padStart(2, '0');
+			const day = String(d.getDate()).padStart(2, '0');
+			return `${year}-${month}-${day}`;
+		} catch {
+			const year = d.getFullYear();
+			const month = String(d.getMonth() + 1).padStart(2, '0');
+			const day = String(d.getDate()).padStart(2, '0');
+			return `${year}-${month}-${day}`;
 		}
 	};
 
 	return (
-		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
+		<SafeAreaView className="flex-1 bg-white">
 			<ShareBack />
 
 			<KeyboardAvoidingView
@@ -94,8 +122,8 @@ export default function SignUpDetail() {
 					showsVerticalScrollIndicator={false}
 					keyboardShouldPersistTaps="handled"
 				>
-					<Text className="text-3xl font-bold text-center mb-10 mt-5 text-dark-mode dark:text-light-mode">
-						{t('title')}
+					<Text className="text-3xl font-bold text-center mb-10 mt-5 text-gray-900">
+						THÊM THÔNG TIN CÁ NHÂN
 					</Text>
 
 					{/* Gender Dropdown */}
@@ -107,7 +135,7 @@ export default function SignUpDetail() {
 							setOpen={setOpenGender}
 							setValue={setGender}
 							setItems={setGenderItems}
-							placeholder={tGender('placeholder')}
+							placeholder="Giới tính"
 							zIndex={2000}
 						/>
 					</View>
@@ -118,26 +146,27 @@ export default function SignUpDetail() {
 							value={date}
 							onChange={(d) => {
 								setDate(d);
-								setBirthday(formatDate(d));
+								setDateOfBirth(formatDate(d));
 							}}
-							placeholder={t('birthdayLabel')}
+							placeholder="Ngày sinh"
 						/>
 					</View>
 
 					<ShareButton
-						title={t('continueButton')}
+						title="Tiếp tục"
 						onPress={handleContinue}
-						disabled={isNextDisabled}
+						disabled={isNextDisabled || isLoading}
 						buttonStyle={{
-							backgroundColor: isNextDisabled
+							backgroundColor: isNextDisabled || isLoading
 								? APP_COLOR.GRAY_200
 								: APP_COLOR.PRIMARY,
 						}}
 						textStyle={{
-							color: isNextDisabled
+							color: isNextDisabled || isLoading
 								? APP_COLOR.DARK_MODE
 								: APP_COLOR.LIGHT_MODE,
 						}}
+						isLoading={isLoading}
 					/>
 
 					{/* Add spacing for dropdown to expand */}

@@ -4,46 +4,128 @@
     "slug": "zolara-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "zolaramobile",
+    "icon": "./src/assets/images/brand/zolara.png",
+    "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "jsEngine": "hermes",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Cho phép ứng dụng truy cập thư viện ảnh để gửi hình ảnh và chọn ảnh đại diện",
+        "NSCameraUsageDescription": "Cho phép $(PRODUCT_NAME) truy cập camera của bạn",
+        "NSMicrophoneUsageDescription": "Cho phép $(PRODUCT_NAME) truy cập microphone của bạn",
+        "NSContactsUsageDescription": "Cho phép $(PRODUCT_NAME) truy cập danh bạ của bạn",
+        "NSNotificationsUsageDescription": "Cho phép $(PRODUCT_NAME) gửi thông báo đến bạn",
+        "UIBackgroundModes": [
+          "audio",
+          "fetch",
+          "remote-notification",
+          "processing"
+        ],
+        "BGTaskSchedulerPermittedIdentifiers": [
+          "com.zolara.mobile.refresh",
+          "com.zolara.mobile.background-fetch"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./src/assets/images/brand/zolara.png",
+        "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.WAKE_LOCK",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"
+      ],
+      "package": "com.zolara.mobile",
+      "allowBackup": true
     },
     "web": {
+      "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png",
-      "bundler": "metro"
+      "favicon": "./src/assets/images/brand/zolara.png"
     },
     "plugins": [
+      "@config-plugins/react-native-webrtc",
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./src/assets/images/brand/zolara.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
+          "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Cho phép $(PRODUCT_NAME) truy cập camera của bạn",
+          "microphonePermission": "Cho phép $(PRODUCT_NAME) truy cập microphone của bạn",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Cho phép $(PRODUCT_NAME) truy cập thư viện ảnh để gửi hình ảnh và chọn ảnh đại diện"
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
+      [
+        "expo-file-system",
+        {
+          "filePermission": "Cho phép ứng dụng truy cập files"
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Cho phép $(PRODUCT_NAME) truy cập danh bạ của bạn"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./src/assets/images/brand/zolara.png",
+          "color": "#ffffff",
+          "sounds": ["./src/assets/sounds/facebook_message.mp3"],
+          "mode": "production",
+          "androidMode": "default",
+          "androidCollapsedTitle": "Zolara",
+          "iosDisplayInForeground": true
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      }
     }
   }
 }

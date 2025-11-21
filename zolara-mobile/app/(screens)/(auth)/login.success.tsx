@@ -1,14 +1,12 @@
-import ShareButton from '@/src/components/button/share.button';
-import { useAuthStore } from '@/src/store/authStore';
-import { APP_COLOR } from '@/src/utils/constants';
+import ShareButton from '@/components/customize/button/share.button';
+import { useAuthStore } from '@/store/authStore';
+import { APP_COLOR } from '@/utils/constants';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginSuccess = () => {
-	const { t } = useTranslation('login-success');
 	const params = useLocalSearchParams();
 	const { user, userInfo, fetchUserInfo } = useAuthStore();
 
@@ -20,18 +18,18 @@ const LoginSuccess = () => {
 	}, [user]);
 
 	const handleDone = () => {
-		router.replace('/(screens)/(tabs)/conversation');
+		router.replace('/(screens)/(tabs)');
 	};
 
 	// Lấy tên từ userInfo hoặc user
 	const displayName = userInfo?.fullName || user?.fullName || 'User';
 
 	return (
-		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
+		<SafeAreaView className="flex-1 bg-white">
 			<View className="flex-1 px-5 mt-32">
 				{/* Title */}
-				<Text className="text-3xl font-bold text-center mb-8 text-dark-mode dark:text-light-mode">
-					{t('title')}
+				<Text className="text-3xl font-bold text-center mb-8 text-gray-900">
+					Đăng nhập thành công
 				</Text>
 
 				{/* Main Content */}
@@ -45,25 +43,25 @@ const LoginSuccess = () => {
 							/>
 						) : (
 							<Image
-								source={require('@/src/assets/brand/logo.png')}
+								source={require('@/assets/images/brand/zolara.png')}
 								className="w-40 h-40"
 								resizeMode='contain'
 							/>
 						)}
 					</View>
 
-					<Text className="text-2xl font-semibold mb-2 text-center text-secondary-dark dark:text-secondary-light">
+					<Text className="text-2xl font-semibold mb-2 text-center text-gray-900">
 						{displayName}
 					</Text>
-					<Text className="text-base text-center text-secondary-dark dark:text-secondary-light">
-						{t('successMessage')}
+					<Text className="text-base text-center text-gray-600">
+						Chào mừng bạn trở lại!
 					</Text>
 				</View>
 
 				{/* Bottom Action */}
 				<View className="mb-16">
 					<ShareButton
-						title={t('buttons.done')}
+						title="Hoàn tất"
 						onPress={handleDone}
 						buttonStyle={{ backgroundColor: APP_COLOR.PRIMARY }}
 						textStyle={{ color: APP_COLOR.LIGHT_MODE }}

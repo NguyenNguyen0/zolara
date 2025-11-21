@@ -1,54 +1,72 @@
-import '@/src/config/i18n';
-import { useAuth } from '@/src/hooks/useAuth';
-import { useLanguage } from '@/src/hooks/useLanguage';
-import { useTheme } from '@/src/hooks/useTheme';
-import { APP_COLOR } from '@/src/utils/constants';
-import { Stack, useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import 'react-native-reanimated';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import './global.css';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import "@/global.css";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { useFonts } from "expo-font";
+import { Stack, useRouter } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { useAuth } from "@/hooks/useAuth";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { SocketProvider } from "@/providers/SocketProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-function RootLayoutContent() {
-	const { isDark } = useTheme();
-	useLanguage();
-	const isAuthenticated = useAuth();
-	const router = useRouter();
-
-	useEffect(() => {
-		if (isAuthenticated === null) return;
-		if (isAuthenticated) {
-			router.replace('/(screens)/(tabs)/conversation');
-		} else if (!isAuthenticated) {
-			router.replace('/(screens)/(auth)/welcome');
-		}
-	}, [isAuthenticated]);
-
-	return (
-		<>
-			<StatusBar style="light" backgroundColor={isDark ? APP_COLOR.DARK_MODE : APP_COLOR.PRIMARY} />
-			<Stack>
-				<Stack.Screen
-					name="(screens)"
-					options={{ headerShown: false }}
-				/>
-				<Stack.Screen
-					name="+not-found"
-					options={{ headerShown: false }}
-				/>
-			</Stack>
-		</>
-	);
-}
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	return (
-		<GestureHandlerRootView style={{ flex: 1 }}>
-			<SafeAreaProvider>
-				<RootLayoutContent />
-			</SafeAreaProvider>
-		</GestureHandlerRootView>
-	);
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require("../src/assets/fonts/SpaceMono-Regular.ttf"),
+  });
+  const isAuthenticated = useAuth();
+  const router = useRouter();
+
+  // Hide splash screen when fonts are loaded
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  // Handle navigation based on authentication status
+  useEffect(() => {
+    // Wait until fonts are loaded and auth status is determined
+    if (!loaded || isAuthenticated === null) {
+      return;
+    }
+
+    if (isAuthenticated) {
+      // Navigate to tabs if authenticated
+      router.replace("/(screens)/(tabs)" as any);
+    } else {
+      // Navigate to welcome screen if not authenticated
+      router.replace("/(screens)/(auth)/welcome" as any);
+    }
+  }, [loaded, isAuthenticated, router]);
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
+        <GluestackUIProvider mode="light">
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <SocketProvider>
+              <Stack>
+                <Stack.Screen name="(screens)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+              </Stack>
+              <StatusBar style="light" />
+            </SocketProvider>
+          </ThemeProvider>
+        </GluestackUIProvider>
+      </ErrorBoundary>
+    </GestureHandlerRootView>
+  );
 }

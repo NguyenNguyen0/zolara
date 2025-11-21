@@ -10,7 +10,6 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface UserData {
   id: string;
   email: string;
@@ -51,7 +50,16 @@ export interface Friend {
   createdAt: Date;
   updatedAt: Date;
 }
-
+// export interface ChatItemData {
+//   id: string;
+//   name: string;
+//   lastMessage?: string;
+//   lastMessageTime: string;
+//   avatarUrl?: string;
+//   isGroup?: boolean;
+//   isMuted?: boolean;
+//   unreadCount: number;
+// }
 export interface ChatItemData {
   friendshipId: string;
   friend: {
@@ -67,7 +75,6 @@ export interface ChatItemData {
   };
   since: string;
 }
-
 export interface UserSetting {
   id: string;
   userId: string;
@@ -87,14 +94,12 @@ export interface MediaItem {
   width?: number;
   height?: number;
 }
-
 export interface UpdateBasicInfoData {
   fullName: string;
   dateOfBirth: string;
   gender: string;
   bio: string;
 }
-
 export interface ChangePasswordData {
   currentPassword: string;
   newPassword: string;
@@ -175,7 +180,41 @@ export interface MediaUploadFile {
   mediaType: "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT" | "OTHER";
 }
 
-// Conversation interfaces
+// Thêm các interfaces mới
+export interface ChatHeaderProps {
+  user?: string;
+  chatId: string;
+  name: string;
+  avatarUrl?: string;
+  isGroup?: boolean;
+  isAIAssistant?: boolean;
+  onBack: () => void;
+}
+
+export interface MessageBubbleProps {
+  message: Message;
+  onReaction: (messageId: string, type: string) => void;
+  onRecall: (messageId: string) => void;
+  onDelete: (messageId: string) => void;
+}
+
+export interface ImageViewerProps {
+  images: string[];
+  visible: boolean;
+  onClose: () => void;
+  initialIndex?: number;
+}
+
+export interface VideoMessageProps {
+  url: string;
+}
+
+export interface DocumentPreviewProps {
+  url: string;
+  fileName: string;
+}
+
+// Conversation interfaces based on Postman test data
 export interface Conversation {
   id: string;
   type: "USER" | "GROUP";
@@ -218,7 +257,6 @@ export interface Group {
   updatedAt: string;
   members: GroupMember[];
 }
-
 export interface GroupInfo {
   id: string;
   name: string;

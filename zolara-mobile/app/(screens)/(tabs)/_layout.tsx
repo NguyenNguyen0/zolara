@@ -1,125 +1,168 @@
-import { APP_COLOR } from '@/src/utils/constants';
-import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
-import { TouchableOpacity, View, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/src/hooks/useTheme';
+import { Tabs } from "expo-router";
+import React, { useState } from "react";
+import clsx from "clsx";
+import { Text, View, Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SearchHeader from "@/components/ui/search-header/SearchHeader";
+import { Colors } from "@/constants/Colors";
+import PlusMenu from "@/components/ui/plus-menu/PlusMenu";
+import { AntDesign, Feather, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-const notificationData = {
-	messages: 1,
-	contacts: true,
-	newsfeed: false,
-	notifications: true,
-	profile: false,
-};
+export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+  const [showPlusMenu, setShowPlusMenu] = useState(false);
 
-const NotificationBadge = ({ count, showDot }: { count?: number; showDot?: boolean }) => {
-	if (!count && !showDot) return null;
-
-	return (
-		<View className="absolute -top-0 -right-5">
-			{count ? (
-				<View className="bg-red-500 rounded-full min-w-5 h-5 items-center justify-center px-2 border border-white">
-					<Text className="text-white text-[10px] font-bold text-center">
-						{count > 9 ? '9+' : count}
-					</Text>
-				</View>
-			) : showDot ? (
-				<View className="bg-red-500 rounded-full w-2 h-2 border border-white" />
-			) : null}
-		</View>
-	);
-};
-
-const getIconsWithBadge = (routeName: string, focused: boolean, size: number) => {
-	let iconName: keyof typeof Ionicons.glyphMap;
-	let badgeCount: number | undefined;
-	let showDot = false;
-
-	switch (routeName) {
-		case 'conversation':
-			iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-			badgeCount = notificationData.messages;
-			break;
-		case 'contact':
-			iconName = focused ? 'people' : 'people-outline';
-			showDot = notificationData.contacts;
-			break;
-		case 'newsfeed':
-			iconName = focused ? 'newspaper-sharp' : 'newspaper-outline';
-			showDot = notificationData.newsfeed;
-			break;
-		case 'notification':
-			iconName = focused ? 'notifications' : 'notifications-outline';
-			showDot = notificationData.notifications;
-			break;
-		case 'user':
-			iconName = focused ? 'person' : 'person-outline';
-			showDot = notificationData.profile;
-			break;
-		default:
-			iconName = 'help-circle';
-	}
-
-	return (
-		<View className="relative items-center justify-center">
-			<Ionicons
-				name={iconName}
-				size={size}
-				color={focused ? APP_COLOR.PRIMARY : 'gray'}
-			/>
-			<NotificationBadge count={badgeCount} showDot={showDot} />
-		</View>
-	);
-};
-
-const TabLayout = () => {
-	const insets = useSafeAreaInsets();
-	const { t } = useTranslation('tabs');
-	const { isDark } = useTheme();
-
-	return (
-		<Tabs
-			initialRouteName='conversation'
-			screenOptions={({ route }) => ({
-				headerShown: false,
-				tabBarStyle: {
-					height: 50 + insets.bottom,
-					paddingBottom: insets.bottom,
-					backgroundColor: isDark ? APP_COLOR.DARK_MODE : APP_COLOR.LIGHT_MODE,
-					borderTopWidth: 0.5,
-					borderTopColor: isDark ? APP_COLOR.GRAY_200 : APP_COLOR.GRAY_700,
-				},
-				tabBarIcon: ({ focused, color, size }) => {
-					return getIconsWithBadge(route.name, focused, size);
-				},
-				tabBarLabelStyle: { 
-					paddingBottom: 5,
-				},
-				tabBarActiveTintColor: APP_COLOR.PRIMARY,
-				tabBarInactiveTintColor: isDark ? '#9CA3AF' : '#6B7280',
-				// hide gray effect when click tabs
-				tabBarButton: (props: any) => (
-					<TouchableOpacity
-						{...props}
-						activeOpacity={1}
-						className="bg-transparent"
-						style={props.style}
-					/>
-				),
-			})}
-		>
-			<Tabs.Screen name="conversation" options={{ title: t('messages') }} />
-			<Tabs.Screen name="contact" options={{ title: t('contacts') }} />
-			<Tabs.Screen name="newsfeed" options={{ title: t('newsfeed') }} />
-			<Tabs.Screen
-				name="notification"
-				options={{ title: t('notifications') }}
-			/>
-			<Tabs.Screen name="user" options={{ title: t('profile') }} />
-		</Tabs>
-	);
-};
-
-export default TabLayout;
+  return (
+    <>
+      <PlusMenu
+        visible={showPlusMenu}
+        onClose={() => setShowPlusMenu(false)}
+        position={{ top: insets.top + 50, right: 20 }}
+      />
+      <Tabs
+        screenOptions={{
+          header: ({ route }) => {
+            return (
+              <SearchHeader
+                screenName={route.name as any}
+                onActionPress={() => {
+                  if (route.name === "index") {
+                    setShowPlusMenu(true);
+                  }
+                }}
+                onSearch={() => {}}
+              />
+            );
+          },
+          tabBarActiveTintColor: Colors.light.PRIMARY,
+          tabBarInactiveTintColor: "#9CA3AF",
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: 500,
+            display: "none",
+          },
+          tabBarStyle: {
+            backgroundColor: "white",
+            height: Platform.select({
+              ios: 60 + insets.bottom,
+              android: 60 + insets.bottom,
+            }),
+            paddingTop: 10,
+            paddingBottom: Platform.select({
+              ios: insets.bottom > 0 ? insets.bottom : 10,
+              android: insets.bottom > 0 ? insets.bottom : 10,
+            }),
+            borderTopWidth: 1,
+            borderTopColor: "#e5e7eb",
+          },
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Tin nhắn",
+            tabBarIcon: ({ color, focused }) => (
+              <View className={clsx("items-center gap-1", focused ? "" : "")}>
+                <AntDesign name="message" size={25} color={focused ? Colors.light.PRIMARY : color} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: focused ? Colors.light.PRIMARY : color,
+                    fontWeight: 600,
+                  }}
+                  className="w-20 text-center "
+                >
+                  Tin nhắn
+                </Text>
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="contacts"
+          options={{
+            title: "Danh bạ",
+            tabBarIcon: ({ color, focused }) => (
+              <View className={clsx("items-center gap-1", focused ? "" : "")}>
+                <FontAwesome6 name="contact-book" size={25} color={focused ? Colors.light.PRIMARY : color} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: focused ? Colors.light.PRIMARY : color,
+                    fontWeight: 600,
+                  }}
+                  className="w-20 text-center "
+                >
+                  Danh bạ
+                </Text>
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="news"
+          options={{
+            title: "Bản tin",
+            tabBarIcon: ({ color, focused }) => (
+              <View className={clsx("items-center gap-1", focused ? "" : "")}>
+                <MaterialIcons name="photo-camera-back" size={25} color={focused ? Colors.light.PRIMARY : color} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: focused ? Colors.light.PRIMARY : color,
+                    fontWeight: 600,
+                  }}
+                  className="w-20 text-center "
+                >
+                  Bản tin
+                </Text>
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="notifications"
+          options={{
+            title: "Thông báo",
+            tabBarIcon: ({ color, focused }) => (
+              <View className={clsx("items-center gap-1", focused ? "" : "")}>
+                <Ionicons name="notifications-outline" size={25} color={focused ? Colors.light.PRIMARY : color} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: focused ? Colors.light.PRIMARY : color,
+                    fontWeight: 600,
+                  }}
+                  className="w-20 text-center "
+                >
+                  Thông báo
+                </Text>
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="info"
+          options={{
+            title: "Tôi",
+            tabBarIcon: ({ color, focused }) => (
+              <View className={clsx("items-center gap-1", focused ? "" : "")}>
+                <Feather name="user" size={25} color={focused ? Colors.light.PRIMARY : color} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: focused ? Colors.light.PRIMARY : color,
+                    fontWeight: 600,
+                  }}
+                  className="w-20 text-center "
+                >
+                  Tôi
+                </Text>
+              </View>
+            ),
+          }}
+        />
+      </Tabs>
+    </>
+  );
+}

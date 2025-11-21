@@ -1,12 +1,12 @@
 // src/store/authStore.ts
-import * as device from "expo-device";
-import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
+import * as SecureStore from "expo-secure-store";
 import { axiosPublicInstance } from "../lib/axios";
+import { router } from "expo-router";
+import * as device from "expo-device";
+import { User, UserData, UserInfo } from "@/types";
+import { getUserData, getUserInfo } from "@/services/user-service";
 import { socketManager } from "../lib/socket";
-import { getUserData, getUserInfo } from "../services/user-service";
-import { User, UserData, UserInfo } from "../types";
 
 interface AuthState {
   user: User | null;
@@ -35,14 +35,15 @@ interface AuthActions {
   resetPassword: (newPassword: string) => Promise<void>;
 }
 
-// Use a default API URL if the environment variable is not available
-const BASE_API_URL =
-  process.env.EXPO_PUBLIC_API_URL || "https://api.bondhub.cloud/api/v1";
-const API_URL = BASE_API_URL + "/auth";
+// Get API URL from environment variable
+const BASE_API_URL = process.env.EXPO_PUBLIC_API_URL || "";
+if (!BASE_API_URL) {
+  console.error("EXPO_PUBLIC_API_URL is required in .env file");
+}
+const API_URL = BASE_API_URL ? BASE_API_URL + "/auth" : "";
 
 // Log the API URL being used
 console.log("Using API URL:", BASE_API_URL);
-
 export const useAuthStore = create<AuthState & AuthActions>((set, get) => {
   // Initialize the auth state
   const initializeAuth = async () => {
@@ -280,7 +281,6 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => {
         throw error;
       }
     },
-    
     resetPassword: async (newPassword: string) => {
       try {
         const resetId = get().resetId;
@@ -336,7 +336,7 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => {
 
         socketManager.disconnect();
         set({ user: null, userInfo: null, isAuthenticated: false });
-        router.replace("/(screens)/(auth)/welcome");
+        router.replace("/(screens)/(auth)/welcome" as any);
       }
     },
   };

@@ -1,0 +1,895 @@
+{
+	"info": {
+		"_postman_id": "f57b1de4-b9ca-439a-ac9c-20999040f0c3",
+		"name": "Zolara - Group Management API Tests",
+		"description": "Collection để test các tính năng quản lý nhóm",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40740215"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"// Không cần set userId vì đã có trong collection variables",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has access token\", function () {",
+									"    pm.expect(jsonData.accessToken).to.exist;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nvminh162@gmail.com\",\n    \"password\": \"password123\",\n    \"deviceType\": \"WEB\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Đăng nhập với tài khoản Lê Hoàng Khang để lấy accessToken"
+					},
+					"response": []
+				}
+			],
+			"description": "Các request liên quan đến xác thực để lấy accessToken"
+		},
+		{
+			"name": "Group Management",
+			"item": [
+				{
+					"name": "Create Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"groupId\", jsonData.id);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Group created successfully\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Nhóm Test Postman\");",
+									"    pm.expect(jsonData.creatorId).to.eql(pm.collectionVariables.get(\"userId\"));",
+									"});",
+									"pm.test(\"Group has initial members\", function () {",
+									"    pm.expect(jsonData.members).to.be.an('array');",
+									"    pm.expect(jsonData.members.length).to.be.at.least(3); // Creator + 2 initial members",
+									"    ",
+									"    // Kiểm tra người tạo nhóm",
+									"    const creator = jsonData.members.find(m => m.userId === pm.collectionVariables.get(\"userId\"));",
+									"    pm.expect(creator).to.exist;",
+									"    pm.expect(creator.role).to.eql(\"LEADER\");",
+									"    ",
+									"    // Kiểm tra thành viên được thêm vào",
+									"    const member2 = jsonData.members.find(m => m.userId === pm.collectionVariables.get(\"userId2\"));",
+									"    pm.expect(member2).to.exist;",
+									"    pm.expect(member2.role).to.eql(\"MEMBER\");",
+									"    ",
+									"    const member3 = jsonData.members.find(m => m.userId === pm.collectionVariables.get(\"userId3\"));",
+									"    pm.expect(member3).to.exist;",
+									"    pm.expect(member3.role).to.eql(\"MEMBER\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nhóm Test Postman\",\n    \"creatorId\": \"{{userId}}\",\n    \"avatarUrl\": null,\n    \"initialMembers\": [\n        {\n            \"userId\": \"{{userId2}}\",\n            \"addedById\": \"{{userId}}\"\n        },\n        {\n            \"userId\": \"{{userId3}}\",\n            \"addedById\": \"{{userId}}\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups"
+							]
+						},
+						"description": "Tạo một nhóm mới với người tạo là User 1 và các thành viên ban đầu được gán sẵn từ file seed.ts"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Group info retrieved successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"groupId\"));",
+									"    pm.expect(jsonData.name).to.eql(\"Nhóm Test Postman\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}"
+							]
+						},
+						"description": "Lấy thông tin chi tiết của nhóm"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Group Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Public group info retrieved successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"groupId\"));",
+									"    pm.expect(jsonData.name).to.exist;",
+									"    pm.expect(jsonData.memberCount).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}",
+								"info"
+							]
+						},
+						"description": "Lấy thông tin công khai của nhóm (cần xác thực)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Group updated successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql(\"Nhóm Test Postman (Đã cập nhật)\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nhóm Test Postman (Đã cập nhật)\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}"
+							]
+						},
+						"description": "Cập nhật thông tin nhóm"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group Avatar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Group avatar updated successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.avatarUrl).to.exist;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}/avatar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}",
+								"avatar"
+							]
+						},
+						"description": "Cập nhật avatar của nhóm bằng cách tải lên file ảnh trực tiếp"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Member added successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.userId).to.eql(pm.collectionVariables.get(\"userId4\"));",
+									"    pm.expect(jsonData.groupId).to.eql(pm.collectionVariables.get(\"groupId\"));",
+									"    pm.expect(jsonData.role).to.eql(\"MEMBER\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupId\": \"{{groupId}}\",\n    \"userId\": \"{{userId4}}\",\n    \"addedById\": \"{{userId}}\",\n    \"role\": \"MEMBER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"members"
+							]
+						},
+						"description": "Thêm User 4 (Trần Đình Kiên) vào nhóm với vai trò MEMBER"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Member Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Member role updated successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.userId).to.eql(pm.collectionVariables.get(\"userId2\"));",
+									"    pm.expect(jsonData.groupId).to.eql(pm.collectionVariables.get(\"groupId\"));",
+									"    pm.expect(jsonData.role).to.eql(\"CO_LEADER\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": \"CO_LEADER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}/members/{{userId2}}/role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}",
+								"members",
+								"{{userId2}}",
+								"role"
+							]
+						},
+						"description": "Thay đổi vai trò của User 2 từ MEMBER thành CO_LEADER"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"User groups retrieved successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    var found = false;",
+									"    for (var i = 0; i < jsonData.length; i++) {",
+									"        if (jsonData[i].id === pm.collectionVariables.get(\"groupId\")) {",
+									"            found = true;",
+									"            break;",
+									"        }",
+									"    }",
+									"    pm.expect(found).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"user"
+							]
+						},
+						"description": "Lấy danh sách nhóm của người dùng hiện tại"
+					},
+					"response": []
+				},
+				{
+					"name": "Join Group via Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Joined group successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.groupId).to.eql(pm.collectionVariables.get(\"groupId\"));",
+									"    pm.expect(jsonData.role).to.eql(\"MEMBER\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken3}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupId\": \"{{groupId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/join",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"join"
+							]
+						},
+						"description": "Tham gia nhóm thông qua link (User 3 tham gia nhóm)"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}/members/{{userId3}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}",
+								"members",
+								"{{userId3}}"
+							]
+						},
+						"description": "Xóa User 3 (Hồ Thị Như Tâm) khỏi nhóm"
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken2}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}/leave",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}",
+								"leave"
+							]
+						},
+						"description": "User 2 (Nguyễn Thanh Cảnh) rời khỏi nhóm"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/groups/{{groupId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{groupId}}"
+							]
+						},
+						"description": "Xóa nhóm (chỉ Leader mới có quyền xóa)"
+					},
+					"response": []
+				}
+			],
+			"description": "Các request liên quan đến quản lý nhóm"
+		},
+		{
+			"name": "Tin nhắn nhóm",
+			"item": [
+				{
+					"name": "Lấy tin nhắn nhóm",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/messages/group/{{groupId}}?page=1",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"messages",
+								"group",
+								"{{groupId}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tìm kiếm tin nhắn trong nhóm",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/messages/group/{{groupId}}/search?searchText=hello&page=1",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"messages",
+								"group",
+								"{{groupId}}",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchText",
+									"value": "hello"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gửi tin nhắn nhóm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupId\": \"{{groupId}}\",\n    \"content\": {\n        \"text\": \"Xin chào nhóm!\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}/messages/group",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"messages",
+								"group"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Gán sẵn các user ID từ file seed.ts",
+					"pm.collectionVariables.set(\"userId\", \"a1a0ae5b-070f-40c2-a07d-c61c06623e7a\"); // Lê Hoàng Khang",
+					"pm.collectionVariables.set(\"userId2\", \"cea3f6a0-b3bf-4abe-9266-7a3a6fc29173\"); // Nguyễn Thanh Cảnh",
+					"pm.collectionVariables.set(\"userId3\", \"43c307df-1cf7-407f-85e4-21f16a4e3bf9\"); // Hồ Thị Như Tâm",
+					"pm.collectionVariables.set(\"userId4\", \"1cc1b368-02e1-44a7-87c1-17ab9620bb5f\"); // Trần Đình Kiên",
+					"pm.collectionVariables.set(\"userId5\", \"300bc485-d342-442e-aa08-95b754ba901d\"); // Nguyễn Văn A",
+					"pm.collectionVariables.set(\"userId6\", \"3d09a459-8398-4ec8-ba0f-ffb881f77632\"); // Trần Thị B",
+					"pm.collectionVariables.set(\"userId7\", \"422a4298-58d6-41d9-a28e-4025c19baf3a\"); // Phạm Văn C",
+					"pm.collectionVariables.set(\"userId8\", \"84cc97a1-be78-4ae9-975b-efe8328fe015\"); // Lê Thị D",
+					"pm.collectionVariables.set(\"userId9\", \"ac3fe11d-01bf-4ef0-9992-661e621253c2\"); // Hoàng Văn E",
+					"",
+					"pm.collectionVariables.set(\"userName\", \"Lê Hoàng Khang\");",
+					"pm.collectionVariables.set(\"userName2\", \"Nguyễn Thanh Cảnh\");",
+					"pm.collectionVariables.set(\"userName3\", \"Hồ Thị Như Tâm\");",
+					"pm.collectionVariables.set(\"userName4\", \"Trần Đình Kiên\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "a1a0ae5b-070f-40c2-a07d-c61c06623e7a",
+			"type": "string"
+		},
+		{
+			"key": "userId2",
+			"value": "cea3f6a0-b3bf-4abe-9266-7a3a6fc29173",
+			"type": "string"
+		},
+		{
+			"key": "userId3",
+			"value": "43c307df-1cf7-407f-85e4-21f16a4e3bf9",
+			"type": "string"
+		},
+		{
+			"key": "userId4",
+			"value": "1cc1b368-02e1-44a7-87c1-17ab9620bb5f",
+			"type": "string"
+		},
+		{
+			"key": "userId5",
+			"value": "300bc485-d342-442e-aa08-95b754ba901d",
+			"type": "string"
+		},
+		{
+			"key": "userId6",
+			"value": "3d09a459-8398-4ec8-ba0f-ffb881f77632",
+			"type": "string"
+		},
+		{
+			"key": "userId7",
+			"value": "422a4298-58d6-41d9-a28e-4025c19baf3a",
+			"type": "string"
+		},
+		{
+			"key": "userId8",
+			"value": "84cc97a1-be78-4ae9-975b-efe8328fe015",
+			"type": "string"
+		},
+		{
+			"key": "userId9",
+			"value": "ac3fe11d-01bf-4ef0-9992-661e621253c2",
+			"type": "string"
+		},
+		{
+			"key": "userName",
+			"value": "Lê Hoàng Khang",
+			"type": "string"
+		},
+		{
+			"key": "userName2",
+			"value": "Nguyễn Thanh Cảnh",
+			"type": "string"
+		},
+		{
+			"key": "userName3",
+			"value": "Hồ Thị Như Tâm",
+			"type": "string"
+		},
+		{
+			"key": "userName4",
+			"value": "Trần Đình Kiên",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "accessToken2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "accessToken3",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "groupId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

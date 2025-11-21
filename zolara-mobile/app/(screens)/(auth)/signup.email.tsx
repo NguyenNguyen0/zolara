@@ -4,39 +4,72 @@ import {
 	Text,
 	KeyboardAvoidingView,
 	Platform,
+	Alert,
+	TouchableOpacity,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
-import ShareInput from '@/src/components/input/share.input';
-import ShareButton from '@/src/components/button/share.button';
-import { APP_COLOR } from '@/src/utils/constants';
-import ShareQuestion from '@/src/components/button/share.question';
-import ShareBack from '@/src/components/button/share.back';
+import ShareInput from '@/components/customize/input/share.input';
+import ShareButton from '@/components/customize/button/share.button';
+import { APP_COLOR } from '@/utils/constants';
+import ShareQuestion from '@/components/customize/button/share.question';
+import ShareBack from '@/components/customize/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from '@/store/authStore';
+import { Colors } from '@/constants/Colors';
 
 export default function SignUpEmail() {
-	const { t } = useTranslation('signup-email');
 	const router = useRouter();
-	const [email, setEmail] = useState('');
+	const [inputValue, setInputValue] = useState('');
+	const [isEmail, setIsEmail] = useState(true);
+	const { initiateRegistration } = useAuthStore();
 
-	const handleNext = () => {
-		console.log('Signup Email:', {
-			email,
-			isSignup: 1,
-		});
-		router.navigate({
-			pathname: '/(screens)/(auth)/confirm.password',
-			params: { email, isSignup: 1 },
-		});
+	const validatePhoneNumber = (phone: string) => {
+		const phoneRegex = /^[0-9]{10}$/;
+		return phoneRegex.test(phone);
 	};
 
-	const isNextDisabled =
-		!email.trim();
+	const validateEmail = (email: string) => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	};
+
+	const handleNext = async () => {
+		if (!inputValue) {
+			Alert.alert('Lỗi', isEmail ? 'Vui lòng nhập email' : 'Vui lòng nhập số điện thoại');
+			return;
+		}
+
+		if (isEmail && !validateEmail(inputValue)) {
+			Alert.alert('Lỗi', 'Email không hợp lệ');
+			return;
+		}
+
+		if (!isEmail && !validatePhoneNumber(inputValue)) {
+			Alert.alert('Lỗi', 'Số điện thoại không hợp lệ');
+			return;
+		}
+
+		try {
+			await initiateRegistration(
+				isEmail ? inputValue : undefined,
+				!isEmail ? inputValue : undefined,
+			);
+			router.navigate({
+				pathname: '/(screens)/(auth)/verify',
+				params: { 
+					[isEmail ? 'email' : 'phoneNumber']: inputValue,
+					isSignup: 1,
+				},
+			});
+		} catch (error: any) {
+			Alert.alert('Lỗi', error.response?.data?.message || 'Đã có lỗi xảy ra');
+		}
+	};
+
+	const isNextDisabled = !inputValue.trim();
 
 	return (
-		<SafeAreaView
-			className="flex-1 bg-light-mode dark:bg-dark-mode"
-		>
+		<SafeAreaView className="flex-1 bg-white">
 			<ShareBack/>
 
 			<KeyboardAvoidingView
@@ -46,25 +79,36 @@ export default function SignUpEmail() {
 				{/* Content Container */}
 				<View>
 					{/* Title */}
-					<Text
-						className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode"
-					>
-						{t('title')}
+					<Text className="text-3xl font-bold text-center mb-4 text-gray-900">
+						{isEmail ? 'NHẬP EMAIL CỦA BẠN' : 'NHẬP SỐ ĐIỆN THOẠI CỦA BẠN'}
 					</Text>
 
-					{/* Email Input */}
+					{/* Toggle Email/Phone */}
+					<TouchableOpacity 
+						onPress={() => setIsEmail(!isEmail)} 
+						className="mb-6 items-center"
+					>
+						<Text
+              className="text-center"
+              style={{ color: Colors.light.PRIMARY_500 }}
+            >
+							{isEmail ? 'Đăng ký bằng số điện thoại' : 'Đăng ký bằng email'}
+						</Text>
+					</TouchableOpacity>
+
+					{/* Email/Phone Input */}
 					<View className="mb-6">
 						<ShareInput
-							value={email}
-							onTextChange={setEmail}
-							keyboardType="email-address"
-							placeholder={t('emailPlaceholder')}
+							value={inputValue}
+							onTextChange={setInputValue}
+							keyboardType={isEmail ? 'email-address' : 'phone-pad'}
+							placeholder={isEmail ? 'Email ...' : 'Số điện thoại ...'}
 						/>
 					</View>
 
 					{/* Next Button */}
 					<ShareButton
-						title={t('nextButton')}
+						title="Tiếp tục"
 						onPress={handleNext}
 						disabled={isNextDisabled}
 						buttonStyle={{
@@ -80,8 +124,8 @@ export default function SignUpEmail() {
 					{/* Login Link */}
 					<View className='flex-row items-center justify-center mt-5'>
 						<ShareQuestion
-							questionText={t('alreadyHaveAccount')}
-							linkName={t('loginLink')}
+							questionText="Bạn đã có tài khoản? "
+							linkName="Đăng nhập"
 							path=""
 							onPress={() => {
 								router.replace('/(screens)/(auth)/login.email');
