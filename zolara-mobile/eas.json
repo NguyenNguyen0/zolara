@@ -6,15 +6,16 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "projectRoot": "zolara-mobile",
       "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
       "env": {
         "EXPO_PUBLIC_API_URL": "$EXPO_PUBLIC_API_URL"
       }
     },
     "preview": {
       "distribution": "internal",
-      "projectRoot": "zolara-mobile",
       "android": {
         "buildType": "app-bundle"
       },
@@ -24,7 +25,6 @@
     },
     "production": {
       "autoIncrement": true,
-      "projectRoot": "zolara-mobile",
       "android": {
         "buildType": "app-bundle"
       },

@@ -47,20 +47,21 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x    # upgraded from 18.x to avoid engine mismatch
+          node-version: 22.x
           cache: 'npm'
           cache-dependency-path: zolara-mobile/package-lock.json
 
-      - name: Setup Expo & EAS
+      - name: Setup EAS CLI
         uses: expo/expo-github-action@v8
         with:
-          expo-version: latest
           eas-version: latest
-          eas-cache: true
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          echo "Installing dependencies with npm..."
+          npm ci
+          echo "✅ Dependencies installed successfully"
 
       - name: Determine build profile and API URL
         id: build-config
@@ -99,11 +100,21 @@ jobs:
 
       - name: Verify EAS Configuration
         run: |
-          if ! eas build:list --limit=1 --non-interactive > /dev/null 2>&1; then
-            echo "❌ EAS configuration error or authentication failed"
-            exit 1
-          fi
+          echo "Checking EAS authentication..."
+          eas whoami
+          echo "Verifying project configuration..."
+          eas project:info
           echo "✅ EAS configuration verified"
+
+      - name: Verify Build Environment
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "EAS CLI version: $(eas --version)"
+          echo "Build profile: ${{ steps.build-config.outputs.build_profile }}"
+          echo "API URL: ${{ steps.build-config.outputs.api_url }}"
+          echo "Working directory: $(pwd)"
+          echo "✅ Build environment verified"
 
       - name: Run EAS Build (Android)
         run: |
