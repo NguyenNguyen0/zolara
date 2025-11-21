@@ -6,6 +6,7 @@ import {
   PerformanceMetricsChart
 } from './ui/Charts';
 import { Activity } from 'lucide-react';
+import { SkeletonWrapper, ChartSkeleton, DonutChartSkeleton, CurrentSessionSkeleton } from './ui/Skeleton';
 
 interface CallStats {
   currentSessionStats?: {
@@ -17,39 +18,62 @@ interface CallStats {
 
 interface AnalyticsSectionProps {
   callStats: CallStats;
+  isLoading?: boolean;
 }
 
 export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
-  callStats
+  callStats,
+  isLoading = false
 }) => {
   return (
     <div className="space-y-8">
       {/* Charts Section */}
       <div>
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Activity className="w-4 h-4 text-white" />
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shadow-lg">
+              <Activity className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="text-lg font-medium text-gray-900">Analytics & Trends</h2>
+            <h2 className="text-2xl font-bold text-primary">Analytics & Trends</h2>
           </div>
-          <p className="text-sm text-gray-500">Visual insights and performance metrics</p>
-          <div className="w-16 h-1 bg-linear-to-r from-primary to-chart-2 rounded-full mt-2"></div>
+          <p className="text-sm text-gray-600 font-medium ml-13">Visual insights and performance metrics</p>
+          <div className="w-24 h-1.5 bg-primary rounded-full mt-3 ml-13 shadow-md"></div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <UserGrowthChart />
-          <MessageActivityChart />
-        </div>
+        {isLoading ? (
+          <SkeletonWrapper>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <ChartSkeleton />
+              <ChartSkeleton />
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DonutChartSkeleton />
+              <ChartSkeleton />
+            </div>
+          </SkeletonWrapper>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <UserGrowthChart isLoading={isLoading} />
+              <MessageActivityChart isLoading={isLoading} />
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CallDistributionChart />
-          <PerformanceMetricsChart />
-        </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <CallDistributionChart isLoading={isLoading} />
+              <PerformanceMetricsChart isLoading={isLoading} />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Current Session Stats (if available) */}
-      {callStats.currentSessionStats && (
+      {isLoading ? (
+        <SkeletonWrapper>
+          <CurrentSessionSkeleton />
+        </SkeletonWrapper>
+      ) : (
+        callStats.currentSessionStats && (
         <Card>
           <CardHeader>
             <CardTitle>Current Session Statistics</CardTitle>
@@ -72,6 +96,7 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
             </div>
           </CardContent>
         </Card>
+        )
       )}
     </div>
   );

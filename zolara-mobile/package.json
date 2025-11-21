@@ -62,5 +62,15 @@
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
   },
+  "expo": {
+    "install": {
+      "exclude": [
+        "expo",
+        "expo-linking",
+        "expo-router",
+        "expo-splash-screen"
+      ]
+    }
+  },
   "private": true
 }

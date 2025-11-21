@@ -18,7 +18,9 @@ async function bootstrap() {
   app.useWebSocketAdapter(new IoAdapter(app));
 
   // API versioning prefix
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['health', '/'],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({

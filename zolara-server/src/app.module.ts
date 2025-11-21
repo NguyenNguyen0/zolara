@@ -13,6 +13,7 @@ import { FriendModule } from './friend/friend.module';
 import { ContactModule } from './contact/contact.module';
 import { EventModule } from './event/event.module';
 import { AgentModule } from './agent/agent.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AgentModule } from './agent/agent.module';
     FriendModule,
     ContactModule,
     AgentModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
