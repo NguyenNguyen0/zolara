@@ -10,6 +10,16 @@
             "username": "postgres",
             "database": "zolara_db",
             "password": "root"
+        },
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "name": "ProductZolara",
+            "password": "IRNzkPIxQEdVhCioJXqWaeFGTtRbZlMy",
+            "username": "postgres",
+            "connectString": "postgresql://postgres:IRNzkPIxQEdVhCioJXqWaeFGTtRbZlMy@centerbeam.proxy.rlwy.net:26245/railway"
         }
     ]
 }

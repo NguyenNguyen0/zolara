@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 interface UserStats {
   totalUsers: number;
@@ -132,39 +133,38 @@ const generateMockData = (): Omit<DashboardData, 'isLoading'> => {
 
 export const useDashboard = (): DashboardData => {
   const [isLoading, setIsLoading] = useState(true);
-  const [data] = useState(generateMockData());
+  const [data, setData] = useState<Omit<DashboardData, 'isLoading'>>(generateMockData());
 
-  // Simulate loading state
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      
+      try {
+        const response = await apiService.getDashboardStats();
+        const result = response.data;
+        
+        setData({
+          userStats: result.userStats,
+          messageStats: result.messageStats,
+          callStats: result.callStats,
+          chartData: result.chartData,
+          lastUpdated: new Date(result.lastUpdated),
+        });
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+        // Keep using existing data (mock or previously fetched)
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchDashboardData();
+
+    // Optional: Set up polling for real-time updates every 30 seconds
+    const interval = setInterval(fetchDashboardData, 30000);
+
+    return () => clearInterval(interval);
   }, []);
-
-  // In a real application, you would fetch data from an API here
-  // useEffect(() => {
-  //   const fetchDashboardData = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await fetch('/api/dashboard');
-  //       const result = await response.json();
-  //       setData(result);
-  //     } catch (error) {
-  //       console.error('Failed to fetch dashboard data:', error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchDashboardData();
-  //
-  //   // Optional: Set up polling for real-time updates
-  //   const interval = setInterval(fetchDashboardData, 30000); // Update every 30 seconds
-  //
-  //   return () => clearInterval(interval);
-  // }, []);
 
   return {
     ...data,

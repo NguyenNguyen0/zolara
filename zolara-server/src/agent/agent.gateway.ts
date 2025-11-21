@@ -185,28 +185,47 @@ export class AgentGateway
 
       // Stream the response
       try {
+        let chunkCount = 0;
         for await (const chunk of this.agentService.streamChat(chatDto)) {
           // Update activity on each chunk
           this.lastActivity.set(clientId, Date.now());
 
-          // Send chunk to client
-          client.emit('chatChunk', chunk);
+          // Send chunk to client with promise to ensure delivery
+          await new Promise<void>((resolve) => {
+            client.emit('chatChunk', chunk, () => {
+              resolve();
+            });
+            // Fallback timeout in case ack is not received
+            setTimeout(resolve, 100);
+          });
 
           // Log progress
           if (chunk.type === 'content') {
+            chunkCount++;
             this.logger.debug(
-              `Sent chunk to client ${clientId}: ${chunk.content?.substring(0, 50)}...`,
+              `Sent chunk #${chunkCount} to client ${clientId}: ${chunk.content?.substring(0, 50)}...`,
             );
           } else if (chunk.type === 'done') {
             this.logger.log(
-              `Chat stream completed for client ${clientId}, session: ${chunk.sessionId}`,
+              `Chat stream completed for client ${clientId}, session: ${chunk.sessionId}, total chunks: ${chunkCount}`,
             );
           } else if (chunk.type === 'error') {
             this.logger.error(
               `Chat stream error for client ${clientId}: ${chunk.error}`,
             );
           }
+
+          // Small delay to prevent overwhelming the socket buffer
+          if (chunk.type === 'content') {
+            await new Promise((resolve) => setTimeout(resolve, 10));
+          }
         }
+
+        // Ensure all data is flushed before completing
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        this.logger.log(
+          `All chunks flushed for client ${clientId}, session: ${chatDto.sessionId}`,
+        );
       } catch (streamError: unknown) {
         const streamErrorMessage =
           streamError instanceof Error

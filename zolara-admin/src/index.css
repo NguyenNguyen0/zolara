@@ -63,6 +63,35 @@
   background: linear-gradient(to right, var(--primary-600), var(--primary-700));
 }
 
+/* Additional gradient utilities */
+.from-white {
+  --tw-gradient-from: #ffffff;
+}
+
+.to-purple-50 {
+  --tw-gradient-to: var(--primary-50);
+}
+
+.to-blue-50 {
+  --tw-gradient-to: #eff6ff;
+}
+
+.to-green-50 {
+  --tw-gradient-to: #f0fdf4;
+}
+
+.to-orange-50 {
+  --tw-gradient-to: #fff7ed;
+}
+
+.via-purple-50 {
+  --tw-gradient-via: var(--primary-50);
+}
+
+.via-blue-50 {
+  --tw-gradient-via: #eff6ff;
+}
+
 .from-primary-600 {
   --tw-gradient-from: var(--primary-600);
   --tw-gradient-to: rgb(147 51 234 / 0);

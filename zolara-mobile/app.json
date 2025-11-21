@@ -120,11 +120,13 @@
       "expo-web-browser"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "reactCompiler": true
     },
     "extra": {
-      "router": {
-        "origin": false
+      "router": {},
+      "eas": {
+        "projectId": "5f5c4d3e-3d91-4502-9a76-9e7a1d6eab6b"
       }
     }
   }
