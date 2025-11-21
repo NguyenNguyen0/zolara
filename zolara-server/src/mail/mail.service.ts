@@ -55,7 +55,7 @@ export class MailService {
                     <!-- Logo Section -->
                     <tr>
                       <td style="padding: 48px 48px 32px 48px; text-align: center;">
-                        <img src="https://res.klook.com/image/upload/v1739342911/rx3ewozeuzvziq5cpgav.jpg" 
+                        <img src="https://bpvhtgzjpccsngxhiugw.supabase.co/storage/v1/object/public/system/system/2507031a-c38d-4697-a0e5-cac96629fa99.png" 
                              alt="Zolara" 
                              style="width: 80px; height: 80px; border-radius: 16px;"
                         />

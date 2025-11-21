@@ -1,6 +1,6 @@
-import { useAuthStore } from "@/src/store/authStore";
-import * as SecureStore from "expo-secure-store";
 import { io, Socket } from "socket.io-client";
+import { useAuthStore } from "@/store/authStore";
+import * as SecureStore from "expo-secure-store";
 import axiosInstance from "./axios";
 
 class SocketManager {
@@ -18,9 +18,12 @@ class SocketManager {
   private maxConnectionAttempts = 5;
   private baseUrl = process.env.EXPO_PUBLIC_API_URL
     ? process.env.EXPO_PUBLIC_API_URL.split("/api/v1")[0]
-    : "https://api.bondhub.cloud";
+    : "";
 
   constructor() {
+    if (!this.baseUrl) {
+      console.error("EXPO_PUBLIC_API_URL is required in .env file for socket connection");
+    }
     console.log("Socket using base URL:", this.baseUrl);
   }
 

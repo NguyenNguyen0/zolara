@@ -4,62 +4,66 @@ import {
 	Text,
 	KeyboardAvoidingView,
 	Platform,
+	Alert,
+	Pressable,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { OtpInput } from 'react-native-otp-entry';
-import ShareButton from '@/src/components/button/share.button';
-import ShareCountdownButton from '@/src/components/button/share.coutdown';
-import { APP_COLOR } from '@/src/utils/constants';
-import ShareBack from '@/src/components/button/share.back';
+import ShareButton from '@/components/customize/button/share.button';
+import ShareCountdownButton from '@/components/customize/button/share.coutdown';
+import { APP_COLOR } from '@/utils/constants';
+import ShareBack from '@/components/customize/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from '@/store/authStore';
+import { Colors } from '@/constants/Colors';
 
 export default function Verify() {
-	const { t } = useTranslation('verify');
 	const router = useRouter();
 	const params = useLocalSearchParams();
 	const [otp, setOtp] = useState('');
+	const [otpKey, setOtpKey] = useState(0);
+	const { verifyRegistration } = useAuthStore();
 
 	const email = params.email as string;
-	const password = params.password as string;
+	const phoneNumber = params.phoneNumber as string;
+	const identifier = email || phoneNumber;
 	const isLogin = params.isLogin === '1';
 	const isSignup = params.isSignup === '1';
 
 	// Memoize computed values để tránh re-computation không cần thiết
-	const isNextDisabled = useMemo(() => otp.length !== 6, [otp.length]);
+	const isNextDisabled = useMemo(() => otp.length !== 6, [otp]);
 
-	const emailDisplay = useMemo(() => {
-		return email && email.length > 0 ? email : 'Unknown Email';
-	}, [email]);
+	const identifierDisplay = useMemo(() => {
+		return identifier && identifier.length > 0 ? identifier : 'Unknown';
+	}, [identifier]);
 
-	const handleNext = useCallback(() => {
-		console.log('OTP Verification:', {
-			otp,
-			email,
-			password,
-			isLogin,
-			isSignup
-		});
+	const handleNext = useCallback(async () => {
+		if (otp.length !== 6) {
+			Alert.alert('Lỗi', 'Vui lòng nhập đủ mã OTP');
+			return;
+		}
 
-		// Navigate based on boolean values with full params including OTP
-		if (isLogin) {
+		if (isSignup) {
+			try {
+				await verifyRegistration(otp);
+				router.navigate({
+					pathname: '/(screens)/(auth)/confirm.password',
+					params: { 
+						email: email || identifier,
+						isSignup: 1,
+					},
+				});
+			} catch (error: any) {
+				Alert.alert('Lỗi', error.response?.data?.message || 'Mã OTP không hợp lệ');
+			}
+		} else if (isLogin) {
 			router.dismissAll();
 			router.replace({
 				pathname: '/(screens)/(auth)/login.success',
-				params: { email, password, otp, isLogin: 1, isSignup: 0 }
+				params: { identifier, otp, isLogin: 1, isSignup: 0 }
 			});
-		} else if (isSignup) {
-			router.dismissAll();
-			router.replace({
-				pathname: '/(screens)/(auth)/signup.name',
-				params: { email, password, otp, isLogin: 0, isSignup: 1 }
-			});
-		} else {
-			console.warn('No valid flow detected, defaulting to main app');
-			router.dismissAll();
-			router.replace('/(screens)/(tabs)');
 		}
-	}, [otp, email, password, isLogin, isSignup, router]);
+	}, [otp, identifier, email, isLogin, isSignup, router, verifyRegistration]);
 
 
 
@@ -68,7 +72,7 @@ export default function Verify() {
 	}, []);
 
 	return (
-		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
+		<SafeAreaView className="flex-1 bg-white">
 			<ShareBack/>
 
 			<KeyboardAvoidingView
@@ -78,61 +82,68 @@ export default function Verify() {
 				{/* Content Container */}
 				<View>
 					{/* Title */}
-					<Text className="text-3xl font-bold text-center text-dark-mode dark:text-light-mode">
-						{t('title')}
+					<Text className="text-3xl font-bold text-center text-gray-900">
+						Nhập mã xác thực
 					</Text>
 
 					{/* Instructions */}
 					<View className="items-center my-10">
-						<Text className="text-xl text-center leading-6 text-dark-mode dark:text-light-mode">
-							{t('instruction')}
+						<Text className="text-xl text-center leading-6 text-gray-700">
+							Nhập mã gồm 6 số được gửi đến
 						</Text>
 
-						{/* Email Display */}
-						<Text className="text-2xl font-bold text-center my-2 text-dark-mode dark:text-light-mode">
-							{emailDisplay}
+						{/* Identifier Display */}
+						<Text className="text-2xl font-bold text-center my-2 text-gray-900">
+							{identifierDisplay}
 						</Text>
 
-						<Text className="text-xl text-center leading-6 text-dark-mode dark:text-light-mode">
-							{t('instruction2')}
+						<Text className="text-xl text-center leading-6 text-gray-700">
+							của bạn
 						</Text>
 					</View>
 
 					{/* OTP Input */}
-					<View className="items-center mb-8">
+					<View className="items-center mb-4">
 						<OtpInput
+							key={otpKey}
 							numberOfDigits={6}
 							onTextChange={setOtp}
+							onFilled={(text) => setOtp(text)}
 							theme={{
 								containerStyle: {
-									flexDirection: 'row',
-									justifyContent: 'center',
+									gap: 8,
 								},
 								pinCodeContainerStyle: {
-									borderWidth: 3,
-									borderRadius: 8,
-									width: 50,
-									height: 50,
-									marginHorizontal: 5,
-									borderColor: APP_COLOR.GRAY_200,
-									backgroundColor: APP_COLOR.LIGHT_MODE,
-								},
-								focusStickStyle: {
-									backgroundColor: APP_COLOR.PRIMARY,
-								},
-								focusedPinCodeContainerStyle: {
-									borderColor: APP_COLOR.PRIMARY,
+									width: 48,
+									height: 56,
+									borderWidth: 1,
+									borderColor: '#D1D5DB',
+									borderRadius: 10,
 								},
 								pinCodeTextStyle: {
-									color: APP_COLOR.DARK_MODE,
+									fontSize: 18,
+									color: '#111827',
+								},
+								focusedPinCodeContainerStyle: {
+									borderColor: Colors.light.PRIMARY_500,
+									borderWidth: 2,
 								},
 							}}
 						/>
+						<Pressable
+							className="px-4 rounded mb-4 w-full items-center mt-4"
+							onPress={() => {
+								setOtp('');
+								setOtpKey((prev) => prev + 1);
+							}}
+						>
+							<Text className="text-gray-700 text-lg">Xóa</Text>
+						</Pressable>
 					</View>
 
 					{/* Next Button */}
 					<ShareButton
-						title={t('nextButton')}
+						title="Tiếp tục"
 						onPress={handleNext}
 						disabled={isNextDisabled}
 						buttonStyle={{

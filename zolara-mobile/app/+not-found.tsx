@@ -1,76 +1,125 @@
-import { Stack, useRouter } from 'expo-router';
-import { View, Text, Image, Dimensions } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { APP_COLOR } from '@/src/utils/constants';
-import ShareButton from '@/src/components/button/share.button';
+import React from "react";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
+import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Home, ArrowLeft } from "lucide-react-native";
+import { Colors } from "@/constants/Colors";
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export default function NotFoundScreen() {
-	const router = useRouter();
-	const { t } = useTranslation('not-found');
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
 
-	const handleGoHome = () => {
-		router.replace('/');
-	};
+  const handleGoHome = () => {
+    router.replace("/(screens)/(auth)/welcome");
+  };
 
-	const handleGoBack = () => {
-		if (router.canGoBack()) {
-			router.back();
-		} else {
-			router.replace('/');
-		}
-	};
+  const handleGoBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/(screens)/(tabs)");
+    }
+  };
 
-	return (
-		<>
-			<Stack.Screen options={{ title: t('title') }} />
-			<View
-				className="flex-1 items-center bg-light-mode dark:bg-dark-mode"
-			>
-				<View className="w-full mb-5">
-					<Image
-						source={require('@/src/assets/default/404.gif')}
-						style={{ width: width, height: width * 0.8 }}
-						resizeMode="contain"
-					/>
-				</View>
+  // Calculate available height
+  const availableHeight = height - insets.top - insets.bottom;
+  const imageSize = Math.min(width * 0.5, availableHeight * 0.35);
 
-				<Text
-					className="text-6xl font-black mb-2.5 text-center"
-					style={{ color: APP_COLOR.GRAY_400 }}
-				>
-					{t('errorCode')}
-				</Text>
-				<Text
-					className="text-2xl font-bold mb-2.5 text-center text-dark-mode dark:text-light-mode"
-				>
-					{t('subtitle')}
-				</Text>
-				<Text
-					className="text-base text-center leading-6 max-w-xs mb-5 dark:text-light-mode text-dark-mode"
-				>
-					{t('description')}
-				</Text>
+  return (
+    <View
+      className="flex-1 bg-white"
+      style={{
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+      }}
+    >
+      <View
+        className="flex-1 justify-center items-center px-6"
+        style={{ paddingVertical: 20 }}
+      >
+        {/* 404 Image */}
+        <View className="items-center justify-center mb-4">
+          <Image
+            source={require("@/assets/images/default/404.gif")}
+            style={{
+              width: imageSize,
+              height: imageSize,
+            }}
+            resizeMode="contain"
+          />
+        </View>
 
-				<View className="w-full max-w-xs gap-3">
-					<ShareButton
-						title={t('buttons.goHome')}
-						onPress={handleGoHome}
-						buttonStyle={{
-							backgroundColor: APP_COLOR.PRIMARY,
-						}}
-						textStyle={{
-							color: APP_COLOR.LIGHT_MODE,
-						}}
-					/>
+        {/* Error Code */}
+        <Text
+          className="text-6xl font-black mb-2"
+          style={{ color: Colors.light.PRIMARY_500 }}
+        >
+          404
+        </Text>
 
-					<ShareButton
-						title={t('buttons.goBack')}
-						onPress={handleGoBack}
-					/>
-				</View>
-			</View>
-		</>
-	);
+        {/* Title */}
+        <Text
+          className="text-2xl font-bold mb-2 text-center"
+          style={{ color: Colors.light.text }}
+        >
+          Trang không tìm thấy
+        </Text>
+
+        {/* Description */}
+        <Text
+          className="text-sm text-center leading-5 mb-6 max-w-xs"
+          style={{ color: Colors.light.icon }}
+        >
+          Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.
+        </Text>
+
+        {/* Buttons */}
+        <View className="w-full max-w-xs gap-3">
+          {/* Go Home Button */}
+          <TouchableOpacity
+            onPress={handleGoHome}
+            className="py-3 px-6 rounded-full items-center justify-center"
+            style={{
+              backgroundColor: Colors.light.PRIMARY_500,
+              shadowColor: Colors.light.PRIMARY_500,
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 4,
+              elevation: 3,
+            }}
+          >
+            <View className="flex-row items-center gap-2">
+              <Home size={18} color="white" />
+              <Text className="text-white text-base font-semibold">
+                Về trang chủ
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Go Back Button */}
+          <TouchableOpacity
+            onPress={handleGoBack}
+            className="py-3 px-6 rounded-full items-center justify-center border-2"
+            style={{
+              borderColor: Colors.light.PRIMARY_500,
+              backgroundColor: "transparent",
+            }}
+          >
+            <View className="flex-row items-center gap-2">
+              <ArrowLeft size={18} color={Colors.light.PRIMARY_500} />
+              <Text
+                className="text-base font-semibold"
+                style={{ color: Colors.light.PRIMARY_500 }}
+              >
+                Quay lại
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
 }
+

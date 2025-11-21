@@ -62,9 +62,9 @@ async function createUsers() {
       fullName: 'Nguyễn Văn Minh',
       dateOfBirth: new Date('2004-02-16'),
       gender: Gender.MALE,
-      bio: 'Lập trình dien^',
+      bio: 'Software Developer - @nvminh162',
       profilePictureUrl:
-        'https://res.klook.com/image/upload/v1739342911/rx3ewozeuzvziq5cpgav.jpg',
+        'https://avatars.githubusercontent.com/u/121565657?v=4',
       statusMessage: 'Live, Love, Travel, Gym 🌍✈️',
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
@@ -72,14 +72,14 @@ async function createUsers() {
     },
     {
       id: 'cea3f6a0-b3bf-4abe-9266-7a3a6fc29173',
-      email: 'phuong.tran@example.com',
-      phoneNumber: '0912345678',
-      fullName: 'Trần Thị Phương',
-      dateOfBirth: new Date('2002-07-20'),
+      email: 'trungnguyenwork123@gmail.com',
+      phoneNumber: '0123456789',
+      fullName: 'Nguyễn Trung Nguyên',
+      dateOfBirth: new Date('2004-07-20'),
       gender: Gender.FEMALE,
-      bio: 'Yêu thích âm nhạc và nghệ thuật. Thích vẽ tranh và chơi guitar vào thời gian rảnh.',
+      bio: '💖 Passionate software developer specialized in 🐍 Python and 🌐 JavaScript.',
       profilePictureUrl:
-        'https://res.klook.com/image/upload/v1739342911/rx3ewozeuzvziq5cpgav.jpg',
+        'https://avatars.githubusercontent.com/u/126145466?v=4',
       statusMessage: 'Music is life 🎵🎨',
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',

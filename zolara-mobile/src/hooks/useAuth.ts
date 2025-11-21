@@ -1,7 +1,7 @@
-import axiosInstance from "@/src/lib/axios";
-import { useAuthStore } from "@/src/store/authStore";
-import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
+import axiosInstance from "@/lib/axios";
+import { useAuthStore } from "@/store/authStore";
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

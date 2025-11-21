@@ -5,35 +5,45 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
-import ShareInput from '@/src/components/input/share.input';
-import ShareButton from '@/src/components/button/share.button';
-import { APP_COLOR } from '@/src/utils/constants';
-import ShareQuestion from '@/src/components/button/share.question';
-import ShareBack from '@/src/components/button/share.back';
+import ShareInput from '@/components/customize/input/share.input';
+import ShareButton from '@/components/customize/button/share.button';
+import { APP_COLOR } from '@/utils/constants';
+import ShareQuestion from '@/components/customize/button/share.question';
+import ShareBack from '@/components/customize/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginEmail() {
-	const { t } = useTranslation('login-email');
 	const router = useRouter();
-	const [email, setEmail] = useState('');
+	const [identifier, setIdentifier] = useState('');
+
+	const isEmail = (value: string) => {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+	};
+
+	const isPhoneNumber = (value: string) => {
+		return /^[0-9]{10}$/.test(value);
+	};
 
 	const handleNext = () => {
-		console.log('Login Email:', {
-			email,
-			isLogin: 1,
-		});
+		if (!identifier.trim()) {
+			return;
+		}
+
+		if (!isEmail(identifier) && !isPhoneNumber(identifier)) {
+			return;
+		}
+
 		router.navigate({
 			pathname: '/(screens)/(auth)/confirm.password',
-			params: { email, isLogin: 1 },
+			params: { identifier, isLogin: 1 },
 		});
 	};
 
-	const isNextDisabled = !email.trim(); // TODO: validate to allow next later
+	const isNextDisabled = !identifier.trim();
 
 	return (
-		<SafeAreaView className="flex-1 bg-light-mode dark:bg-dark-mode">
+		<SafeAreaView className="flex-1 bg-white">
 			<ShareBack/>
 
 			<KeyboardAvoidingView
@@ -43,25 +53,23 @@ export default function LoginEmail() {
 				{/* Content Container */}
 				<View>
 					{/* Title */}
-					<Text className="text-3xl font-bold text-center mb-10 text-dark-mode dark:text-light-mode">
-						{t('title')}
+					<Text className="text-3xl font-bold text-center mb-10 text-gray-900">
+						Đăng nhập
 					</Text>
 
-					{/* Email Input */}
+					{/* Email/Phone Input */}
 					<View className="mb-8">
 						<ShareInput
-							value={email}
-							onTextChange={setEmail}
-							keyboardType="email-address"
-							placeholder={t('emailPlaceholder')}
-							// touched={true}
-							// error={t('emailError')}
+							value={identifier}
+							onTextChange={setIdentifier}
+							keyboardType="default"
+							placeholder="Nhập email hoặc số điện thoại ..."
 						/>
 					</View>
 
 					{/* Next Button */}
 					<ShareButton
-						title={t('nextButton')}
+						title="Tiếp tục"
 						onPress={handleNext}
 						disabled={isNextDisabled}
 						buttonStyle={{
@@ -79,11 +87,21 @@ export default function LoginEmail() {
 					{/* Create Account Link */}
 					<View className="flex-row items-center justify-center mt-5">
 						<ShareQuestion
-							questionText={t('noAccount')}
-							linkName={t('createAccount')}
+							questionText="Bạn chưa có tài khoản? "
+							linkName="Đăng ký"
 							path=""
 							onPress={() => {
 								router.replace('/(screens)/(auth)/signup.email');
+							}}
+						/>
+					</View>
+					<View className="flex-row items-center justify-center">
+						<ShareQuestion
+							questionText="Bạn đã có tài khoản đã quên? "
+							linkName="Quên mật khẩu"
+							path=""
+							onPress={() => {
+								router.replace('/(screens)/(auth)/forgot/forgotPasswordIdentifierScreen' as any);
 							}}
 						/>
 					</View>

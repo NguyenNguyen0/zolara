@@ -1,13 +1,14 @@
-import * as SecureStore from "expo-secure-store";
+import { useAuthStore } from "@/store/authStore";
 import axiosInstance from "../lib/axios";
-import { useAuthStore } from "../store/authStore";
 import {
-	ChangePasswordData,
-	ChatItemData,
-	UpdateBasicInfoData,
-	UserData,
-	UserInfo
-} from "../types";
+  ChangePasswordData,
+  ChatItemData,
+  UpdateBasicInfoData,
+  User,
+  UserData,
+  UserInfo,
+} from "@/types";
+import * as SecureStore from "expo-secure-store";
 
 export const getAllUsers = async (): Promise<ChatItemData[]> => {
   try {

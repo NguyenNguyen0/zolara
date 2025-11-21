@@ -37,7 +37,11 @@ const SocketContext = createContext<SocketContextType>({
 });
 const baseUrl = process.env.EXPO_PUBLIC_API_URL
   ? process.env.EXPO_PUBLIC_API_URL.split("/api/v1")[0]
-  : "http://bondhub.cloud:3000";
+  : "";
+
+if (!baseUrl) {
+  console.error("EXPO_PUBLIC_API_URL is required in .env file for SocketProvider");
+}
 
 // Hook để sử dụng socket trong các component
 export const useSocket = () => useContext(SocketContext);
@@ -182,6 +186,13 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
   // Thiết lập message socket listeners
   const setupMessageSocketListeners = (socket: Socket) => {
+    // Cleanup listeners cũ trước khi setup lại để tránh duplicate
+    socket.off("newMessage");
+    socket.off("userTyping");
+    socket.off("userTypingStopped");
+    socket.off("updateGroupList");
+    socket.off("groupUpdated");
+    
     // Handle khi cần cập nhật danh sách nhóm
     socket.on(
       "updateGroupList",

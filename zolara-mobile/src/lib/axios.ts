@@ -1,12 +1,12 @@
 import axios, {
-  AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
-import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
 
 // Define interface for custom config
 interface CustomApiConfig extends AxiosRequestConfig {
@@ -15,7 +15,7 @@ interface CustomApiConfig extends AxiosRequestConfig {
 
 // Base configuration
 class ApiConfig {
-  static readonly BASE_URL: string | undefined = process.env.EXPO_PUBLIC_API_URL;
+  static readonly BASE_URL: string = process.env.EXPO_PUBLIC_API_URL || "";
   static readonly DEFAULT_TIMEOUT: number = 30000; // Tăng thời gian chờ lên 30 giây
 }
 
@@ -31,7 +31,7 @@ const getRefreshToken = async (): Promise<string | null> => {
 // Create a single axios instance
 const createAxiosInstance = (config: CustomApiConfig = {}): AxiosInstance => {
   if (!ApiConfig.BASE_URL) {
-    console.warn("Missing EXPO_PUBLIC_API_URL in .env file");
+    throw new Error("EXPO_PUBLIC_API_URL is required in .env file");
   }
 
   return axios.create({
@@ -141,7 +141,7 @@ const createAuthInstance = (config: CustomApiConfig = {}): AxiosInstance => {
           await SecureStore.deleteItemAsync("deviceId");
 
           // Redirect to login
-          router.replace("/login/loginScreen");
+          router.replace("/(screens)/(auth)/loginScreen" as any);
           return Promise.reject(refreshError);
         }
       }
@@ -195,6 +195,8 @@ const axiosInstance = createAuthInstance();
 const axiosPublicInstance = createAxiosInstance();
 
 export {
-  axiosPublicInstance, createAuthInstance, createAxiosInstance, axiosInstance as default
+  createAxiosInstance,
+  createAuthInstance,
+  axiosPublicInstance,
+  axiosInstance as default,
 };
-
