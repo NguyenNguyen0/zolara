@@ -15,6 +15,7 @@ import {
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card';
 import { useDashboard } from '../../hooks/useDashboard';
+import { SkeletonWrapper, ChartSkeleton, DonutChartSkeleton } from './Skeleton';
 
 // Register Chart.js components
 ChartJS.register(
@@ -60,8 +61,18 @@ const chartOptions = {
 };
 
 // User Growth Chart Component
-export const UserGrowthChart: React.FC = () => {
-  const { chartData } = useDashboard();
+export const UserGrowthChart: React.FC<{ isLoading?: boolean }> = ({ isLoading = false }) => {
+  const { chartData, isLoading: hookLoading } = useDashboard();
+  
+  const loading = isLoading || hookLoading;
+  
+  if (loading) {
+    return (
+      <SkeletonWrapper>
+        <ChartSkeleton height={320} />
+      </SkeletonWrapper>
+    );
+  }
 
   const data = {
     labels: chartData.userGrowth.labels,
@@ -101,8 +112,18 @@ export const UserGrowthChart: React.FC = () => {
 };
 
 // Message Activity Chart Component
-export const MessageActivityChart: React.FC = () => {
-  const { chartData } = useDashboard();
+export const MessageActivityChart: React.FC<{ isLoading?: boolean }> = ({ isLoading = false }) => {
+  const { chartData, isLoading: hookLoading } = useDashboard();
+  
+  const loading = isLoading || hookLoading;
+  
+  if (loading) {
+    return (
+      <SkeletonWrapper>
+        <ChartSkeleton height={320} />
+      </SkeletonWrapper>
+    );
+  }
 
   const data = {
     labels: chartData.messageActivity.labels,
@@ -153,8 +174,18 @@ export const MessageActivityChart: React.FC = () => {
 };
 
 // Call Distribution Chart Component
-export const CallDistributionChart: React.FC = () => {
-  const { chartData } = useDashboard();
+export const CallDistributionChart: React.FC<{ isLoading?: boolean }> = ({ isLoading = false }) => {
+  const { chartData, isLoading: hookLoading } = useDashboard();
+  
+  const loading = isLoading || hookLoading;
+  
+  if (loading) {
+    return (
+      <SkeletonWrapper>
+        <DonutChartSkeleton />
+      </SkeletonWrapper>
+    );
+  }
 
   const data = {
     labels: ['Voice Calls', 'Video Calls', 'Group Calls', 'Conference Calls'],
@@ -218,8 +249,18 @@ export const CallDistributionChart: React.FC = () => {
 };
 
 // Performance Metrics Chart Component
-export const PerformanceMetricsChart: React.FC = () => {
-  const { chartData } = useDashboard();
+export const PerformanceMetricsChart: React.FC<{ isLoading?: boolean }> = ({ isLoading = false }) => {
+  const { chartData, isLoading: hookLoading } = useDashboard();
+  
+  const loading = isLoading || hookLoading;
+  
+  if (loading) {
+    return (
+      <SkeletonWrapper>
+        <ChartSkeleton height={320} />
+      </SkeletonWrapper>
+    );
+  }
 
   const data = {
     labels: chartData.performanceMetrics.labels,

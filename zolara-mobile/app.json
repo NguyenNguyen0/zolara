@@ -24,13 +24,22 @@
           "audio",
           "fetch",
           "remote-notification",
+          "processing",
+          "audio",
+          "fetch",
+          "remote-notification",
           "processing"
         ],
         "BGTaskSchedulerPermittedIdentifiers": [
           "com.zolara.mobile.refresh",
+          "com.zolara.mobile.background-fetch",
+          "com.zolara.mobile.refresh",
           "com.zolara.mobile.background-fetch"
-        ]
-      }
+        ],
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bitcode": false,
+      "bundleIdentifier": "com.zolara.mobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -48,7 +57,12 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.WAKE_LOCK",
         "android.permission.RECEIVE_BOOT_COMPLETED",
-        "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"
+        "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.BLUETOOTH"
       ],
       "package": "com.zolara.mobile",
       "allowBackup": true
@@ -109,7 +123,9 @@
         {
           "icon": "./src/assets/images/brand/zolara.png",
           "color": "#ffffff",
-          "sounds": ["./src/assets/sounds/facebook_message.mp3"],
+          "sounds": [
+            "./src/assets/sounds/facebook_message.mp3"
+          ],
           "mode": "production",
           "androidMode": "default",
           "androidCollapsedTitle": "Zolara",
@@ -125,6 +141,9 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "5f5c4d3e-3d91-4502-9a76-9e7a1d6eab6b"
       }
     }
   }

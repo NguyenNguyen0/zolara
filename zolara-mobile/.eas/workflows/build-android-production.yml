@@ -1,0 +1,13 @@
+name: Android production build
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build_ios:
+    name: Build Android
+    type: build
+    params:
+      platform: android
+      profile: production

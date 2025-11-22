@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/Card';
 import { Users, MessageSquare, Phone } from 'lucide-react';
+import { SkeletonWrapper, StatCardSkeleton, DetailedStatCardSkeleton } from './ui/Skeleton';
 
 interface UserStats {
   totalUsers: number;
@@ -25,13 +26,15 @@ interface OverviewSectionProps {
   messageStats: MessageStats;
   callStats: CallStats;
   lastUpdated?: Date;
+  isLoading?: boolean;
 }
 
 export const OverviewSection: React.FC<OverviewSectionProps> = ({
   userStats,
   messageStats,
   callStats,
-  lastUpdated
+  lastUpdated,
+  isLoading = false
 }) => {
   const formatLastUpdated = (date: Date): string => {
     const now = new Date();
@@ -65,9 +68,19 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* User Stats */}
-          <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
+        {isLoading ? (
+          <SkeletonWrapper>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <DetailedStatCardSkeleton />
+            </div>
+          </SkeletonWrapper>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* User Stats */}
+            <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Users</CardTitle>
               <Users className="h-4 w-4 text-primary" />
@@ -135,10 +148,19 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             </CardContent>
           </Card>
         </div>
+        )}
       </div>
 
       {/* Detailed Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {isLoading ? (
+        <SkeletonWrapper>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <DetailedStatCardSkeleton />
+            <DetailedStatCardSkeleton />
+          </div>
+        </SkeletonWrapper>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* User Activity */}
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="border-b border-primary/10">
@@ -251,6 +273,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           </CardContent>
         </Card>
       </div>
+      )}
     </div>
   );
 };

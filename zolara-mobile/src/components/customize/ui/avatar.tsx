@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { TouchableOpacity } from 'react-native';
 
 // Local fallback avatar
-const FALLBACK_AVATAR = require('@/src/assets/default/avatar-default.jpg');
+const FALLBACK_AVATAR = require('@/assets/images/default/avatar-default.jpg');
 
 interface AvatarProps {
 	uri?: string;
