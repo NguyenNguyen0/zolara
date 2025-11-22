@@ -13,7 +13,9 @@ jobs:
       profile: production
   build_android_preview:
     name: Build Android (Preview)
-    type: apk
+    type: build
     params:
       platform: android
       profile: preview
+      artifactType: apk
+
