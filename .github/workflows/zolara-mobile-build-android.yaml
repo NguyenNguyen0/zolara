@@ -98,13 +98,11 @@ jobs:
           echo "✅ Using build profile: $PROFILE"
           echo "✅ Using API URL: $API_URL"
 
-      - name: Verify EAS Configuration
+      - name: Verify EAS Authentication
         run: |
           echo "Checking EAS authentication..."
           eas whoami
-          echo "Verifying project configuration..."
-          eas project:info
-          echo "✅ EAS configuration verified"
+          echo "✅ EAS authentication verified"
 
       - name: Verify Build Environment
         run: |
@@ -115,6 +113,16 @@ jobs:
           echo "API URL: ${{ steps.build-config.outputs.api_url }}"
           echo "Working directory: $(pwd)"
           echo "✅ Build environment verified"
+
+      - name: Initialize EAS Project
+        run: |
+          echo "Checking EAS project status..."
+          if ! eas project:info --non-interactive 2>/dev/null; then
+            echo "EAS project not found. Creating new project..."
+            eas project:create --non-interactive
+          else
+            echo "EAS project already exists"
+          fi
 
       - name: Run EAS Build (Android)
         run: |
