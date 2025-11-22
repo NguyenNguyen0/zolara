@@ -1,13 +1,21 @@
-name: Android production build
+name: Android EAS build
 
 on:
   push:
     branches: ['main']
 
 jobs:
-  build_ios:
-    name: Build Android
+  build_android_production:
+    name: Build Android (Production)
     type: build
     params:
       platform: android
       profile: production
+  build_android_preview:
+    name: Build Android (Preview)
+    type: build
+    params:
+      platform: android
+      profile: preview
+      artifactType: apk
+
