@@ -13,7 +13,7 @@ jobs:
       profile: production
   build_android_preview:
     name: Build Android (Preview)
-    type: build
+    type: apk
     params:
       platform: android
       profile: preview
