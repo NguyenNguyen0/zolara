@@ -180,9 +180,9 @@ export default function ContactScreen() {
           <Pressable onPress={() => Alert.alert("Coming Soon")} className="pr-4">
             <Phone size={24} color={"gray"} strokeWidth={1.5} />
           </Pressable>
-          <Pressable onPress={() => Alert.alert("Coming Soon")} className="px-2.5">
+          {/* <Pressable onPress={() => Alert.alert("Coming Soon")} className="px-2.5">
             <Video size={26} color={"gray"} strokeWidth={1.5} />
-          </Pressable>
+          </Pressable> */}
         </HStack>
       </Pressable>
     );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,9 @@ import {
   Alert,
   Pressable,
   Modal,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
@@ -17,15 +20,10 @@ import {
   Image as ImageIcon,
   User,
   Camera,
-  Share2,
-  Video,
-  Palette,
-  Images,
-  Sparkles,
+  Plus,
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/store/authStore";
-import { Colors } from "@/constants/Colors";
 import {
   Avatar,
   AvatarFallbackText,
@@ -35,16 +33,137 @@ import {
   updateCoverImage,
   updateProfilePicture,
 } from "@/services/user-service";
+import { postService, Post } from "@/services/post-service";
+import { PostItem } from "@/components/post/post.item";
+import { CreatePostModal } from "@/components/post/create-post.modal";
+import { CommentModal } from "@/components/post/comment.modal";
+import { Colors } from "@/constants/Colors";
 
 export default function UserInfoScreen() {
   const insets = useSafeAreaInsets();
   const user = useAuthStore((state) => state.user);
   const userInfo = useAuthStore((state) => state.userInfo);
-  const posts: any[] = [];
   const [showMenu, setShowMenu] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postsRefreshing, setPostsRefreshing] = useState(false);
+  const [postsPage, setPostsPage] = useState(1);
+  const [postsHasMore, setPostsHasMore] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editPost, setEditPost] = useState<Post | null>(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   
   // fullName nằm trong userInfo, không phải user
   const displayName = userInfo?.fullName || user?.fullName || "Người dùng";
+
+  // Load user posts
+  const loadUserPosts = async (pageNum: number = 1, append: boolean = false) => {
+    if (!user?.userId) return;
+    try {
+      setPostsLoading(true);
+      const response = await postService.getMyPosts(pageNum, 20);
+      if (append) {
+        setPosts((prev) => [...prev, ...response.data]);
+      } else {
+        setPosts(response.data);
+      }
+      setPostsHasMore(response.pagination.page < response.pagination.totalPages);
+    } catch (error: any) {
+      console.error("Error loading user posts:", error);
+    } finally {
+      setPostsLoading(false);
+      setPostsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.userId) {
+      loadUserPosts(1, false);
+    }
+  }, [user?.userId]);
+
+  const handlePostsRefresh = () => {
+    setPostsRefreshing(true);
+    setPostsPage(1);
+    loadUserPosts(1, false);
+  };
+
+  const handlePostsLoadMore = () => {
+    if (!postsHasMore || postsLoading) return;
+    const nextPage = postsPage + 1;
+    setPostsPage(nextPage);
+    loadUserPosts(nextPage, true);
+  };
+
+  const handlePostCreated = () => {
+    setPostsPage(1);
+    loadUserPosts(1, false);
+    setEditPost(null);
+  };
+
+  const handleEditPost = (post: Post) => {
+    setEditPost(post);
+    setShowCreateModal(true);
+  };
+
+  const handleDeletePost = (postId: string) => {
+    Alert.alert(
+      "Xóa bài viết",
+      "Bạn có chắc chắn muốn xóa bài viết này?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Xóa",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await postService.deletePost(postId);
+              Alert.alert("Thành công", "Đã xóa bài viết thành công!");
+              handlePostCreated();
+            } catch (error: any) {
+              console.error("Error deleting post:", error);
+              Alert.alert(
+                "Lỗi",
+                error.response?.data?.message || "Không thể xóa bài viết. Vui lòng thử lại.",
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleLikePost = async (postId: string) => {
+    try {
+      await postService.toggleLikePost(postId);
+      handlePostCreated();
+    } catch (error: any) {
+      console.error("Error toggling like:", error);
+      Alert.alert(
+        "Lỗi",
+        error.response?.data?.message || "Không thể thích bài viết. Vui lòng thử lại.",
+      );
+    }
+  };
+
+  const handleCommentPost = (postId: string) => {
+    setSelectedPostId(postId);
+    setShowCommentModal(true);
+  };
+
+  const renderPostItem = ({ item }: { item: Post }) => (
+    <PostItem
+      post={item}
+      onLike={handleLikePost}
+      onComment={handleCommentPost}
+      onEdit={handleEditPost}
+      onDelete={handleDeletePost}
+    />
+  );
 
   const handlePickImage = async (type: "profile" | "cover") => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -149,129 +268,78 @@ export default function UserInfoScreen() {
           </View>
         </View>
 
-        {/* Upcoming Features Notice */}
-        <View className="mx-6 mt-6">
-          <View
-            className="rounded-2xl p-5 overflow-hidden"
-            style={{
-              backgroundColor: "#FFFFFF",
-              shadowColor: Colors.light.PRIMARY,
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.1,
-              shadowRadius: 12,
-              elevation: 8,
-              borderWidth: 1,
-              borderColor: Colors.light.PRIMARY_100,
-            }}
-          >
-            {/* Header with icon */}
-            <View className="flex-row items-center mb-4">
-              <View
-                className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                style={{ backgroundColor: Colors.light.PRIMARY_100 }}
-              >
-                <Sparkles
-                  size={20}
-                  color={Colors.light.PRIMARY_600}
-                  fill={Colors.light.PRIMARY_600}
-                />
-              </View>
-              <View className="flex-1">
-                <Text
-                  className="text-base font-semibold"
-                  style={{ color: Colors.light.PRIMARY_700 }}
-                >
-                  Tính năng sắp ra mắt
-                </Text>
-                <Text className="text-xs text-gray-500 mt-0.5">
-                  Đang được phát triển
-                </Text>
-              </View>
-            </View>
-
-            {/* Features List */}
-            <View>
-              {/* Feature 1 */}
-              <View className="flex-row items-start mb-3">
-                <View
-                  className="w-8 h-8 rounded-lg items-center justify-center mr-3 mt-0.5"
-                  style={{ backgroundColor: Colors.light.PRIMARY_50 }}
-                >
-                  <Share2 size={16} color={Colors.light.PRIMARY_600} />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-800">
-                    Chia sẻ bài viết lên nhật ký
-                  </Text>
-                </View>
-              </View>
-
-              {/* Feature 2 */}
-              <View className="flex-row items-start mb-3">
-                <View
-                  className="w-8 h-8 rounded-lg items-center justify-center mr-3 mt-0.5"
-                  style={{ backgroundColor: Colors.light.PRIMARY_50 }}
-                >
-                  <Video size={16} color={Colors.light.PRIMARY_600} />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-800">
-                    Call video
-                  </Text>
-                </View>
-              </View>
-
-              {/* Feature 3 */}
-              <View className="flex-row items-start mb-3">
-                <View
-                  className="w-8 h-8 rounded-lg items-center justify-center mr-3 mt-0.5"
-                  style={{ backgroundColor: Colors.light.PRIMARY_50 }}
-                >
-                  <Palette size={16} color={Colors.light.PRIMARY_600} />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-800">
-                    Tùy chỉnh giao diện trang cá nhân
-                  </Text>
-                </View>
-              </View>
-
-              {/* Feature 4 */}
-              <View className="flex-row items-start">
-                <View
-                  className="w-8 h-8 rounded-lg items-center justify-center mr-3 mt-0.5"
-                  style={{ backgroundColor: Colors.light.PRIMARY_50 }}
-                >
-                  <Images size={16} color={Colors.light.PRIMARY_600} />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-800">
-                    Tạo album ảnh và video
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Posts or Create Post Button */}
-        <View className="px-28 mt-4">
-          {posts.length > 0 ? (
-            posts.map((post, index) => (
-              <View key={index} className="mb-4 p-4 bg-gray-100 rounded-lg">
-                <Text>{post}</Text>
-              </View>
-            ))
-          ) : (
+        {/* Posts Section */}
+        <View className="mt-8 border-t border-gray-200 pt-4">
+          {/* Posts Header */}
+          <View className="px-4 mb-4 flex-row justify-between items-center">
+            <Text className="text-lg font-semibold text-gray-800">
+              Bài viết
+            </Text>
             <TouchableOpacity
-              className={`w-full flex-row items-center justify-center py-2 rounded-full bg-[${Colors.light.PRIMARY}]`}
-              onPress={() => {}}
+              onPress={() => setShowCreateModal(true)}
+              style={{
+                backgroundColor: Colors.light.PRIMARY,
+                borderRadius: 20,
+                width: 40,
+                height: 40,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              <Text className=" text-white font-medium text-lg">
-                Đăng lên Nhật Ký
-              </Text>
+              <Plus size={20} color="#FFFFFF" />
             </TouchableOpacity>
-          )}
+          </View>
+
+          {/* Posts List */}
+          <FlatList
+            data={posts}
+            renderItem={renderPostItem}
+            keyExtractor={(item) => item.id}
+            scrollEnabled={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={postsRefreshing}
+                onRefresh={handlePostsRefresh}
+                colors={[Colors.light.PRIMARY]}
+              />
+            }
+            contentContainerStyle={{
+              paddingBottom: insets.bottom,
+            }}
+            onEndReached={handlePostsLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              postsHasMore && posts.length > 0 ? (
+                <View style={{ padding: 20 }}>
+                  <ActivityIndicator
+                    size="small"
+                    color={Colors.light.PRIMARY}
+                  />
+                </View>
+              ) : null
+            }
+            ListEmptyComponent={
+              !postsLoading ? (
+                <View
+                  style={{
+                    padding: 40,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 16, color: "#9CA3AF" }}>
+                    Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!
+                  </Text>
+                </View>
+              ) : (
+                <View style={{ padding: 40 }}>
+                  <ActivityIndicator
+                    size="small"
+                    color={Colors.light.PRIMARY}
+                  />
+                </View>
+              )
+            }
+          />
         </View>
       </ScrollView>
 
@@ -344,6 +412,29 @@ export default function UserInfoScreen() {
           </Pressable>
         </Pressable>
       </Modal>
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        visible={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setEditPost(null);
+        }}
+        onPostCreated={handlePostCreated}
+        editPost={editPost}
+      />
+
+      <CommentModal
+        visible={showCommentModal}
+        postId={selectedPostId || ""}
+        onClose={() => {
+          setShowCommentModal(false);
+          setSelectedPostId(null);
+        }}
+        onCommentAdded={() => {
+          handlePostCreated();
+        }}
+      />
     </View>
   );
 }

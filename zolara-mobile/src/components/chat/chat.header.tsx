@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, Platform, Pressable } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Platform,
+  Pressable,
+  Alert,
+} from "react-native";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
-import { ArrowLeft, Phone, Video, Search, Logs } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
@@ -10,7 +17,7 @@ import type { ChatHeaderProps, GroupInfo } from "@/types";
 import { useRouter } from "expo-router";
 import { groupService } from "@/services/group-service";
 import { useUserStatusStore } from "@/store/userStatusStore";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 
 const formatLastSeen = (lastSeenDate: string) => {
   const date = new Date(lastSeenDate);
@@ -102,6 +109,18 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           {!isAIAssistant && (
             <HStack className="space-x-4">
               <Pressable
+                onPress={() => Alert.alert("Coming Soon")}
+                className="pr-4"
+              >
+                <FontAwesome5 name="phone-alt" size={23} color="white" />
+              </Pressable>
+              {/* <Pressable
+                onPress={() => Alert.alert("Coming Soon")}
+                className="px-2.5"
+              >
+                <Video size={23} color="white" strokeWidth={1.5} />
+              </Pressable> */}
+              <Pressable
                 className="pl-2.5"
                 onPress={() => {
                   if (isGroup) {
@@ -111,7 +130,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                   }
                 }}
               >
-                <AntDesign name="menu" size={24} color="white" />
+                <AntDesign name="menu" size={23} color="white" />
               </Pressable>
             </HStack>
           )}

@@ -82,7 +82,7 @@ export default function SignUpName() {
 							• Không có số
 						</Text>
 						<Text className="text-gray-500 text-left w-full pl-6 pt-2">
-							• Tuân thủ Zalo's naming policy
+							• Tuân thủ Zolara's naming policy
 						</Text>
 					</View>
 

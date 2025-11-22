@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,9 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
+  FlatList,
+  RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import {
@@ -16,12 +19,18 @@ import {
   UserPlus,
   UserCheck,
   Ellipsis,
+  Plus,
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import * as userService from "@/services/user-service";
 import * as friendService from "@/services/friend-service";
 import { useSocket } from "@/hooks/useSocket";
+import { PostItem } from "@/components/post/post.item";
+import { CreatePostModal } from "@/components/post/create-post.modal";
+import { CommentModal } from "@/components/post/comment.modal";
+import { postService, Post } from "@/services/post-service";
+import { useAuthStore } from "@/store/authStore";
 
 export default function UserProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -36,6 +45,17 @@ export default function UserProfileScreen() {
   const [notRelated, setNotRelated] = useState(false);
   const [showUnfriendConfirm, setShowUnfriendConfirm] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postsRefreshing, setPostsRefreshing] = useState(false);
+  const [postsPage, setPostsPage] = useState(1);
+  const [postsHasMore, setPostsHasMore] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editPost, setEditPost] = useState<Post | null>(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const { user } = useAuthStore();
+  const isCurrentUser = user?.userId === id;
 
   // Connect to the friends namespace for real-time updates
   const { socket, isConnected, error: socketError } = useSocket("friends");
@@ -51,6 +71,9 @@ export default function UserProfileScreen() {
 
   useEffect(() => {
     fetchUserInfo("mount");
+    if (id) {
+      loadUserPosts(1, false);
+    }
   }, [id]);
 
   // Listen for reload events from the WebSocket server
@@ -245,6 +268,107 @@ export default function UserProfileScreen() {
     }
   };
 
+  const loadUserPosts = async (pageNum: number = 1, append: boolean = false) => {
+    if (!id || typeof id !== "string") return;
+    try {
+      setPostsLoading(true);
+      const response = await postService.getUserPosts(id, pageNum, 20);
+      if (append) {
+        setPosts((prev) => [...prev, ...response.data]);
+      } else {
+        setPosts(response.data);
+      }
+      setPostsHasMore(response.pagination.page < response.pagination.totalPages);
+    } catch (error: any) {
+      console.error("Error loading user posts:", error);
+    } finally {
+      setPostsLoading(false);
+      setPostsRefreshing(false);
+    }
+  };
+
+  const handlePostsRefresh = () => {
+    setPostsRefreshing(true);
+    setPostsPage(1);
+    loadUserPosts(1, false);
+  };
+
+  const handlePostsLoadMore = () => {
+    if (!postsHasMore || postsLoading) return;
+    const nextPage = postsPage + 1;
+    setPostsPage(nextPage);
+    loadUserPosts(nextPage, true);
+  };
+
+  const handlePostCreated = () => {
+    setPostsPage(1);
+    loadUserPosts(1, false);
+    setEditPost(null);
+  };
+
+  const handleEditPost = (post: Post) => {
+    setEditPost(post);
+    setShowCreateModal(true);
+  };
+
+  const handleDeletePost = (postId: string) => {
+    Alert.alert(
+      "Xóa bài viết",
+      "Bạn có chắc chắn muốn xóa bài viết này?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Xóa",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await postService.deletePost(postId);
+              Alert.alert("Thành công", "Đã xóa bài viết thành công!");
+              handlePostCreated();
+            } catch (error: any) {
+              console.error("Error deleting post:", error);
+              Alert.alert(
+                "Lỗi",
+                error.response?.data?.message || "Không thể xóa bài viết. Vui lòng thử lại.",
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleLikePost = async (postId: string) => {
+    try {
+      await postService.toggleLikePost(postId);
+      handlePostCreated();
+    } catch (error: any) {
+      console.error("Error toggling like:", error);
+      Alert.alert(
+        "Lỗi",
+        error.response?.data?.message || "Không thể thích bài viết. Vui lòng thử lại.",
+      );
+    }
+  };
+
+  const handleCommentPost = (postId: string) => {
+    setSelectedPostId(postId);
+    setShowCommentModal(true);
+  };
+
+  const renderPostItem = ({ item }: { item: Post }) => (
+    <PostItem
+      post={item}
+      onLike={handleLikePost}
+      onComment={handleCommentPost}
+      onEdit={handleEditPost}
+      onDelete={handleDeletePost}
+    />
+  );
+
   return (
     <>
       <ScrollView className="flex-1 bg-white">
@@ -408,14 +532,16 @@ export default function UserProfileScreen() {
 
             {/* Action Buttons */}
             <View className="mt-6 px-4 flex-row justify-center gap-4">
-              {isFriend ? (
+              {isFriend || isCurrentUser ? (
                 <Pressable
                   className="flex-1 py-2.5 rounded-full items-center flex-row justify-center"
                   style={{ backgroundColor: Colors.light.PRIMARY_500 }}
-                  onPress={handleSendMessage}
+                  onPress={isCurrentUser ? undefined : handleSendMessage}
                 >
                   <MessageCircle size={24} color="white" />
-                  <Text className="text-white font-medium ml-2">Nhắn tin</Text>
+                  <Text className="text-white font-medium ml-2">
+                    {isCurrentUser ? "Hồ sơ của bạn" : "Nhắn tin"}
+                  </Text>
                 </Pressable>
               ) : isPendingSent ? (
                 <Pressable
@@ -466,6 +592,86 @@ export default function UserProfileScreen() {
                 </View>
               )}
             </View>
+
+            {/* Posts Section */}
+            {(isFriend || isCurrentUser) && (
+              <View className="mt-8">
+                {/* Posts Header */}
+                <View className="px-4 mb-4 flex-row justify-between items-center">
+                  <Text className="text-lg font-semibold text-gray-800">
+                    Bài viết
+                  </Text>
+                  {isCurrentUser && (
+                    <TouchableOpacity
+                      onPress={() => setShowCreateModal(true)}
+                      style={{
+                        backgroundColor: Colors.light.PRIMARY,
+                        borderRadius: 20,
+                        width: 40,
+                        height: 40,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Plus size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                {/* Posts List */}
+                <FlatList
+                  data={posts}
+                  renderItem={renderPostItem}
+                  keyExtractor={(item) => item.id}
+                  scrollEnabled={false}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={postsRefreshing}
+                      onRefresh={handlePostsRefresh}
+                      colors={[Colors.light.PRIMARY]}
+                    />
+                  }
+                  contentContainerStyle={{
+                    paddingBottom: insets.bottom,
+                  }}
+                  onEndReached={handlePostsLoadMore}
+                  onEndReachedThreshold={0.5}
+                  ListFooterComponent={
+                    postsHasMore && posts.length > 0 ? (
+                      <View style={{ padding: 20 }}>
+                        <ActivityIndicator
+                          size="small"
+                          color={Colors.light.PRIMARY}
+                        />
+                      </View>
+                    ) : null
+                  }
+                  ListEmptyComponent={
+                    !postsLoading ? (
+                      <View
+                        style={{
+                          padding: 40,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={{ fontSize: 16, color: "#9CA3AF" }}>
+                          {isCurrentUser
+                            ? "Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!"
+                            : "Chưa có bài viết nào"}
+                        </Text>
+                      </View>
+                    ) : (
+                      <View style={{ padding: 40 }}>
+                        <ActivityIndicator
+                          size="small"
+                          color={Colors.light.PRIMARY}
+                        />
+                      </View>
+                    )
+                  }
+                />
+              </View>
+            )}
           </>
         )}
       </ScrollView>
@@ -525,6 +731,31 @@ export default function UserProfileScreen() {
           </Pressable>
         </Modal>
       )}
+
+      {/* Create Post Modal */}
+      {isCurrentUser && (
+        <CreatePostModal
+          visible={showCreateModal}
+          onClose={() => {
+            setShowCreateModal(false);
+            setEditPost(null);
+          }}
+          onPostCreated={handlePostCreated}
+          editPost={editPost}
+        />
+      )}
+
+      <CommentModal
+        visible={showCommentModal}
+        postId={selectedPostId || ""}
+        onClose={() => {
+          setShowCommentModal(false);
+          setSelectedPostId(null);
+        }}
+        onCommentAdded={() => {
+          handlePostCreated();
+        }}
+      />
     </>
   );
 }
