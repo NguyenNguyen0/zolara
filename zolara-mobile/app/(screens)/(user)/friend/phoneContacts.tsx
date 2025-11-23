@@ -84,7 +84,6 @@ const ContactItem = ({
           style={{ backgroundColor: Colors.light.PRIMARY_500 }}
         >
           <View className="flex-row items-center gap-1">
-            <UserPlus size={16} color="white" />
             <Text className="text-white font-medium">Kết bạn</Text>
           </View>
         </Pressable>

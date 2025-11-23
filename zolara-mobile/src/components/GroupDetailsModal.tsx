@@ -208,7 +208,15 @@ const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
       </Avatar>
       <VStack className="ml-3 flex-1">
         <Text className="font-medium">{item.user?.fullName}</Text>
-        <Text className="text-xs text-gray-500">
+        <Text
+          className={`text-xs ${
+            item.role === "LEADER"
+              ? "text-red-500"
+              : item.role === "CO_LEADER"
+                ? "text-blue-500"
+                : "text-gray-500"
+          }`}
+        >
           {item.role === "LEADER"
             ? "Trưởng nhóm"
             : item.role === "CO_LEADER"

@@ -61,6 +61,7 @@ export default function AccountSecurityScreen() {
         />
 
         <FunctionButton
+          disabled={true}
           icon={
             <Phone
               size={26}
