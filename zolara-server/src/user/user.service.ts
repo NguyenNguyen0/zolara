@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendStatus } from '@prisma/client';
 
@@ -6,11 +10,21 @@ import { FriendStatus } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  private validateUUID(id: string): void {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      throw new BadRequestException('Invalid user ID format');
+    }
+  }
+
   async getAllUsers() {
     return this.prisma.user.findMany();
   }
 
   async getUserById(id: string, currentUserId?: string) {
+    this.validateUUID(id);
+
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -158,6 +172,8 @@ export class UserService {
   }
 
   async getUserBasicInfo(id: string) {
+    this.validateUUID(id);
+
     return this.prisma.userInfo.findUnique({
       where: { id },
       select: {
@@ -305,5 +321,107 @@ export class UserService {
     }
 
     return response;
+  }
+
+  async blockUser(userId: string, blockUntil?: string) {
+    this.validateUUID(userId);
+
+    // Check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, role: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Prevent blocking admin users
+    if (user.role === 'ADMIN') {
+      throw new BadRequestException('Cannot block admin users');
+    }
+
+    // Set block date - if blockUntil is provided, use it; otherwise set to far future for permanent block
+    const blockDate = blockUntil
+      ? new Date(blockUntil)
+      : new Date('2099-12-31');
+
+    // Update user with block date
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { blockDate },
+    });
+
+    // Revoke all active refresh tokens for the user
+    await this.prisma.refreshToken.updateMany({
+      where: {
+        userId,
+        isRevoked: false,
+      },
+      data: { isRevoked: true },
+    });
+
+    return {
+      message: 'User blocked successfully',
+      userId,
+      blockDate,
+    };
+  }
+
+  async unblockUser(userId: string) {
+    this.validateUUID(userId);
+
+    // Check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, blockDate: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (!user.blockDate) {
+      throw new BadRequestException('User is not blocked');
+    }
+
+    // Remove block date
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { blockDate: null },
+    });
+
+    return {
+      message: 'User unblocked successfully',
+      userId,
+    };
+  }
+
+  async getBlockedUsers() {
+    return this.prisma.user.findMany({
+      where: {
+        blockDate: {
+          not: null,
+          gt: new Date(), // Only show users who are currently blocked
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        phoneNumber: true,
+        blockDate: true,
+        role: true,
+        createdAt: true,
+        userInfo: {
+          select: {
+            fullName: true,
+            profilePictureUrl: true,
+          },
+        },
+      },
+      orderBy: {
+        blockDate: 'desc',
+      },
+    });
   }
 }

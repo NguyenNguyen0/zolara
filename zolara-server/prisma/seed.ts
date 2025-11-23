@@ -1,4 +1,10 @@
 import { PrismaClient, Gender, FriendStatus, DeviceType } from '@prisma/client';
+
+// Define UserRole enum locally to avoid import issues
+enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 import { hash } from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -35,26 +41,23 @@ async function main() {
   await createFriendships(users);
 }
 
-async function createUsers() {
-  await prisma.refreshToken.deleteMany({});
-  await prisma.notification.deleteMany({});
-  await prisma.message.deleteMany({});
-  await prisma.comment.deleteMany({});
-  await prisma.postReaction.deleteMany({});
-  await prisma.hiddenPost.deleteMany({});
-  await prisma.post.deleteMany({});
-  await prisma.story.deleteMany({});
-  await prisma.cloudStorage.deleteMany({});
-  await prisma.contact.deleteMany({});
-  await prisma.friend.deleteMany({});
-  await prisma.groupMember.deleteMany({});
-  await prisma.group.deleteMany({});
-  await prisma.qrCode.deleteMany({});
-  await prisma.pinnedItem.deleteMany({});
-  await prisma.userInfo.deleteMany({});
-  await prisma.user.deleteMany({});
+async function createUsers(): Promise<{ id: string }[]> {
+  await deleteAllData();
 
-  const userData = [
+  const userData: Array<{
+    id: string;
+    email: string;
+    phoneNumber: string;
+    fullName: string;
+    dateOfBirth: Date;
+    gender: Gender;
+    bio: string;
+    profilePictureUrl: string | null;
+    statusMessage: string;
+    coverImgUrl: string | null;
+    password: string;
+    role: UserRole;
+  }> = [
     {
       id: 'a1a0ae5b-070f-40c2-a07d-c61c06623e7a',
       email: 'nvminh162@gmail.com',
@@ -67,8 +70,9 @@ async function createUsers() {
         'https://avatars.githubusercontent.com/u/121565657?v=4',
       statusMessage: 'Live, Love, Travel, Gym 🌍✈️',
       coverImgUrl:
-        'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
+        'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.ADMIN,
     },
     {
       id: 'cea3f6a0-b3bf-4abe-9266-7a3a6fc29173',
@@ -82,8 +86,9 @@ async function createUsers() {
         'https://avatars.githubusercontent.com/u/126145466?v=4',
       statusMessage: 'Music is life 🎵🎨',
       coverImgUrl:
-        'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
+        'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.ADMIN,
     },
     {
       id: '43c307df-1cf7-407f-85e4-21f16a4e3bf9',
@@ -97,8 +102,9 @@ async function createUsers() {
         'https://hips.hearstapps.com/hmg-prod/images/lead-67b7ede03f159.png?crop=0.495xw:0.990xh;0,0.00977xh&resize=1120:*',
       statusMessage: 'No pain, no gain 💪🏃',
       coverImgUrl:
-        'https://assets.cticket.vn/tix/gdragon-2025-world-tour-ubermensch-in-hanoi-presented-by-vpbank/Slide%20Event%20Detail%203328x1844.webp',
+        'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: '1cc1b368-02e1-44a7-87c1-17ab9620bb5f',
@@ -114,6 +120,7 @@ async function createUsers() {
       coverImgUrl:
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: '300bc485-d342-442e-aa08-95b754ba901d',
@@ -127,8 +134,10 @@ async function createUsers() {
         'https://photo-resize-zmp3.zadn.vn/w600_r1x1_jpeg/avatars/7/0/704b27084030f0e97ce3ce3e5953e9e5_1510885710.jpg',
       statusMessage: 'Think different, build different 🚀',
       coverImgUrl:
-        'https://s2.dmcdn.net/v/QoeSS1epFN0a5p4R2/x720',
+        'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.USER,
+        'https://s2.dmcdn.net/v/QoeSS1epFN0a5p4R2/x720',
     },
     {
       id: '3d09a459-8398-4ec8-ba0f-ffb881f77632',
@@ -144,6 +153,7 @@ async function createUsers() {
       coverImgUrl:
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: '422a4298-58d6-41d9-a28e-4025c19baf3a',
@@ -157,8 +167,9 @@ async function createUsers() {
         'https://image-cdn.nct.vn/singer/avatar/2023/08/10/a/5/f/1/65191_600.jpg',
       statusMessage: 'GG EZ 🎮🏆',
       coverImgUrl:
-        'https://wallpapers.com/images/hd/bigbang-in-the-city-road-g3rjreohayn5k3ev.jpg',
-      password: '123456789',
+        'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
+      password: '12346789',
+      role: UserRole.USER,
     },
     {
       id: '84cc97a1-be78-4ae9-975b-efe8328fe015',
@@ -174,6 +185,8 @@ async function createUsers() {
       coverImgUrl:
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.USER,
+      password: '123456789',
     },
     {
       id: 'ac3fe11d-01bf-4ef0-9992-661e621253c2',
@@ -187,8 +200,9 @@ async function createUsers() {
         'https://i.mydramalist.com/RBPAVV_5c.jpg',
       statusMessage: 'Frame the moment 📸🎬',
       coverImgUrl:
-        'https://wallpapers.com/images/hd/bigbang-in-the-city-road-g3rjreohayn5k3ev.jpg',
+        'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: 'b5c8d7e6-f5e4-4d3c-b2a1-0f9e8d7c6b5a',
@@ -200,8 +214,9 @@ async function createUsers() {
       bio: 'JISOO | OFFICIAL',
       profilePictureUrl: "https://preview.redd.it/250214-jisoo-amortage-mini-album-release-photos-v0-z0n9tnvgf2je1.jpg?width=640&crop=smart&auto=webp&s=796f4cf4481512f72188e911d10a767e6a1e091a",
       statusMessage: 'Green living 🌱🌍',
-      coverImgUrl: "https://images.augustman.com/wp-content/uploads/sites/6/2023/04/01170503/jisoo-solo-blackpink-2.jpeg",
+      coverImgUrl: null,
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: 'c6d7e8f9-a0b1-2c3d-4e5f-6a7b8c9d0e1f',
@@ -213,8 +228,9 @@ async function createUsers() {
       bio: 'I love Cr7',
       profilePictureUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIS4VuIKs3YjObiyW8M0NzDAkx8BEhLzLhEA&s",
       statusMessage: 'AI will change the world 🤖💡',
-      coverImgUrl: "https://wallpapers.com/images/hd/ishowspeed-o8thh1dftcpzzj27.jpg",
+      coverImgUrl: null,
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: 'd7e8f9a0-b1c2-3d4e-5f6a-7b8c9d0e1f2a',
@@ -226,8 +242,9 @@ async function createUsers() {
       bio: 'Taylor Swift | OFFICIAL ZOLARA',
       profilePictureUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyJAJsPlTFwgm5GFnATrRbOjtxuGVSYgJOng&s",
       statusMessage: 'Namaste 🧘‍♀️✨',
-      coverImgUrl: "https://miro.medium.com/v2/1*wHsM4lnTwnnkszc-depMbA.jpeg",
+      coverImgUrl: null,
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: 'e8f9a0b1-c2d3-4e5f-6a7b-8c9d0e1f2a3b',
@@ -239,8 +256,9 @@ async function createUsers() {
       bio: 'Cristiano Ronaldo | OFFICIAL ZOLARA',
       profilePictureUrl: "https://instagram.fsgn5-15.fna.fbcdn.net/v/t51.2885-19/472007201_1142000150877579_994350541752907763_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fsgn5-15.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QHH2okSPnALro1FBKWLEAh_PiQQfqrnz--J1z4YDyAOgCjgWcbpjDeB_NRlfvzqdrv5j2uD558n-X3dyIt24QVC&_nc_ohc=u6aMCm3RG2sQ7kNvwE4RSMq&_nc_gid=lkSAQduszMvin-QkejAmrg&edm=AIhb9MIBAAAA&ccb=7-5&oh=00_AfiJL-aeqj_2PXMMfooAR2NvAbDxCU54x2It_JNSloDDkA&oe=6928761E&_nc_sid=8aafe2",
       statusMessage: 'Think big, start small 💼📈',
-      coverImgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvao_E0DInTIdltvtB8mLtPvfuXTb41X93lQ&s",
+      coverImgUrl: null,
       password: '123456789',
+      role: UserRole.USER,
     },
     {
       id: 'f9a0b1c2-d3e4-5f6a-7b8c-9d0e1f2a3b4c',
@@ -252,12 +270,13 @@ async function createUsers() {
       bio: 'MESSI | OFFICIAL ZOLARA',
       profilePictureUrl: "https://instagram.fsgn5-15.fna.fbcdn.net/v/t51.2885-19/424905549_7243065989106669_45026390061580919_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fsgn5-15.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QGCbVPgbYommrYw9kOKMcU2pjhxGKagxwdAotlP-a2xzCpP8Ipc5XeYDK9Q1Epgf0rDNDKcUyk8yuMNdZk_MHuM&_nc_ohc=z5_26xjnGQ0Q7kNvwHwxNfc&_nc_gid=3Yk3hR-Tn4WlTuHMBfCcSA&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfhSTX5tUohIy9npdEPqlux6E678vSTs2Hcac0CTWRJGog&oe=6928A0B1&_nc_sid=7a9f4b",
       statusMessage: 'Love all creatures 🐾🦋',
-      coverImgUrl: "https://cdn.theatlantic.com/thumbor/cGrcH5XD4XEGwSpOI7VSnoToduQ=/8x106:3930x2165/960x504/filters:watermark(https://cdn.theatlantic.com/media/files/badge_2x.png,-20,20,0,33)/media/img/mt/2022/12/GettyImages_1245714145/original.jpg",
+      coverImgUrl: null,
       password: '123456789',
+      role: UserRole.USER,
     },
   ];
 
-  const createdUsers = [];
+  const createdUsers: { id: string }[] = [];
 
   for (const user of userData) {
     // First create the user with fixed ID
@@ -267,6 +286,7 @@ async function createUsers() {
         email: user.email,
         phoneNumber: user.phoneNumber,
         passwordHash: await hash(user.password, 10),
+        role: user.role, // Add the role field
         refreshTokens: {
           create: {
             token: `token-${user.email.split('@')[0]}`,
@@ -301,7 +321,11 @@ async function createUsers() {
   return createdUsers;
 }
 
-async function createFriendships(users: any[]) {
+interface UserType {
+  id: string;
+}
+
+async function createFriendships(users: UserType[]) {
   const friendships = [
     {
       senderId: users[0].id,

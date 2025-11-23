@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  PersonIcon, 
-  LockClosedIcon, 
-  EyeOpenIcon, 
-  EyeNoneIcon 
-} from '@radix-ui/react-icons';
-import { useAuth } from '../hooks/useAuth';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  PersonIcon,
+  LockClosedIcon,
+  EyeOpenIcon,
+  EyeNoneIcon,
+} from "@radix-ui/react-icons";
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginFormData {
   email: string;
@@ -18,46 +18,66 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated, error: authError, clearError } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    general?: string;
+  }>({});
 
   // Redirect if already authenticated (only on mount or when actually authenticated)
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      navigate("/dashboard", { replace: true });
     }
   }, [isAuthenticated, navigate]);
+
+  // Check for URL error parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorParam = urlParams.get("error");
+
+    if (errorParam === "admin-required") {
+      setErrors((prev) => ({
+        ...prev,
+        general:
+          "Admin access required. This account does not have administrative privileges.",
+      }));
+      // Clean URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
 
   // Update errors when authError changes
   useEffect(() => {
     if (authError) {
-      setErrors(prev => ({ ...prev, general: authError }));
+      setErrors((prev) => ({ ...prev, general: authError }));
       setIsLoading(false); // Ensure loading is stopped when there's an auth error
     }
   }, [authError]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear field-specific errors
     if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
-    
+
     // Clear general errors when user starts typing
     if (errors.general) {
-      setErrors(prev => ({ ...prev, general: undefined }));
+      setErrors((prev) => ({ ...prev, general: undefined }));
     }
-    
+
     // Clear auth context errors
     if (authError) {
       clearError();
@@ -68,15 +88,15 @@ const Login = () => {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -86,21 +106,26 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation(); // Prevent any form submission behavior
-    
+
     if (!validateForm()) {
       return;
     }
 
     setIsLoading(true);
-    setErrors(prev => ({ ...prev, email: undefined, password: undefined, general: undefined }));
+    setErrors((prev) => ({
+      ...prev,
+      email: undefined,
+      password: undefined,
+      general: undefined,
+    }));
     clearError();
 
     try {
       const success = await login({
         email: formData.email,
         password: formData.password,
-        deviceType: 'WEB',
-        deviceName: 'Zolara Admin Dashboard'
+        deviceType: "WEB",
+        deviceName: "Zolara Admin Dashboard",
       });
 
       setIsLoading(false);
@@ -112,9 +137,9 @@ const Login = () => {
       // If login failed, error will be set in AuthContext and displayed via useEffect
     } catch {
       setIsLoading(false);
-      setErrors(prev => ({ 
-        ...prev, 
-        general: 'An unexpected error occurred. Please try again.' 
+      setErrors((prev) => ({
+        ...prev,
+        general: "An unexpected error occurred. Please try again.",
       }));
     }
   };
@@ -143,11 +168,23 @@ const Login = () => {
             {/* General Error */}
             {errors.general && (
               <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 shadow-sm">
-                <div className="flex items-center">
-                  <div className="h-3 w-3 bg-red-500 rounded-full mr-2"></div>
-                  <p className="text-sm font-semibold text-red-700">
-                    {errors.general}
-                  </p>
+                <div className="flex items-start">
+                  <div className="h-3 w-3 bg-red-500 rounded-full mr-3 mt-0.5 shrink-0"></div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-700 mb-1">
+                      {errors.general.includes("Admin access required")
+                        ? "Access Denied"
+                        : "Login Failed"}
+                    </p>
+                    <p className="text-xs text-red-600">{errors.general}</p>
+                    {errors.general.includes("Admin access required") && (
+                      <p className="text-xs text-red-500 mt-2 font-medium">
+                        Only administrators can access this dashboard. Please
+                        contact your system administrator if you believe this is
+                        an error.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

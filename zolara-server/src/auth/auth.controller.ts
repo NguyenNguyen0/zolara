@@ -8,13 +8,21 @@ import {
   BadRequestException,
   Logger,
   Put,
-  Get,
-  UseGuards,
   UploadedFile,
   UseInterceptors,
   ValidationPipe,
+  Get,
+  UseGuards,
 } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
+
+interface AuthenticatedRequest extends Request {
+  user: {
+    sub: string;
+    email?: string;
+    role?: string;
+  };
+}
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -31,6 +39,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { InitiateUpdateEmailDto } from './dto/initiate-update-email.dto';
 import { InitiateUpdatePhoneDto } from './dto/initiate-update-phone.dto';
 import { VerifyUpdateOtpDto } from './dto/verify-update-otp.dto';
+import { AuthGuard } from './guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -107,6 +116,15 @@ export class AuthController {
       throw new UnauthorizedException('Refresh token is required');
     }
     return this.authService.logout(refreshToken);
+  }
+
+  @Get('admin/verify')
+  @UseGuards(AuthGuard)
+  async verifyAdmin(@Req() request: AuthenticatedRequest) {
+    const userId = request.user.sub;
+    this.logger.log(`Admin verification request - UserId: ${userId}`);
+
+    return await this.authService.verifyAdminStatus(userId);
   }
 
   @Post('forgot-password')

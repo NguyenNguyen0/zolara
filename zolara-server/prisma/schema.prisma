@@ -13,6 +13,8 @@ model User {
   email            String?           @unique
   phoneNumber      String?           @unique
   passwordHash     String            @map("password_hash")
+  role             UserRole          @default(USER)
+  blockDate        DateTime?         @map("block_date")
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
   userInfo         UserInfo?         @relation(name: "UserToUserInfo")
@@ -330,6 +332,11 @@ enum CallStatus {
   ENDED
   MISSED
   REJECTED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model Call {
