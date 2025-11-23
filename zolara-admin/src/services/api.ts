@@ -85,6 +85,7 @@ export const apiService = {
   
   // Dashboard
   getDashboardStats: () => api.get('/dashboard/stats'),
+  getUserStatistics: () => api.get('/dashboard/user-statistics'),
   
   // User management
   getUsers: (params?: UserParams) => api.get('/users', { params }),

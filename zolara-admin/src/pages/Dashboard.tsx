@@ -4,6 +4,7 @@ import { DashboardSidebar, type DashboardSection } from '../components/Dashboard
 import { DashboardHeader } from '../components/DashboardHeader';
 import { OverviewSection } from '../components/OverviewSection';
 import { AnalyticsSection } from '../components/AnalyticsSection';
+import UserStatisticsSection from '../components/UserStatisticsSection';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../hooks/useAuth';
 
@@ -72,12 +73,17 @@ const Dashboard: React.FC = () => {
               lastUpdated={lastUpdated}
               isLoading={isLoading}
             />
-          ) : (
+          ) : activeSection === "analytics" ? (
             <AnalyticsSection 
               callStats={callStats} 
               isLoading={isLoading}
             />
-          )}
+          ) : activeSection === "user-statistics" ? (
+            <UserStatisticsSection
+              userStats={userStats}
+              isLoading={isLoading}
+            />
+          ) : null}
         </div>
       </div>
     </div>
