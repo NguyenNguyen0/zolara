@@ -137,7 +137,6 @@ async function createUsers(): Promise<{ id: string }[]> {
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
       role: UserRole.USER,
-        'https://s2.dmcdn.net/v/QoeSS1epFN0a5p4R2/x720',
     },
     {
       id: '3d09a459-8398-4ec8-ba0f-ffb881f77632',
@@ -168,7 +167,7 @@ async function createUsers(): Promise<{ id: string }[]> {
       statusMessage: 'GG EZ 🎮🏆',
       coverImgUrl:
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
-      password: '12346789',
+      password: '123456789',
       role: UserRole.USER,
     },
     {
@@ -186,7 +185,6 @@ async function createUsers(): Promise<{ id: string }[]> {
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
       password: '123456789',
       role: UserRole.USER,
-      password: '123456789',
     },
     {
       id: 'ac3fe11d-01bf-4ef0-9992-661e621253c2',
@@ -196,8 +194,7 @@ async function createUsers(): Promise<{ id: string }[]> {
       dateOfBirth: new Date('1999-08-22'),
       gender: Gender.MALE,
       bio: 'DAESUNG | OFFICIAL ZOLARA',
-      profilePictureUrl:
-        'https://i.mydramalist.com/RBPAVV_5c.jpg',
+      profilePictureUrl: 'https://i.mydramalist.com/RBPAVV_5c.jpg',
       statusMessage: 'Frame the moment 📸🎬',
       coverImgUrl:
         'https://wallpapers.com/images/hd/black-dresses-blackpink-desktop-3dcpt7p1kgu54lty.jpg',
@@ -212,7 +209,8 @@ async function createUsers(): Promise<{ id: string }[]> {
       dateOfBirth: new Date('2000-02-28'),
       gender: Gender.FEMALE,
       bio: 'JISOO | OFFICIAL',
-      profilePictureUrl: "https://preview.redd.it/250214-jisoo-amortage-mini-album-release-photos-v0-z0n9tnvgf2je1.jpg?width=640&crop=smart&auto=webp&s=796f4cf4481512f72188e911d10a767e6a1e091a",
+      profilePictureUrl:
+        'https://preview.redd.it/250214-jisoo-amortage-mini-album-release-photos-v0-z0n9tnvgf2je1.jpg?width=640&crop=smart&auto=webp&s=796f4cf4481512f72188e911d10a767e6a1e091a',
       statusMessage: 'Green living 🌱🌍',
       coverImgUrl: null,
       password: '123456789',
@@ -226,7 +224,8 @@ async function createUsers(): Promise<{ id: string }[]> {
       dateOfBirth: new Date('1998-10-05'),
       gender: Gender.MALE,
       bio: 'I love Cr7',
-      profilePictureUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIS4VuIKs3YjObiyW8M0NzDAkx8BEhLzLhEA&s",
+      profilePictureUrl:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIS4VuIKs3YjObiyW8M0NzDAkx8BEhLzLhEA&s',
       statusMessage: 'AI will change the world 🤖💡',
       coverImgUrl: null,
       password: '123456789',
@@ -240,7 +239,8 @@ async function createUsers(): Promise<{ id: string }[]> {
       dateOfBirth: new Date('2001-07-16'),
       gender: Gender.FEMALE,
       bio: 'Taylor Swift | OFFICIAL ZOLARA',
-      profilePictureUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyJAJsPlTFwgm5GFnATrRbOjtxuGVSYgJOng&s",
+      profilePictureUrl:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyJAJsPlTFwgm5GFnATrRbOjtxuGVSYgJOng&s',
       statusMessage: 'Namaste 🧘‍♀️✨',
       coverImgUrl: null,
       password: '123456789',
@@ -254,7 +254,8 @@ async function createUsers(): Promise<{ id: string }[]> {
       dateOfBirth: new Date('1999-01-20'),
       gender: Gender.MALE,
       bio: 'Cristiano Ronaldo | OFFICIAL ZOLARA',
-      profilePictureUrl: "https://instagram.fsgn5-15.fna.fbcdn.net/v/t51.2885-19/472007201_1142000150877579_994350541752907763_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fsgn5-15.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QHH2okSPnALro1FBKWLEAh_PiQQfqrnz--J1z4YDyAOgCjgWcbpjDeB_NRlfvzqdrv5j2uD558n-X3dyIt24QVC&_nc_ohc=u6aMCm3RG2sQ7kNvwE4RSMq&_nc_gid=lkSAQduszMvin-QkejAmrg&edm=AIhb9MIBAAAA&ccb=7-5&oh=00_AfiJL-aeqj_2PXMMfooAR2NvAbDxCU54x2It_JNSloDDkA&oe=6928761E&_nc_sid=8aafe2",
+      profilePictureUrl:
+        'https://instagram.fsgn5-15.fna.fbcdn.net/v/t51.2885-19/472007201_1142000150877579_994350541752907763_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fsgn5-15.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QHH2okSPnALro1FBKWLEAh_PiQQfqrnz--J1z4YDyAOgCjgWcbpjDeB_NRlfvzqdrv5j2uD558n-X3dyIt24QVC&_nc_ohc=u6aMCm3RG2sQ7kNvwE4RSMq&_nc_gid=lkSAQduszMvin-QkejAmrg&edm=AIhb9MIBAAAA&ccb=7-5&oh=00_AfiJL-aeqj_2PXMMfooAR2NvAbDxCU54x2It_JNSloDDkA&oe=6928761E&_nc_sid=8aafe2',
       statusMessage: 'Think big, start small 💼📈',
       coverImgUrl: null,
       password: '123456789',
@@ -268,7 +269,8 @@ async function createUsers(): Promise<{ id: string }[]> {
       dateOfBirth: new Date('2000-12-10'),
       gender: Gender.MALE,
       bio: 'MESSI | OFFICIAL ZOLARA',
-      profilePictureUrl: "https://instagram.fsgn5-15.fna.fbcdn.net/v/t51.2885-19/424905549_7243065989106669_45026390061580919_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fsgn5-15.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QGCbVPgbYommrYw9kOKMcU2pjhxGKagxwdAotlP-a2xzCpP8Ipc5XeYDK9Q1Epgf0rDNDKcUyk8yuMNdZk_MHuM&_nc_ohc=z5_26xjnGQ0Q7kNvwHwxNfc&_nc_gid=3Yk3hR-Tn4WlTuHMBfCcSA&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfhSTX5tUohIy9npdEPqlux6E678vSTs2Hcac0CTWRJGog&oe=6928A0B1&_nc_sid=7a9f4b",
+      profilePictureUrl:
+        'https://instagram.fsgn5-15.fna.fbcdn.net/v/t51.2885-19/424905549_7243065989106669_45026390061580919_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fsgn5-15.fna.fbcdn.net&_nc_cat=1&_nc_oc=Q6cZ2QGCbVPgbYommrYw9kOKMcU2pjhxGKagxwdAotlP-a2xzCpP8Ipc5XeYDK9Q1Epgf0rDNDKcUyk8yuMNdZk_MHuM&_nc_ohc=z5_26xjnGQ0Q7kNvwHwxNfc&_nc_gid=3Yk3hR-Tn4WlTuHMBfCcSA&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfhSTX5tUohIy9npdEPqlux6E678vSTs2Hcac0CTWRJGog&oe=6928A0B1&_nc_sid=7a9f4b',
       statusMessage: 'Love all creatures 🐾🦋',
       coverImgUrl: null,
       password: '123456789',

@@ -100,7 +100,13 @@ api.interceptors.response.use(
 export const apiService = {
   // Auth
   login: (credentials: LoginCredentials) => api.post('/auth/login', credentials),
-  logout: () => api.post('/auth/logout'),
+  logout: (refreshToken?: string) => {
+    const headers: Record<string, string> = {};
+    if (refreshToken) {
+      headers['refresh-token'] = refreshToken;
+    }
+    return api.post('/auth/logout', {}, { headers });
+  },
   refreshToken: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
   verifyAdmin: () => api.get('/auth/admin/verify'),
   

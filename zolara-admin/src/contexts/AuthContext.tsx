@@ -146,8 +146,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Logout function
   const logout = async () => {
     try {
-      // Call logout API endpoint
-      await apiService.logout();
+      // Get refresh token from localStorage
+      const refreshToken = localStorage.getItem("refreshToken");
+      
+      // Call logout API endpoint with refresh token
+      await apiService.logout(refreshToken || undefined);
     } catch (err) {
       console.error("Logout API call failed:", err);
       // Continue with logout even if API call fails
