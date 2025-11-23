@@ -1,147 +1,248 @@
-import { Text, View, Image, Dimensions, ScrollView } from "react-native";
+import React, { useState, useCallback } from "react";
+import {
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFocusEffect } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { Newspaper, Sparkles, TrendingUp, Users } from "lucide-react-native";
-
-const { width, height } = Dimensions.get("window");
+import { Plus } from "lucide-react-native";
+import { PostItem } from "@/components/post/post.item";
+import { CreatePostModal } from "@/components/post/create-post.modal";
+import { CommentModal } from "@/components/post/comment.modal";
+import { postService, Post } from "@/services/post-service";
 
 export default function NewsScreen() {
   const insets = useSafeAreaInsets();
-  
-  // Calculate image size - full width minus padding
-  const availableHeight = height - insets.top - insets.bottom;
-  const horizontalPadding = 48; // px-6 = 24px each side
-  const imageWidth = width - horizontalPadding;
-  const imageHeight = Math.min(imageWidth, availableHeight * 0.4);
-  
-  return (
-    <ScrollView
-      className="flex-1 bg-white"
-      contentContainerStyle={{
-        paddingTop: insets.top > 0 ? 20 : 40,
-        paddingBottom: insets.bottom + 20,
-        paddingHorizontal: 24,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View className="items-center w-full">
-        {/* Animated GIF */}
-        <View>
-          <Image
-            source={require("@/assets/images/default/404.gif")}
-            style={{
-              width: imageWidth,
-              height: imageHeight,
-            }}
-            resizeMode="contain"
-          />
-        </View>
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editPost, setEditPost] = useState<Post | null>(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
-        {/* Main Title */}
-        <View className="items-center mb-2">
-          <View className="flex-row items-center mb-2">
-            <Newspaper size={32} color={Colors.light.PRIMARY_500} />
-            <Text className="text-3xl font-bold text-center text-gray-900 ml-2">
-              Bản Tin
-            </Text>
-          </View>
-          <Text className="text-lg font-semibold text-center" style={{ color: Colors.light.PRIMARY_600 }}>
-            Tính năng đang phát triển
-          </Text>
-        </View>
+  const loadPosts = async (pageNum: number = 1, append: boolean = false) => {
+    try {
+      const response = await postService.getFeedPosts(pageNum, 20);
+      if (append) {
+        setPosts((prev) => [...prev, ...response.data]);
+      } else {
+        setPosts(response.data);
+      }
+      setHasMore(response.pagination.page < response.pagination.totalPages);
+    } catch (error: any) {
+      console.error("Error loading posts:", error);
+      Alert.alert("Lỗi", "Không thể tải bài viết. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
-        {/* Description */}
-        <Text className="text-base text-gray-600 text-center leading-7 mb-8 px-2">
-          Chúng tôi đang xây dựng tính năng Bản Tin để bạn có thể cập nhật những tin tức, 
-          sự kiện và hoạt động mới nhất từ cộng đồng Zolara.
-        </Text>
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      setPage(1);
+      loadPosts(1, false);
+    }, []),
+  );
 
-        {/* Features Card */}
-        <View
-          className="rounded-2xl p-6 w-full mb-6"
-          style={{ 
-            backgroundColor: Colors.light.PRIMARY_50,
-            borderWidth: 1,
-            borderColor: Colors.light.PRIMARY_100,
-          }}
-        >
-          <View className="flex-row items-center mb-4">
-            <Sparkles size={24} color={Colors.light.PRIMARY_500} />
-            <Text
-              className="text-lg font-bold ml-2"
-              style={{ color: Colors.light.PRIMARY_700 }}
-            >
-              Sắp ra mắt
-            </Text>
-          </View>
-          
-          <View>
-            <View className="flex-row items-start mb-3">
-              <View 
-                className="rounded-full p-1.5 mr-3 mt-0.5"
-                style={{ backgroundColor: Colors.light.PRIMARY_100 }}
-              >
-                <TrendingUp size={16} color={Colors.light.PRIMARY_600} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-gray-800 mb-1">
-                  Tin tức nổi bật
-                </Text>
-                <Text className="text-sm text-gray-600 leading-5">
-                  Cập nhật những tin tức và sự kiện hot nhất trong cộng đồng
-                </Text>
-              </View>
-            </View>
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setPage(1);
+    loadPosts(1, false);
+  };
 
-            <View className="flex-row items-start mb-3">
-              <View 
-                className="rounded-full p-1.5 mr-3 mt-0.5"
-                style={{ backgroundColor: Colors.light.PRIMARY_100 }}
-              >
-                <Users size={16} color={Colors.light.PRIMARY_600} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-gray-800 mb-1">
-                  Hoạt động bạn bè
-                </Text>
-                <Text className="text-sm text-gray-600 leading-5">
-                  Theo dõi những hoạt động và cập nhật mới từ bạn bè của bạn
-                </Text>
-              </View>
-            </View>
+  const handleLoadMore = () => {
+    if (!hasMore || loading) return;
+    const nextPage = page + 1;
+    setPage(nextPage);
+    loadPosts(nextPage, true);
+  };
 
-            <View className="flex-row items-start">
-              <View 
-                className="rounded-full p-1.5 mr-3 mt-0.5"
-                style={{ backgroundColor: Colors.light.PRIMARY_100 }}
-              >
-                <Newspaper size={16} color={Colors.light.PRIMARY_600} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-gray-800 mb-1">
-                  Nội dung cá nhân hóa
-                </Text>
-                <Text className="text-sm text-gray-600 leading-5">
-                  Bản tin được tùy chỉnh theo sở thích và hoạt động của bạn
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
+  const handlePostCreated = () => {
+    // Refresh posts after creating/updating
+    setPage(1);
+    loadPosts(1, false);
+    setEditPost(null);
+  };
 
-        {/* Coming Soon Badge */}
-        <View 
-          className="rounded-full px-6 py-3"
-          style={{ backgroundColor: Colors.light.PRIMARY_100 }}
-        >
-          <Text 
-            className="text-sm font-semibold"
-            style={{ color: Colors.light.PRIMARY_700 }}
-          >
-            🚀 Sắp có mặt trong phiên bản tiếp theo
-          </Text>
-        </View>
+  const handleEditPost = (post: Post) => {
+    setEditPost(post);
+    setShowCreateModal(true);
+  };
+
+  const handleDeletePost = (postId: string) => {
+    Alert.alert(
+      "Xóa bài viết",
+      "Bạn có chắc chắn muốn xóa bài viết này?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Xóa",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await postService.deletePost(postId);
+              Alert.alert("Thành công", "Đã xóa bài viết thành công!");
+              handlePostCreated();
+            } catch (error: any) {
+              console.error("Error deleting post:", error);
+              Alert.alert(
+                "Lỗi",
+                error.response?.data?.message || "Không thể xóa bài viết. Vui lòng thử lại.",
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleLikePost = async (postId: string) => {
+    try {
+      await postService.toggleLikePost(postId);
+      // Refresh posts to update like status
+      handlePostCreated();
+    } catch (error: any) {
+      console.error("Error toggling like:", error);
+      Alert.alert(
+        "Lỗi",
+        error.response?.data?.message || "Không thể thích bài viết. Vui lòng thử lại.",
+      );
+    }
+  };
+
+  const handleCommentPost = (postId: string) => {
+    setSelectedPostId(postId);
+    setShowCommentModal(true);
+  };
+
+  const renderItem = ({ item }: { item: Post }) => (
+    <PostItem
+      post={item}
+      onLike={handleLikePost}
+      onComment={handleCommentPost}
+      onEdit={handleEditPost}
+      onDelete={handleDeletePost}
+    />
+  );
+
+  if (loading && posts.length === 0) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#FFFFFF",
+        }}
+      >
+        <ActivityIndicator size="large" color={Colors.light.PRIMARY} />
       </View>
-    </ScrollView>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: "#F9FAFB" }}>
+      <FlatList
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom + 80,
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[Colors.light.PRIMARY]}
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          hasMore && posts.length > 0 ? (
+            <View style={{ padding: 20 }}>
+              <ActivityIndicator size="small" color={Colors.light.PRIMARY} />
+            </View>
+          ) : null
+        }
+        ListEmptyComponent={
+          !loading ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingTop: 100,
+              }}
+            >
+              <Text style={{ fontSize: 16, color: "#9CA3AF" }}>
+                Chưa có bài viết nào
+              </Text>
+            </View>
+          ) : null
+        }
+      />
+
+      {/* Create Post Button - Fixed at bottom right */}
+      <TouchableOpacity
+        onPress={() => setShowCreateModal(true)}
+        style={{
+          position: "absolute",
+          bottom: insets.bottom,
+          right: 16,
+          zIndex: 10,
+          backgroundColor: Colors.light.PRIMARY,
+          borderRadius: 28,
+          width: 56,
+          height: 56,
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 4.65,
+          elevation: 8,
+        }}
+      >
+        <Plus size={28} color="#FFFFFF" />
+      </TouchableOpacity>
+
+      <CreatePostModal
+        visible={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false);
+          setEditPost(null);
+        }}
+        onPostCreated={handlePostCreated}
+        editPost={editPost}
+      />
+
+      <CommentModal
+        visible={showCommentModal}
+        postId={selectedPostId || ""}
+        onClose={() => {
+          setShowCommentModal(false);
+          setSelectedPostId(null);
+        }}
+        onCommentAdded={() => {
+          handlePostCreated();
+        }}
+      />
+    </View>
   );
 }

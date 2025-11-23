@@ -166,7 +166,7 @@ model Contact {
 model PostReaction {
   id           String       @id @default(uuid()) @map("reaction_id") @db.Uuid
   postId       String       @map("post_id") @db.Uuid
-  post         Post         @relation(name: "PostToPostReaction", fields: [postId], references: [id])
+  post         Post         @relation(name: "PostToPostReaction", fields: [postId], references: [id], onDelete: Cascade)
   userId       String       @map("user_id") @db.Uuid
   user         User         @relation(name: "PostReactionToUser", fields: [userId], references: [id])
   reactionType ReactionType @map("reaction_type")
@@ -180,7 +180,7 @@ model HiddenPost {
   userId   String   @map("user_id") @db.Uuid
   user     User     @relation(name: "HiddenPostToUser", fields: [userId], references: [id])
   postId   String   @map("post_id") @db.Uuid
-  post     Post     @relation(name: "HiddenPostToPost", fields: [postId], references: [id])
+  post     Post     @relation(name: "HiddenPostToPost", fields: [postId], references: [id], onDelete: Cascade)
   hiddenAt DateTime @default(now()) @map("hidden_at")
 
   @@map("hidden_posts")
@@ -259,7 +259,7 @@ model Message {
 model Comment {
   id        String  @id @default(uuid()) @map("comment_id") @db.Uuid
   postId    String  @map("post_id") @db.Uuid
-  post      Post    @relation(name: "CommentToPost", fields: [postId], references: [id])
+  post      Post    @relation(name: "CommentToPost", fields: [postId], references: [id], onDelete: Cascade)
   userId    String  @map("user_id") @db.Uuid
   user      User    @relation(name: "CommentToUser", fields: [userId], references: [id])
   content   String  @map("content")

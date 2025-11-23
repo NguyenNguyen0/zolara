@@ -100,6 +100,27 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="discover"
+          options={{
+            title: "Khám Phá",
+            tabBarIcon: ({ color, focused }) => (
+              <View className={clsx("items-center gap-1", focused ? "" : "")}>
+                <Ionicons name="compass-outline" size={25} color={focused ? Colors.light.PRIMARY : color} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: focused ? Colors.light.PRIMARY : color,
+                    fontWeight: 600,
+                  }}
+                  className="w-20 text-center "
+                >
+                  Khám Phá
+                </Text>
+              </View>
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="news"
           options={{
             title: "Bản tin",
@@ -115,27 +136,6 @@ export default function TabLayout() {
                   className="w-20 text-center "
                 >
                   Bản tin
-                </Text>
-              </View>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="notifications"
-          options={{
-            title: "Thông báo",
-            tabBarIcon: ({ color, focused }) => (
-              <View className={clsx("items-center gap-1", focused ? "" : "")}>
-                <Ionicons name="notifications-outline" size={25} color={focused ? Colors.light.PRIMARY : color} />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: focused ? Colors.light.PRIMARY : color,
-                    fontWeight: 600,
-                  }}
-                  className="w-20 text-center "
-                >
-                  Thông báo
                 </Text>
               </View>
             ),

@@ -14,6 +14,7 @@ import { ContactModule } from './contact/contact.module';
 import { EventModule } from './event/event.module';
 import { AgentModule } from './agent/agent.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     ContactModule,
     AgentModule,
     DashboardModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { Slot } from "expo-router";
 
-export default function NotificationsLayout() {
+export default function DiscoverLayout() {
   return <Slot screenOptions={{ headerShown: false }} />;
 }
+
