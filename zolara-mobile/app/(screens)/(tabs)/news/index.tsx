@@ -203,7 +203,7 @@ export default function NewsScreen() {
         onPress={() => setShowCreateModal(true)}
         style={{
           position: "absolute",
-          bottom: insets.bottom,
+          bottom: insets.bottom + 20,
           right: 16,
           zIndex: 10,
           backgroundColor: Colors.light.PRIMARY,

@@ -78,6 +78,7 @@ export const notificationService = {
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#FF231F7C",
+        sound: "facebook_message.mp3",
       });
     }
 
@@ -131,7 +132,7 @@ export const notificationService = {
           title,
           body,
           data,
-          sound: true,
+          sound: "facebook_message.mp3",
           badge: 1,
         },
         trigger: null, // null means show immediately

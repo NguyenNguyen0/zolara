@@ -350,7 +350,7 @@ export default function CreateGroupScreen() {
       {selectedFriends.size < 2 && (
         <View style={styles.infoContainer}>
           <Text style={styles.infoText}>
-            ℹ️ Nhóm phải có ít nhất 3 người (bao gồm cả bạn) để có thể tạo nhóm.
+            Nhóm phải có ít nhất 3 người (bao gồm cả bạn) để có thể tạo nhóm.
           </Text>
         </View>
       )}
@@ -548,8 +548,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: "#4dabf7",
   },
   infoText: {
     fontSize: 14,
