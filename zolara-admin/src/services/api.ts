@@ -78,6 +78,19 @@ api.interceptors.response.use(
         window.location.href = '/login';
       }
       // For login failures, let the error propagate naturally without redirect
+    } else if (error.response?.status === 403) {
+      // Handle forbidden access (admin access required)
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage?.includes('Admin access required')) {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          // Clear auth data and redirect to login for non-admin users
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          window.location.href = '/login?error=admin-required';
+        }
+      }
     }
     return Promise.reject(error);
   }
@@ -89,6 +102,7 @@ export const apiService = {
   login: (credentials: LoginCredentials) => api.post('/auth/login', credentials),
   logout: () => api.post('/auth/logout'),
   refreshToken: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
+  verifyAdmin: () => api.get('/auth/admin/verify'),
   
   // Dashboard
   getDashboardStats: () => api.get('/dashboard/stats'),
@@ -101,6 +115,13 @@ export const apiService = {
   createUser: (userData: CreateUserData) => api.post('/users', userData),
   updateUser: (id: string, userData: UpdateUserData) => api.put(`/users/${id}`, userData),
   deleteUser: (id: string) => api.delete(`/users/${id}`),
+  searchUser: (searchData: { email?: string; phoneNumber?: string }) => 
+    api.post('/users/search', searchData),
+  getBlockedUsers: () => api.get('/users/blocked'),
+  blockUser: (data: { userId: string; blockUntil: string }) => 
+    api.post('/users/block', data),
+  unblockUser: (data: { userId: string }) => 
+    api.put('/users/unblock', data),
   
   // Analytics
   getAnalytics: (dateRange: { start: string; end: string }) => 

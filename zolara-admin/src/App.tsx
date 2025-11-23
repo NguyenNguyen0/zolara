@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import NotFound from './pages/NotFound';
 import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import "./index.css";
@@ -42,8 +43,8 @@ function App() {
               } 
             />
             
-            {/* Redirect any unknown routes to login */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* 404 Not Found Page */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </AuthProvider>
