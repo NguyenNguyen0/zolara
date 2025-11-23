@@ -1,7 +1,7 @@
 import { cn } from '../lib/utils';
-import { Activity, Home, PanelRightOpen, PanelRightClose } from 'lucide-react';
+import { Activity, Home, PanelRightOpen, PanelRightClose, Users } from 'lucide-react';
 
-export type DashboardSection = 'overview' | 'analytics' | 'firebase-analytics';
+export type DashboardSection = 'overview' | 'analytics' | 'user-statistics';
 
 interface SidebarProps {
   activeSection: DashboardSection;
@@ -22,6 +22,12 @@ const navigationItems = [
     label: 'Analytics',
     icon: Activity,
     description: 'Charts and trends'
+  },
+  {
+    id: 'user-statistics' as DashboardSection,
+    label: 'User Statistics',
+    icon: Users,
+    description: 'User rankings and detailed stats'
   }
 ];
 
@@ -140,6 +146,9 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             )}
             {activeSection === 'analytics' && (
               <p className="pl-3 border-l-2 border-blue-300">Explore visual charts, trends, and performance analytics.</p>
+            )}
+            {activeSection === 'user-statistics' && (
+              <p className="pl-3 border-l-2 border-green-300">View detailed user statistics, rankings, and engagement metrics.</p>
             )}
           </div>
         </div>
