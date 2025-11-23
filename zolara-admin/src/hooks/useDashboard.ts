@@ -14,15 +14,11 @@ interface MessageStats {
   messagesThisWeek: number;
 }
 
-interface CallStats {
-  totalCalls: number;
-  activeCalls: number;
-  averageCallDuration: number;
-  currentSessionStats?: {
-    userCount: number;
-    duration: number;
-    receiveBitrate: number;
-  };
+interface GroupChatStats {
+  totalGroups: number;
+  activeGroups: number;
+  averageGroupSize: number;
+  groupMessagesToday: number;
 }
 
 interface ChartData {
@@ -36,11 +32,10 @@ interface ChartData {
     messages: number[];
     groupMessages: number[];
   };
-  callDistribution: {
-    voiceCalls: number;
-    videoCalls: number;
-    groupCalls: number;
-    conferenceCalls: number;
+  groupChatActivity: {
+    labels: string[];
+    activeGroups: number[];
+    messagesPerGroup: number[];
   };
   performanceMetrics: {
     labels: string[];
@@ -52,7 +47,7 @@ interface ChartData {
 interface DashboardData {
   userStats: UserStats;
   messageStats: MessageStats;
-  callStats: CallStats;
+  groupChatStats: GroupChatStats;
   chartData: ChartData;
   lastUpdated: Date;
   isLoading: boolean;
@@ -94,15 +89,11 @@ const generateMockData = (): Omit<DashboardData, 'isLoading'> => {
       messagesToday: 2341,
       messagesThisWeek: 15432,
     },
-    callStats: {
-      totalCalls: 2341,
-      activeCalls: 12,
-      averageCallDuration: 480, // in seconds
-      currentSessionStats: {
-        userCount: 5,
-        duration: 1200,
-        receiveBitrate: 250000,
-      },
+    groupChatStats: {
+      totalGroups: 234,
+      activeGroups: 45,
+      averageGroupSize: 8,
+      groupMessagesToday: 1250,
     },
     chartData: {
       userGrowth: {
@@ -115,11 +106,10 @@ const generateMockData = (): Omit<DashboardData, 'isLoading'> => {
         messages: [1850, 2120, 1980, 2340, 2180, 2450, 2341],
         groupMessages: [450, 520, 480, 590, 540, 610, 580],
       },
-      callDistribution: {
-        voiceCalls: 45,
-        videoCalls: 30,
-        groupCalls: 15,
-        conferenceCalls: 10,
+      groupChatActivity: {
+        labels: getLast7Days(),
+        activeGroups: [32, 38, 35, 42, 39, 45, 44],
+        messagesPerGroup: [15, 18, 16, 22, 19, 24, 21],
       },
       performanceMetrics: {
         labels: getLast7Days(),
@@ -146,7 +136,7 @@ export const useDashboard = (): DashboardData => {
         setData({
           userStats: result.userStats,
           messageStats: result.messageStats,
-          callStats: result.callStats,
+          groupChatStats: result.groupChatStats,
           chartData: result.chartData,
           lastUpdated: new Date(result.lastUpdated),
         });
@@ -172,4 +162,4 @@ export const useDashboard = (): DashboardData => {
   };
 };
 
-export type { DashboardData, UserStats, MessageStats, CallStats, ChartData };
+export type { DashboardData, UserStats, MessageStats, GroupChatStats, ChartData };

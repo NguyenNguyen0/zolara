@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/Card';
-import { Users, MessageSquare, Phone } from 'lucide-react';
+import { Users, MessageSquare, Users as GroupIcon } from 'lucide-react';
 import { SkeletonWrapper, StatCardSkeleton, DetailedStatCardSkeleton } from './ui/Skeleton';
 
 interface UserStats {
@@ -15,16 +15,17 @@ interface MessageStats {
   messagesThisWeek: number;
 }
 
-interface CallStats {
-  totalCalls: number;
-  activeCalls: number;
-  averageCallDuration: number;
+interface GroupChatStats {
+  totalGroups: number;
+  activeGroups: number;
+  averageGroupSize: number;
+  groupMessagesToday: number;
 }
 
 interface OverviewSectionProps {
   userStats: UserStats;
   messageStats: MessageStats;
-  callStats: CallStats;
+  groupChatStats: GroupChatStats;
   lastUpdated?: Date;
   isLoading?: boolean;
 }
@@ -32,7 +33,7 @@ interface OverviewSectionProps {
 export const OverviewSection: React.FC<OverviewSectionProps> = ({
   userStats,
   messageStats,
-  callStats,
+  groupChatStats,
   lastUpdated,
   isLoading = false
 }) => {
@@ -130,20 +131,20 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             </CardContent>
           </Card>
 
-          {/* Call Stats */}
+          {/* Group Chat Stats */}
           <Card className="border-l-4 border-l-chart-4 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Active Calls
+                Active Groups
               </CardTitle>
-              <Phone className="h-4 w-4 text-chart-4" />
+              <GroupIcon className="h-4 w-4 text-chart-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-chart-4">
-                {callStats.activeCalls}
+                {groupChatStats.activeGroups}
               </div>
               <p className="text-xs text-muted-foreground">
-                {callStats.totalCalls} total calls
+                {groupChatStats.totalGroups} total groups
               </p>
             </CardContent>
           </Card>
@@ -213,7 +214,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               <MessageSquare className="h-5 w-5" />
               Communication
             </CardTitle>
-            <CardDescription>Messaging and call statistics</CardDescription>
+            <CardDescription>Messaging and group chat statistics</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="space-y-4">
@@ -245,26 +246,32 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               </div>
               <div>
                 <h4 className="text-sm font-medium mb-3 text-chart-4 flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  Voice/Video Calls
+                  <GroupIcon className="h-4 w-4" />
+                  Group Chats
                 </h4>
                 <div className="space-y-2 pl-4">
                   <div className="flex justify-between items-center p-2 bg-chart-4/10 rounded">
-                    <span className="text-sm">Total Calls</span>
+                    <span className="text-sm">Total Groups</span>
                     <span className="text-sm font-semibold text-chart-4">
-                      {callStats.totalCalls}
+                      {groupChatStats.totalGroups}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">Active Calls</span>
+                    <span className="text-sm">Active Groups</span>
                     <span className="text-sm text-gray-600">
-                      {callStats.activeCalls}
+                      {groupChatStats.activeGroups}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">Avg Call Duration</span>
+                    <span className="text-sm">Avg Group Size</span>
                     <span className="text-sm text-gray-600">
-                      {Math.round(callStats.averageCallDuration / 60)}m
+                      {groupChatStats.averageGroupSize} members
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Group Messages Today</span>
+                    <span className="text-sm text-gray-600">
+                      {groupChatStats.groupMessagesToday}
                     </span>
                   </div>
                 </div>

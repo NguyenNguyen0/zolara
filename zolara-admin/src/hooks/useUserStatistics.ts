@@ -7,7 +7,7 @@ interface UserRankingData {
   email: string;
   avatar: string;
   messagesSent: number;
-  callsInitiated: number;
+  groupsJoined: number;
   activeTime: number;
   friendsCount: number;
   joinedDate: string;
@@ -26,14 +26,14 @@ interface UserStatisticsData {
   userStats: UserStatsData;
   topUsers: {
     byMessages: UserRankingData[];
-    byCalls: UserRankingData[];
+    byGroups: UserRankingData[];
     byActiveTime: UserRankingData[];
     byEngagement: UserRankingData[];
   };
   engagementMetrics: {
     averageSessionTime: number;
     averageMessagesPerUser: number;
-    averageCallsPerUser: number;
+    averageGroupsPerUser: number;
     mostActiveHour: number;
   };
   isLoading: boolean;
@@ -49,14 +49,14 @@ export const useUserStatistics = () => {
     },
     topUsers: {
       byMessages: [],
-      byCalls: [],
+      byGroups: [],
       byActiveTime: [],
       byEngagement: []
     },
     engagementMetrics: {
       averageSessionTime: 0,
       averageMessagesPerUser: 0,
-      averageCallsPerUser: 0,
+      averageGroupsPerUser: 0,
       mostActiveHour: 0,
     },
     isLoading: true,

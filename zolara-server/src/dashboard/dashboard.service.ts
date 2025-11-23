@@ -4,7 +4,7 @@ import {
   DashboardResponseDto,
   UserStatsDto,
   MessageStatsDto,
-  CallStatsDto,
+  GroupChatStatsDto,
   ChartDataDto,
   UserStatisticsDto,
 } from './dto/dashboard-response.dto';
@@ -14,17 +14,18 @@ export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getDashboardStats(): Promise<DashboardResponseDto> {
-    const [userStats, messageStats, callStats, chartData] = await Promise.all([
-      this.getUserStats(),
-      this.getMessageStats(),
-      this.getCallStats(),
-      this.getChartData(),
-    ]);
+    const [userStats, messageStats, groupChatStats, chartData] =
+      await Promise.all([
+        this.getUserStats(),
+        this.getMessageStats(),
+        this.getGroupChatStats(),
+        this.getChartData(),
+      ]);
 
     return {
       userStats,
       messageStats,
-      callStats,
+      groupChatStats,
       chartData,
       lastUpdated: new Date(),
     };
@@ -114,39 +115,68 @@ export class DashboardService {
     };
   }
 
-  private async getCallStats(): Promise<CallStatsDto> {
-    const [totalCalls, activeCalls, avgDurationResult] = await Promise.all([
-      this.prisma.call.count(),
-      this.prisma.call.count({
-        where: {
-          status: 'ONGOING',
-        },
-      }),
-      this.prisma.call.aggregate({
-        where: {
-          status: 'ENDED',
-          duration: {
-            not: null,
+  private async getGroupChatStats(): Promise<GroupChatStatsDto> {
+    const now = new Date();
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const [totalGroups, activeGroups, avgGroupSizeResult, groupMessagesToday] =
+      await Promise.all([
+        this.prisma.group.count(),
+        this.prisma.group.count({
+          where: {
+            messages: {
+              some: {
+                createdAt: {
+                  gte: last24Hours,
+                },
+              },
+            },
           },
-        },
-        _avg: {
-          duration: true,
-        },
-      }),
-    ]);
+        }),
+        this.prisma.groupMember.groupBy({
+          by: ['groupId'],
+          _count: {
+            userId: true,
+          },
+        }),
+        this.prisma.message.count({
+          where: {
+            messageType: 'GROUP',
+            createdAt: {
+              gte: startOfToday,
+            },
+          },
+        }),
+      ]);
+
+    const averageGroupSize =
+      avgGroupSizeResult.length > 0
+        ? Math.round(
+            avgGroupSizeResult.reduce(
+              (sum, group) => sum + group._count.userId,
+              0,
+            ) / avgGroupSizeResult.length,
+          )
+        : 0;
 
     return {
-      totalCalls,
-      activeCalls,
-      averageCallDuration: avgDurationResult._avg.duration || 0,
+      totalGroups,
+      activeGroups,
+      averageGroupSize,
+      groupMessagesToday,
     };
   }
 
   private async getChartData(): Promise<ChartDataDto> {
-    const [userGrowth, messageActivity, callDistribution] = await Promise.all([
+    const [userGrowth, messageActivity, groupChatActivity] = await Promise.all([
       this.getUserGrowthData(),
       this.getMessageActivityData(),
-      this.getCallDistributionData(),
+      this.getGroupChatActivityData(),
     ]);
 
     // Performance metrics (mock data for now since we don't have this in DB)
@@ -155,7 +185,7 @@ export class DashboardService {
     return {
       userGrowth,
       messageActivity,
-      callDistribution,
+      groupChatActivity,
       performanceMetrics,
     };
   }
@@ -306,47 +336,101 @@ export class DashboardService {
     };
   }
 
-  private async getCallDistributionData() {
+  private async getGroupChatActivityData() {
+    const days: Date[] = [];
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // Get calls from this month
-    const calls = await this.prisma.call.findMany({
-      where: {
-        startedAt: {
-          gte: startOfMonth,
+    // Get last 7 days
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(now.getDate() - i);
+      days.push(date);
+    }
+
+    const labels = days.map((date) =>
+      date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    );
+
+    const activeGroupsPromises = days.map((date) => {
+      const startOfDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+      );
+      const endOfDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+      );
+
+      return this.prisma.group.count({
+        where: {
+          messages: {
+            some: {
+              createdAt: {
+                gte: startOfDay,
+                lte: endOfDay,
+              },
+            },
+          },
         },
-      },
-      select: {
-        type: true,
-        groupId: true,
-      },
+      });
     });
 
-    const distribution = {
-      voiceCalls: 0,
-      videoCalls: 0,
-      groupCalls: 0,
-      conferenceCalls: 0,
+    const messagesPerGroupPromises = days.map(async (date) => {
+      const startOfDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+      );
+      const endOfDay = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        23,
+        59,
+        59,
+      );
+
+      const totalMessages = await this.prisma.message.count({
+        where: {
+          messageType: 'GROUP',
+          createdAt: {
+            gte: startOfDay,
+            lte: endOfDay,
+          },
+        },
+      });
+
+      const activeGroups = await this.prisma.group.count({
+        where: {
+          messages: {
+            some: {
+              createdAt: {
+                gte: startOfDay,
+                lte: endOfDay,
+              },
+            },
+          },
+        },
+      });
+
+      return activeGroups > 0 ? Math.round(totalMessages / activeGroups) : 0;
+    });
+
+    const [activeGroups, messagesPerGroup] = await Promise.all([
+      Promise.all(activeGroupsPromises),
+      Promise.all(messagesPerGroupPromises),
+    ]);
+
+    return {
+      labels,
+      activeGroups,
+      messagesPerGroup,
     };
-
-    calls.forEach((call) => {
-      if (call.groupId) {
-        distribution.groupCalls++;
-      } else if (call.type === 'AUDIO') {
-        distribution.voiceCalls++;
-      } else if (call.type === 'VIDEO') {
-        distribution.videoCalls++;
-      }
-    });
-
-    // Conference calls could be group calls with more than X participants
-    // For now, we'll use a simple logic
-    distribution.conferenceCalls = Math.floor(distribution.groupCalls * 0.3);
-    distribution.groupCalls =
-      distribution.groupCalls - distribution.conferenceCalls;
-
-    return distribution;
   }
 
   private getPerformanceMetrics() {
@@ -403,8 +487,8 @@ export class DashboardService {
         take: 50,
       });
 
-      const userCallCounts = await this.prisma.call.groupBy({
-        by: ['initiatorId'],
+      const userGroupCounts = await this.prisma.groupMember.groupBy({
+        by: ['userId'],
         _count: {
           id: true,
         },
@@ -443,17 +527,17 @@ export class DashboardService {
         const messageStats = userMessageCounts.find(
           (m) => m.senderId === user.id,
         );
-        const callStats = userCallCounts.find((c) => c.initiatorId === user.id);
+        const groupStats = userGroupCounts.find((g) => g.userId === user.id);
 
         const messagesSent = messageStats?._count.id || 0;
-        const callsInitiated = callStats?._count.id || 0;
-        const activeTime = Math.round(messagesSent * 0.5 + callsInitiated * 2);
+        const groupsJoined = groupStats?._count.id || 0;
+        const activeTime = Math.round(messagesSent * 0.5 + groupsJoined * 2);
         const friendsCount = Math.floor(Math.random() * 100); // Placeholder
 
         // Simple engagement score
         const engagementScore = Math.min(
           100,
-          Math.round((messagesSent * 0.6 + callsInitiated * 0.4) / 10),
+          Math.round((messagesSent * 0.6 + groupsJoined * 0.4) / 10),
         );
 
         const displayName =
@@ -467,7 +551,7 @@ export class DashboardService {
           email: user.email || '',
           avatar: user.userInfo?.profilePictureUrl || '',
           messagesSent,
-          callsInitiated,
+          groupsJoined,
           activeTime,
           friendsCount,
           joinedDate: user.createdAt.toISOString(),
@@ -483,9 +567,9 @@ export class DashboardService {
         .slice()
         .sort((a, b) => Number(b.messagesSent) - Number(a.messagesSent))
         .slice(0, 10);
-      const byCalls = rankedUsers
+      const byGroups = rankedUsers
         .slice()
-        .sort((a, b) => Number(b.callsInitiated) - Number(a.callsInitiated))
+        .sort((a, b) => Number(b.groupsJoined) - Number(a.groupsJoined))
         .slice(0, 10);
       const byActiveTime = rankedUsers
         .slice()
@@ -498,7 +582,7 @@ export class DashboardService {
 
       return {
         byMessages,
-        byCalls,
+        byGroups,
         byActiveTime,
         byEngagement,
       };
@@ -507,7 +591,7 @@ export class DashboardService {
       // Fallback to basic mock data if database query fails
       return {
         byMessages: [],
-        byCalls: [],
+        byGroups: [],
         byActiveTime: [],
         byEngagement: [],
       };
@@ -515,11 +599,11 @@ export class DashboardService {
   }
 
   private async getEngagementMetricsFromDatabase() {
-    const [totalMessages, totalUsers, totalCalls, recentMessages] =
+    const [totalMessages, totalUsers, totalGroups, recentMessages] =
       await Promise.all([
         this.prisma.message.count(),
         this.prisma.user.count(),
-        this.prisma.call.count(),
+        this.prisma.groupMember.count(),
         this.prisma.message.findMany({
           select: {
             createdAt: true,
@@ -562,8 +646,8 @@ export class DashboardService {
       averageSessionTime,
       averageMessagesPerUser:
         totalUsers > 0 ? Math.round(totalMessages / totalUsers) : 0,
-      averageCallsPerUser:
-        totalUsers > 0 ? Math.round(totalCalls / totalUsers) : 0,
+      averageGroupsPerUser:
+        totalUsers > 0 ? Math.round(totalGroups / totalUsers) : 0,
       mostActiveHour: mostActiveHour >= 0 ? mostActiveHour : 14, // Default to 2 PM if no data
     };
   }

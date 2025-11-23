@@ -173,8 +173,8 @@ export const MessageActivityChart: React.FC<{ isLoading?: boolean }> = ({ isLoad
   );
 };
 
-// Call Distribution Chart Component
-export const CallDistributionChart: React.FC<{ isLoading?: boolean }> = ({ isLoading = false }) => {
+// Group Chat Activity Chart Component
+export const GroupChatActivityChart: React.FC<{ isLoading?: boolean }> = ({ isLoading = false }) => {
   const { chartData, isLoading: hookLoading } = useDashboard();
   
   const loading = isLoading || hookLoading;
@@ -182,66 +182,42 @@ export const CallDistributionChart: React.FC<{ isLoading?: boolean }> = ({ isLoa
   if (loading) {
     return (
       <SkeletonWrapper>
-        <DonutChartSkeleton />
+        <ChartSkeleton height={320} />
       </SkeletonWrapper>
     );
   }
 
   const data = {
-    labels: ['Voice Calls', 'Video Calls', 'Group Calls', 'Conference Calls'],
+    labels: chartData.groupChatActivity.labels,
     datasets: [
       {
-        data: [
-          chartData.callDistribution.voiceCalls,
-          chartData.callDistribution.videoCalls,
-          chartData.callDistribution.groupCalls,
-          chartData.callDistribution.conferenceCalls,
-        ],
-        backgroundColor: [
-          '#2563eb',
-          '#10b981',
-          '#f59e0b',
-          '#8b5cf6',
-        ],
-        borderWidth: 0,
+        label: 'Active Groups',
+        data: chartData.groupChatActivity.activeGroups,
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+        fill: true,
+        tension: 0.4,
+      },
+      {
+        label: 'Messages per Group',
+        data: chartData.groupChatActivity.messagesPerGroup,
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        fill: true,
+        tension: 0.4,
       },
     ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          padding: 20,
-          usePointStyle: true,
-        },
-      },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: '#ffffff',
-        bodyColor: '#ffffff',
-        cornerRadius: 6,
-        callbacks: {
-          label: function(context: {label: string; parsed: number}) {
-            return `${context.label}: ${context.parsed}%`;
-          },
-        },
-      },
-    },
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Call Distribution</CardTitle>
-        <CardDescription>Breakdown of call types</CardDescription>
+        <CardTitle>Group Chat Activity</CardTitle>
+        <CardDescription>Daily group engagement trends</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-80">
-          <Doughnut data={data} options={options} />
+          <Line data={data} options={chartOptions} />
         </div>
       </CardContent>
     </Card>
