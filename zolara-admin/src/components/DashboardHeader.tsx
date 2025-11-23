@@ -22,8 +22,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   return (
     <nav
-      className="bg-white/80 backdrop-blur-md shadow-lg border-b border-purple-100 fixed top-0 right-0 left-0 z-20 transition-all duration-300 ease-in-out"
-      style={{ left: isSidebarOpen ? "16rem" : "4rem" }}
+      className={`bg-white/80 backdrop-blur-md shadow-lg border-b border-purple-100 fixed top-0 right-0 z-20 transition-all duration-300 ease-in-out ${
+        isSidebarOpen ? 'left-64' : 'left-16'
+      }`}
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">

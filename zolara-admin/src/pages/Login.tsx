@@ -37,6 +37,7 @@ const Login = () => {
   useEffect(() => {
     if (authError) {
       setErrors(prev => ({ ...prev, general: authError }));
+      setIsLoading(false); // Ensure loading is stopped when there's an auth error
     }
   }, [authError]);
 
@@ -47,9 +48,17 @@ const Login = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
     
+    // Clear field-specific errors
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
+    
+    // Clear general errors when user starts typing
+    if (errors.general) {
+      setErrors(prev => ({ ...prev, general: undefined }));
+    }
+    
+    // Clear auth context errors
     if (authError) {
       clearError();
     }
@@ -83,20 +92,31 @@ const Login = () => {
     }
 
     setIsLoading(true);
-    setErrors(prev => ({ ...prev, email: undefined, password: undefined }));
+    setErrors(prev => ({ ...prev, email: undefined, password: undefined, general: undefined }));
     clearError();
 
-    const success = await login({
-      email: formData.email,
-      password: formData.password,
-      deviceType: 'WEB',
-      deviceName: 'Zolara Admin Dashboard'
-    });
+    try {
+      const success = await login({
+        email: formData.email,
+        password: formData.password,
+        deviceType: 'WEB',
+        deviceName: 'Zolara Admin Dashboard'
+      });
 
-    if (!success) {
       setIsLoading(false);
+
+      if (success) {
+        // Navigation will be handled by the useEffect when isAuthenticated becomes true
+        return;
+      }
+      // If login failed, error will be set in AuthContext and displayed via useEffect
+    } catch {
+      setIsLoading(false);
+      setErrors(prev => ({ 
+        ...prev, 
+        general: 'An unexpected error occurred. Please try again.' 
+      }));
     }
-    // If successful, isAuthenticated will be true and useEffect will handle navigation
   };
 
   return (
@@ -119,7 +139,7 @@ const Login = () => {
 
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-2xl border border-purple-100 p-10 backdrop-blur-sm">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             {/* General Error */}
             {errors.general && (
               <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 shadow-sm">
