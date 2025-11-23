@@ -1,35 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DashboardSidebar, type DashboardSection } from '../components/DashboardSidebar';
-import { DashboardHeader } from '../components/DashboardHeader';
-import { OverviewSection } from '../components/OverviewSection';
-import { AnalyticsSection } from '../components/AnalyticsSection';
-import UserStatisticsSection from '../components/UserStatisticsSection';
-import { ConfirmDialog } from '../components/ui/ConfirmDialog';
-import { useDashboard } from '../hooks/useDashboard';
-import { useAuth } from '../hooks/useAuth';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  DashboardSidebar,
+  type DashboardSection,
+} from "../components/DashboardSidebar";
+import { DashboardHeader } from "../components/DashboardHeader";
+import { OverviewSection } from "../components/OverviewSection";
+import { AnalyticsSection } from "../components/AnalyticsSection";
+import UserStatisticsSection from "../components/UserStatisticsSection";
+import UserManagementSection from "../components/UserManagementSection";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { useDashboard } from "../hooks/useDashboard";
+import { useAuth } from "../hooks/useAuth";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, fetchUserProfile } = useAuth();
-  const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
+  const [activeSection, setActiveSection] =
+    useState<DashboardSection>("overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  
+
   // Get dashboard data from hook
-  const { userStats, messageStats, callStats, lastUpdated, isLoading } = useDashboard();
+  const { userStats, messageStats, callStats, lastUpdated, isLoading } =
+    useDashboard();
 
   // Check if user is authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/');
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
   // Fetch user profile on mount
   useEffect(() => {
     if (isAuthenticated && (user?.id || user?.userId)) {
-      fetchUserProfile();      
+      fetchUserProfile();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user?.id, user?.userId]);
@@ -41,7 +47,7 @@ const Dashboard: React.FC = () => {
   const handleConfirmLogout = async () => {
     setShowLogoutConfirm(false);
     await logout();
-    navigate('/');
+    navigate("/");
   };
 
   const handleCancelLogout = () => {
@@ -63,7 +69,7 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <div
         className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? 'ml-64' : 'ml-16'
+          isSidebarOpen ? "ml-64" : "ml-16"
         }`}
       >
         {/* Navigation - Fixed Position */}
@@ -85,15 +91,14 @@ const Dashboard: React.FC = () => {
               isLoading={isLoading}
             />
           ) : activeSection === "analytics" ? (
-            <AnalyticsSection 
-              callStats={callStats} 
-              isLoading={isLoading}
-            />
+            <AnalyticsSection callStats={callStats} isLoading={isLoading} />
           ) : activeSection === "user-statistics" ? (
             <UserStatisticsSection
               userStats={userStats}
               isLoading={isLoading}
             />
+          ) : activeSection === "user-management" ? (
+            <UserManagementSection isLoading={isLoading} />
           ) : null}
         </div>
       </div>

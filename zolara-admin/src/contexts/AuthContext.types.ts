@@ -5,6 +5,7 @@ export interface User {
   name?: string;
   email: string;
   role?: string;
+  isAdmin?: boolean;
   fullName?: string;
   profilePictureUrl?: string;
   dateOfBirth?: string;
@@ -12,13 +13,14 @@ export interface User {
   bio?: string;
   statusMessage?: string;
   coverImgUrl?: string;
+  message?: string;
 }
 
 export interface LoginCredentials {
   email?: string;
   phoneNumber?: string;
   password: string;
-  deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
+  deviceType?: "WEB" | "MOBILE" | "DESKTOP";
   deviceName?: string;
 }
 

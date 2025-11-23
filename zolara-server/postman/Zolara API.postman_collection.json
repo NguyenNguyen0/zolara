@@ -682,6 +682,129 @@
 						"description": "Verify OTP for phone number update"
 					},
 					"response": []
+				},
+				{
+					"name": "Admin Verify",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"verify"
+							]
+						},
+						"description": "Verify if the current user has admin privileges. Requires valid JWT token in Authorization header. Returns user details and admin status."
+					},
+					"response": [
+						{
+							"name": "Admin User Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/auth/admin/verify",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"admin",
+										"verify"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"userId\": \"a1a0ae5b-070f-40c2-a07d-c61c06623e7a\",\n  \"email\": \"nvminh162@gmail.com\",\n  \"fullName\": \"Nguyễn Văn Minh\",\n  \"role\": \"ADMIN\",\n  \"isAdmin\": true,\n  \"message\": \"User has admin privileges\"\n}"
+						},
+						{
+							"name": "Regular User Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/auth/admin/verify",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"admin",
+										"verify"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"userId\": \"43c307df-1cf7-407f-85e4-21f16a4e3bf9\",\n  \"email\": \"quan.le@example.com\",\n  \"fullName\": \"Lê Minh Quân\",\n  \"role\": \"USER\",\n  \"isAdmin\": false,\n  \"message\": \"User does not have admin privileges\"\n}"
+						},
+						{
+							"name": "Unauthorized Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/auth/admin/verify",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"admin",
+										"verify"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Unauthorized\",\n  \"statusCode\": 401\n}"
+						}
+					]
 				}
 			]
 		},
@@ -782,6 +905,99 @@
 							]
 						},
 						"description": "Search user by email or phone number"
+					},
+					"response": []
+				},
+				{
+					"name": "Block User (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user-id-to-block\",\n  \"blockUntil\": \"2024-12-31T23:59:59.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/block",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"block"
+							]
+						},
+						"description": "Block a user (Admin only). Requires admin privileges."
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock User (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user-id-to-unblock\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/unblock",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"unblock"
+							]
+						},
+						"description": "Unblock a user (Admin only). Requires admin privileges."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blocked Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/blocked",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"blocked"
+							]
+						},
+						"description": "Get list of blocked users (Admin only). Requires admin privileges."
 					},
 					"response": []
 				}
@@ -2199,7 +2415,13 @@
 					"name": "Get Dashboard Stats",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/dashboard/stats",
 							"host": [
@@ -2211,6 +2433,31 @@
 							]
 						},
 						"description": "Get comprehensive dashboard statistics including user stats, message stats, call stats, and chart data for analytics"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/user-statistics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"user-statistics"
+							]
+						},
+						"description": "Get detailed user statistics for admin dashboard including user growth, active users, and demographic data"
 					},
 					"response": []
 				}
