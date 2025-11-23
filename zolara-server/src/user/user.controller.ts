@@ -6,10 +6,15 @@ import {
   Post,
   Body,
   Request,
+  UseGuards,
+  Put,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import { SearchUserDto } from './dto/search-user.dto';
+import { BlockUserDto, UnblockUserDto } from './dto/block-user.dto';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 
 @Controller('users')
 export class UserController {
@@ -20,10 +25,17 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  // Admin-only route for getting blocked users - must come before :id route
+  @Get('blocked')
+  @UseGuards(AuthGuard, AdminGuard)
+  async getBlockedUsers() {
+    return this.userService.getBlockedUsers();
+  }
+
   @Get(':id')
   async getUserById(@Param('id') id: string, @Request() req: Request) {
     // Extract the current user ID from the request
-    const currentUserId = req['user']?.sub;
+    const currentUserId = req['user']?.sub as string;
 
     // Get user with privacy restrictions based on relationship
     const user = await this.userService.getUserById(id, currentUserId);
@@ -48,7 +60,7 @@ export class UserController {
     @Request() req: Request,
   ) {
     try {
-      const currentUserId = req['user']?.sub;
+      const currentUserId = req['user']?.sub as string;
       return await this.userService.searchUserByEmailOrPhone(
         searchUserDto.email,
         searchUserDto.phoneNumber,
@@ -69,5 +81,21 @@ export class UserController {
         );
       }
     }
+  }
+
+  // Admin-only routes for user management
+  @Post('block')
+  @UseGuards(AuthGuard, AdminGuard)
+  async blockUser(@Body() blockUserDto: BlockUserDto) {
+    return this.userService.blockUser(
+      blockUserDto.userId,
+      blockUserDto.blockUntil,
+    );
+  }
+
+  @Put('unblock')
+  @UseGuards(AuthGuard, AdminGuard)
+  async unblockUser(@Body() unblockUserDto: UnblockUserDto) {
+    return this.userService.unblockUser(unblockUserDto.userId);
   }
 }

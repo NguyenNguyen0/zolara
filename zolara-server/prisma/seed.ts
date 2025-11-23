@@ -1,4 +1,10 @@
 import { PrismaClient, Gender, FriendStatus, DeviceType } from '@prisma/client';
+
+// Define UserRole enum locally to avoid import issues
+enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 import { hash } from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -35,26 +41,23 @@ async function main() {
   await createFriendships(users);
 }
 
-async function createUsers() {
-  await prisma.refreshToken.deleteMany({});
-  await prisma.notification.deleteMany({});
-  await prisma.message.deleteMany({});
-  await prisma.comment.deleteMany({});
-  await prisma.postReaction.deleteMany({});
-  await prisma.hiddenPost.deleteMany({});
-  await prisma.post.deleteMany({});
-  await prisma.story.deleteMany({});
-  await prisma.cloudStorage.deleteMany({});
-  await prisma.contact.deleteMany({});
-  await prisma.friend.deleteMany({});
-  await prisma.groupMember.deleteMany({});
-  await prisma.group.deleteMany({});
-  await prisma.qrCode.deleteMany({});
-  await prisma.pinnedItem.deleteMany({});
-  await prisma.userInfo.deleteMany({});
-  await prisma.user.deleteMany({});
+async function createUsers(): Promise<{ id: string }[]> {
+  await deleteAllData();
 
-  const userData = [
+  const userData: Array<{
+    id: string;
+    email: string;
+    phoneNumber: string;
+    fullName: string;
+    dateOfBirth: Date;
+    gender: Gender;
+    bio: string;
+    profilePictureUrl: string | null;
+    statusMessage: string;
+    coverImgUrl: string | null;
+    password: string;
+    role: UserRole;
+  }> = [
     {
       id: 'a1a0ae5b-070f-40c2-a07d-c61c06623e7a',
       email: 'nvminh162@gmail.com',
@@ -69,6 +72,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.ADMIN,
     },
     {
       id: 'cea3f6a0-b3bf-4abe-9266-7a3a6fc29173',
@@ -84,6 +88,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.ADMIN,
     },
     {
       id: '43c307df-1cf7-407f-85e4-21f16a4e3bf9',
@@ -99,6 +104,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: '1cc1b368-02e1-44a7-87c1-17ab9620bb5f',
@@ -114,6 +120,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: '300bc485-d342-442e-aa08-95b754ba901d',
@@ -129,6 +136,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: '3d09a459-8398-4ec8-ba0f-ffb881f77632',
@@ -144,6 +152,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: '422a4298-58d6-41d9-a28e-4025c19baf3a',
@@ -159,6 +168,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: '84cc97a1-be78-4ae9-975b-efe8328fe015',
@@ -174,6 +184,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: 'ac3fe11d-01bf-4ef0-9992-661e621253c2',
@@ -189,6 +200,7 @@ async function createUsers() {
       coverImgUrl:
         'https://cover-talk.zadn.vn/d/7/5/d/6/8b20eca05f9660b6d4e1596ac2dc009c.jpg',
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: 'b5c8d7e6-f5e4-4d3c-b2a1-0f9e8d7c6b5a',
@@ -202,6 +214,7 @@ async function createUsers() {
       statusMessage: 'Green living 🌱🌍',
       coverImgUrl: null,
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: 'c6d7e8f9-a0b1-2c3d-4e5f-6a7b8c9d0e1f',
@@ -215,6 +228,7 @@ async function createUsers() {
       statusMessage: 'AI will change the world 🤖💡',
       coverImgUrl: null,
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: 'd7e8f9a0-b1c2-3d4e-5f6a-7b8c9d0e1f2a',
@@ -228,6 +242,7 @@ async function createUsers() {
       statusMessage: 'Namaste 🧘‍♀️✨',
       coverImgUrl: null,
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: 'e8f9a0b1-c2d3-4e5f-6a7b-8c9d0e1f2a3b',
@@ -241,6 +256,7 @@ async function createUsers() {
       statusMessage: 'Think big, start small 💼📈',
       coverImgUrl: null,
       password: 'password123',
+      role: UserRole.USER,
     },
     {
       id: 'f9a0b1c2-d3e4-5f6a-7b8c-9d0e1f2a3b4c',
@@ -254,10 +270,11 @@ async function createUsers() {
       statusMessage: 'Love all creatures 🐾🦋',
       coverImgUrl: null,
       password: 'password123',
+      role: UserRole.USER,
     },
   ];
 
-  const createdUsers = [];
+  const createdUsers: { id: string }[] = [];
 
   for (const user of userData) {
     // First create the user with fixed ID
@@ -267,6 +284,7 @@ async function createUsers() {
         email: user.email,
         phoneNumber: user.phoneNumber,
         passwordHash: await hash(user.password, 10),
+        role: user.role, // Add the role field
         refreshTokens: {
           create: {
             token: `token-${user.email.split('@')[0]}`,
@@ -301,7 +319,11 @@ async function createUsers() {
   return createdUsers;
 }
 
-async function createFriendships(users: any[]) {
+interface UserType {
+  id: string;
+}
+
+async function createFriendships(users: UserType[]) {
   const friendships = [
     {
       senderId: users[0].id,

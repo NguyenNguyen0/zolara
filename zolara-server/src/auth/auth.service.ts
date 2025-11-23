@@ -64,6 +64,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Check if user is blocked
+    if (user.blockDate && user.blockDate > new Date()) {
+      this.logger.warn(`Login failed - User is blocked: ${user.id}`);
+      throw new UnauthorizedException('Account is blocked');
+    }
+
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
@@ -333,12 +339,13 @@ export class AuthService {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create user with userInfo
+    // Create user with userInfo (role defaults to 'USER' from schema)
     const user = await this.prisma.user.create({
       data: {
         email,
         phoneNumber,
         passwordHash: hashedPassword,
+        // role: 'USER' is default from schema, no need to explicitly set
         userInfo: {
           create: {
             fullName: data.fullName,
@@ -814,6 +821,46 @@ export class AuthService {
     this.logger.log(`Phone number updated successfully for user ${userId}`);
     return {
       message: 'Phone number updated successfully',
+    };
+  }
+
+  async verifyAdminStatus(userId: string) {
+    this.logger.log(`Verifying admin status for user ${userId}`);
+
+    // Find user and check role
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        userInfo: {
+          select: {
+            fullName: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isAdmin = user.role === 'ADMIN';
+
+    this.logger.log(
+      `Admin verification result for user ${userId}: ${isAdmin ? 'ADMIN' : 'USER'}`,
+    );
+
+    return {
+      userId: user.id,
+      email: user.email,
+      fullName: user.userInfo?.fullName,
+      role: user.role as string,
+      isAdmin,
+      message: isAdmin
+        ? 'User has admin privileges'
+        : 'User does not have admin privileges',
     };
   }
 }
