@@ -75,7 +75,7 @@ api.interceptors.response.use(
         localStorage.removeItem('authToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        window.location.href = '/';
       }
       // For login failures, let the error propagate naturally without redirect
     } else if (error.response?.status === 403) {
@@ -88,7 +88,7 @@ api.interceptors.response.use(
           localStorage.removeItem('authToken');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('user');
-          window.location.href = '/login?error=admin-required';
+          window.location.href = '/?error=admin-required';
         }
       }
     }
