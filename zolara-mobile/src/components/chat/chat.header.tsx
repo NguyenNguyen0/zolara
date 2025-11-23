@@ -108,12 +108,14 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           </HStack>
           {!isAIAssistant && (
             <HStack className="space-x-4">
+              {/*
               <Pressable
                 onPress={() => Alert.alert("Coming Soon")}
                 className="pr-4"
               >
                 <FontAwesome5 name="phone-alt" size={23} color="white" />
               </Pressable>
+              */}
               {/* <Pressable
                 onPress={() => Alert.alert("Coming Soon")}
                 className="px-2.5"

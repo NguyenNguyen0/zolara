@@ -33,8 +33,6 @@
         "BGTaskSchedulerPermittedIdentifiers": [
           "com.zolara.mobile.refresh",
           "com.zolara.mobile.background-fetch",
-          "com.zolara.mobile.refresh",
-          "com.zolara.mobile.background-fetch"
         ],
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -124,7 +122,7 @@
           "icon": "./src/assets/images/brand/zolara.png",
           "color": "#ffffff",
           "sounds": [
-            "./src/assets/sounds/facebook_message.mp3"
+            "./assets/sounds/facebook_message.mp3"
           ],
           "mode": "production",
           "androidMode": "default",

@@ -19,11 +19,9 @@ import {
 import { Colors } from "@/constants/Colors";
 import {
   Phone,
-  Video,
   Users,
   Contact,
   UserRoundPlus,
-  Cake,
 } from "lucide-react-native";
 import { router, useFocusEffect } from "expo-router";
 import { getFriendList } from "@/services/friend-service";
@@ -177,12 +175,19 @@ export default function ContactScreen() {
           <Text className="ml-4 text-lg ">{friend.fullName}</Text>
         </HStack>
         <HStack className="space-x-4">
-          <Pressable onPress={() => Alert.alert("Coming Soon")} className="pr-4">
+          {/*
+          <Pressable
+            onPress={() => Alert.alert("Coming Soon")}
+            className="pr-4"
+          >
             <Phone size={24} color={"gray"} strokeWidth={1.5} />
           </Pressable>
-          {/* <Pressable onPress={() => Alert.alert("Coming Soon")} className="px-2.5">
+          */}
+          {/*
+          <Pressable onPress={() => Alert.alert("Coming Soon")} className="px-2.5">
             <Video size={26} color={"gray"} strokeWidth={1.5} />
-          </Pressable> */}
+          </Pressable>
+          */}
         </HStack>
       </Pressable>
     );
@@ -267,7 +272,9 @@ export default function ContactScreen() {
                 />
               }
               title="Lời mời kết bạn"
-              onPress={() => router.push("/(screens)/(user)/friend/request" as any)}
+              onPress={() =>
+                router.push("/(screens)/(user)/friend/request" as any)
+              }
             />
             <FunctionButton
               icon={
@@ -279,16 +286,15 @@ export default function ContactScreen() {
               }
               title="Danh bạ"
               subtitle="Liên hệ có dùng Zolara"
-              onPress={() => router.push("/(screens)/(user)/friend/phoneContacts" as any)}
+              onPress={() =>
+                router.push("/(screens)/(user)/friend/phoneContacts" as any)
+              }
             />
           </VStack>
 
           {isLoading ? (
             <View className="flex-1 items-center justify-center py-8">
-              <ActivityIndicator
-                size="large"
-                color={Colors.light.PRIMARY}
-              />
+              <ActivityIndicator size="large" color={Colors.light.PRIMARY} />
               <Text className="text-gray-500 mt-2">
                 Đang tải danh sách bạn bè...
               </Text>
@@ -342,10 +348,7 @@ export default function ContactScreen() {
 
           {isLoadingGroups ? (
             <View className="flex-1 items-center justify-center py-8">
-              <ActivityIndicator
-                size="large"
-                color={Colors.light.PRIMARY}
-              />
+              <ActivityIndicator size="large" color={Colors.light.PRIMARY} />
               <Text className="text-gray-500 mt-2">
                 Đang tải danh sách nhóm...
               </Text>

@@ -580,14 +580,14 @@ export default function GroupInfoScreen() {
 
     // Kiểm tra xem người dùng có phải là trưởng nhóm không
     if (isGroupLeader) {
-      // Nếu là trưởng nhóm, yêu cầu chuyển quyền trước
+      // Nếu là trưởng nhóm, yêu cầu bàn giao trước
       Alert.alert(
         "Không thể rời nhóm",
-        "Bạn đang là trưởng nhóm. Vui lòng chuyển quyền trưởng nhóm cho thành viên khác trước khi rời nhóm.",
+        "Bạn đang là trưởng nhóm. Vui lòng bàn giao trưởng nhóm cho thành viên khác trước khi rời nhóm.",
         [
           { text: "Hủy", style: "cancel" },
           {
-            text: "Chuyển quyền ngay",
+            text: "Bàn giao ngay",
             onPress: handleTransferLeadership,
           },
         ],
@@ -648,11 +648,11 @@ export default function GroupInfoScreen() {
             if (error.response && error.response.status === 403) {
               Alert.alert(
                 "Không thể rời nhóm",
-                "Bạn đang là trưởng nhóm. Vui lòng chuyển quyền trưởng nhóm cho thành viên khác trước khi rời nhóm.",
+                "Bạn đang là trưởng nhóm. Vui lòng Bàn giao trưởng nhóm cho thành viên khác trước khi rời nhóm.",
                 [
                   { text: "Hủy", style: "cancel" },
                   {
-                    text: "Chuyển quyền ngay",
+                    text: "Bàn giao ngay",
                     onPress: handleTransferLeadership,
                   },
                 ],
@@ -724,8 +724,8 @@ export default function GroupInfoScreen() {
 
   const handleTransferLeadership = () => {
     Alert.alert(
-      "Chuyển quyền trưởng nhóm",
-      "Người được chọn sẽ trở thành trưởng nhóm và có mọi quyền quản lý nhóm. Bạn sẽ mất quyền quản lý nhưng vẫn là 1 thành viên của nhóm. Hành động này không thể phục hồi.",
+      "Bàn giao trưởng nhóm",
+      "Người được chọn sẽ trở thành trưởng nhóm và toàn quyền quản lý. Bạn sẽ mất quyền quản lý nhưng vẫn là thành viên. Hành động này là vĩnh viễn và không thể hoàn tác.",
       [
         { text: "Hủy", style: "cancel" },
         {
@@ -745,7 +745,7 @@ export default function GroupInfoScreen() {
     setShowTransferLeadershipModal(false);
 
     Alert.alert(
-      `Chuyển quyền trưởng nhóm cho ${member.fullName}?`,
+      `Bàn giao trưởng nhóm cho ${member.fullName}?`,
       `${member.fullName} sẽ trở thành trưởng nhóm. Bạn sẽ trở thành 1 thành viên bình thường.`,
       [
         { text: "Hủy", style: "cancel" },
@@ -763,9 +763,9 @@ export default function GroupInfoScreen() {
               );
 
               // Hiển thị thông báo thành công
-              // Hiển thị thông báo chuyển quyền thành công
+              // Hiển thị thông báo Bàn giao thành công
               setToastMessage(
-                `Đã chuyển quyền trưởng nhóm cho ${member.fullName}`,
+                `Đã Bàn giao trưởng nhóm cho ${member.fullName}`,
               );
               setShowBlueToast(true);
 
@@ -775,12 +775,12 @@ export default function GroupInfoScreen() {
               // Hiển thị thông báo thành công
               Alert.alert(
                 "Thành công",
-                `Đã chuyển quyền trưởng nhóm cho ${member.fullName}.`,
+                `Đã Bàn giao trưởng nhóm cho ${member.fullName}.`,
                 [{ text: "OK" }],
               );
             } catch (error) {
               console.error("Error transferring leadership:", error);
-              Alert.alert("Lỗi", "Không thể chuyển quyền trưởng nhóm");
+              Alert.alert("Lỗi", "Không thể Bàn giao trưởng nhóm");
             } finally {
               setIsUpdating(false);
             }
@@ -852,7 +852,15 @@ export default function GroupInfoScreen() {
               {fullName}
               {isCurrentUser ? " (Bạn)" : ""}
             </Text>
-            <Text className="text-xs text-gray-500 mt-0.5">
+            <Text
+              className={`text-xs mt-0.5 ${
+                item.role === "LEADER"
+                  ? "text-red-500"
+                  : item.role === "CO_LEADER"
+                    ? "text-blue-500"
+                    : "text-gray-500"
+              }`}
+            >
               {item.role === "LEADER"
                 ? "Trưởng nhóm"
                 : item.role === "CO_LEADER"
@@ -1116,7 +1124,15 @@ export default function GroupInfoScreen() {
                 <Text className="text-xl font-bold mb-1">
                   {selectedMember.fullName}
                 </Text>
-                <Text className="text-gray-500 mb-4">
+                <Text
+                  className={`text-base mb-4 ${
+                    selectedMember.role === "LEADER"
+                      ? "text-red-500"
+                      : selectedMember.role === "CO_LEADER"
+                        ? "text-blue-500"
+                        : "text-gray-500"
+                  }`}
+                >
                   {selectedMember.role === "LEADER"
                     ? "Trưởng nhóm"
                     : selectedMember.role === "CO_LEADER"
@@ -1161,22 +1177,6 @@ export default function GroupInfoScreen() {
                       color={Colors.light.PRIMARY}
                     />
                     <Text className="ml-3 text-base">Nhắn tin</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    className="flex-row items-center py-4 border-t border-gray-200"
-                    disabled={true}
-                    activeOpacity={0.5}
-                  >
-                    <Phone size={20} color="#9CA3AF" /* gray-400 */ />
-                    <View className="flex-row items-center">
-                      <Text className="ml-3 text-base text-gray-400">
-                        Gọi điện
-                      </Text>
-                      <Text className="ml-2 text-xs text-gray-400 italic">
-                        (Chưa khả dụng)
-                      </Text>
-                    </View>
                   </TouchableOpacity>
 
                   {/* Bổ nhiệm làm phó nhóm */}
@@ -1360,7 +1360,7 @@ export default function GroupInfoScreen() {
         </Pressable>
       </Modal>
 
-      {/* Modal chọn thành viên để chuyển quyền trưởng nhóm */}
+      {/* Modal chọn thành viên để bàn giao trưởng nhóm */}
       <Modal
         visible={showTransferLeadershipModal}
         transparent={true}
@@ -1479,7 +1479,7 @@ export default function GroupInfoScreen() {
                     <User size={22} color={Colors.light.PRIMARY} />
                   </View>
                   <Text className="text-base font-medium">
-                    Chuyển quyền trưởng nhóm
+                    Bàn giao trưởng nhóm
                   </Text>
                 </TouchableOpacity>
               )}
