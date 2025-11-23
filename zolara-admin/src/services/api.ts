@@ -68,9 +68,16 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      // Only redirect if we're already logged in (have a token)
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        // Handle unauthorized access for authenticated users
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+      // For login failures, let the error propagate naturally without redirect
     }
     return Promise.reject(error);
   }
