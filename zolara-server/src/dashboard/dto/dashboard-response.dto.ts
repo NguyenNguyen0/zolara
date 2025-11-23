@@ -11,7 +11,7 @@ export class UserRankingDto {
   email: string;
   avatar?: string;
   messagesSent: number;
-  callsInitiated: number;
+  groupsJoined: number;
   activeTime: number; // in hours
   friendsCount: number;
   joinedDate: string;
@@ -23,14 +23,14 @@ export class UserStatisticsDto {
   userStats: UserStatsDto;
   topUsers: {
     byMessages: UserRankingDto[];
-    byCalls: UserRankingDto[];
+    byGroups: UserRankingDto[];
     byActiveTime: UserRankingDto[];
     byEngagement: UserRankingDto[];
   };
   engagementMetrics: {
     averageSessionTime: number;
     averageMessagesPerUser: number;
-    averageCallsPerUser: number;
+    averageGroupsPerUser: number;
     mostActiveHour: number;
   };
 }
@@ -41,10 +41,11 @@ export class MessageStatsDto {
   messagesThisWeek: number;
 }
 
-export class CallStatsDto {
-  totalCalls: number;
-  activeCalls: number;
-  averageCallDuration: number;
+export class GroupChatStatsDto {
+  totalGroups: number;
+  activeGroups: number;
+  averageGroupSize: number;
+  groupMessagesToday: number;
 }
 
 export class UserGrowthDto {
@@ -59,11 +60,10 @@ export class MessageActivityDto {
   groupMessages: number[];
 }
 
-export class CallDistributionDto {
-  voiceCalls: number;
-  videoCalls: number;
-  groupCalls: number;
-  conferenceCalls: number;
+export class GroupChatActivityDto {
+  labels: string[];
+  activeGroups: number[];
+  messagesPerGroup: number[];
 }
 
 export class PerformanceMetricsDto {
@@ -75,14 +75,14 @@ export class PerformanceMetricsDto {
 export class ChartDataDto {
   userGrowth: UserGrowthDto;
   messageActivity: MessageActivityDto;
-  callDistribution: CallDistributionDto;
+  groupChatActivity: GroupChatActivityDto;
   performanceMetrics: PerformanceMetricsDto;
 }
 
 export class DashboardResponseDto {
   userStats: UserStatsDto;
   messageStats: MessageStatsDto;
-  callStats: CallStatsDto;
+  groupChatStats: GroupChatStatsDto;
   chartData: ChartDataDto;
   lastUpdated: Date;
 }

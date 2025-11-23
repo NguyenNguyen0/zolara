@@ -79,7 +79,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           <Button
             variant={confirmVariant}
             onClick={onConfirm}
-            className="px-4 py-2"
+            className="px-4 py-2 text-white"
           >
             {confirmText}
           </Button>

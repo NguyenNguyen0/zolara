@@ -1,28 +1,19 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/Card';
 import {
   UserGrowthChart,
   MessageActivityChart,
-  CallDistributionChart,
+  GroupChatActivityChart,
   PerformanceMetricsChart
 } from './ui/Charts';
 import { Activity } from 'lucide-react';
-import { SkeletonWrapper, ChartSkeleton, DonutChartSkeleton, CurrentSessionSkeleton } from './ui/Skeleton';
+import { SkeletonWrapper, ChartSkeleton, DonutChartSkeleton } from './ui/Skeleton';
 
-interface CallStats {
-  currentSessionStats?: {
-    userCount: number;
-    duration: number;
-    receiveBitrate: number;
-  };
-}
+
 
 interface AnalyticsSectionProps {
-  callStats: CallStats;
   isLoading?: boolean;
 }
 
 export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
-  callStats,
   isLoading = false
 }) => {
   return (
@@ -60,44 +51,14 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <CallDistributionChart isLoading={isLoading} />
+              <GroupChatActivityChart isLoading={isLoading} />
               <PerformanceMetricsChart isLoading={isLoading} />
             </div>
           </>
         )}
       </div>
 
-      {/* Current Session Stats (if available) */}
-      {isLoading ? (
-        <SkeletonWrapper>
-          <CurrentSessionSkeleton />
-        </SkeletonWrapper>
-      ) : (
-        callStats.currentSessionStats && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Current Session Statistics</CardTitle>
-            <CardDescription>Real-time statistics from active call session</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold">{callStats.currentSessionStats.userCount}</div>
-                <p className="text-sm text-gray-600">Users in Session</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{Math.round(callStats.currentSessionStats.duration / 60)}m</div>
-                <p className="text-sm text-gray-600">Session Duration</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{Math.round(callStats.currentSessionStats.receiveBitrate / 1000)}kbps</div>
-                <p className="text-sm text-gray-600">Receive Bitrate</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        )
-      )}
+
     </div>
   );
 };

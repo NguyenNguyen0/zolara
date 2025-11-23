@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   // Get dashboard data from hook
-  const { userStats, messageStats, callStats, lastUpdated, isLoading } =
+  const { userStats, messageStats, groupChatStats, lastUpdated, isLoading } =
     useDashboard();
 
   // Check if user is authenticated
@@ -86,12 +86,12 @@ const Dashboard: React.FC = () => {
             <OverviewSection
               userStats={userStats}
               messageStats={messageStats}
-              callStats={callStats}
+              groupChatStats={groupChatStats}
               lastUpdated={lastUpdated}
               isLoading={isLoading}
             />
           ) : activeSection === "analytics" ? (
-            <AnalyticsSection callStats={callStats} isLoading={isLoading} />
+            <AnalyticsSection isLoading={isLoading} />
           ) : activeSection === "user-statistics" ? (
             <UserStatisticsSection
               userStats={userStats}

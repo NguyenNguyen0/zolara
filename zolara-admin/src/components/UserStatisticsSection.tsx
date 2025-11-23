@@ -3,7 +3,6 @@ import {
   Users,
   TrendingUp,
   MessageCircle,
-  Phone,
   Clock,
   Trophy,
   Star,
@@ -34,7 +33,7 @@ interface UserRankingData {
   avatar: string;
   email: string;
   messagesSent: number;
-  callsInitiated: number;
+  groupsJoined: number;
   activeTime: number; // in hours
   friendsCount: number;
   joinedDate: string;
@@ -44,7 +43,7 @@ interface UserRankingData {
 
 type RankingCriteria =
   | "messages"
-  | "calls"
+  | "groups"
   | "activeTime"
   | "friends"
   | "engagement";
@@ -88,8 +87,8 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
     switch (criteria) {
       case "messages":
         return user.messagesSent;
-      case "calls":
-        return user.callsInitiated;
+      case "groups":
+        return user.groupsJoined;
       case "activeTime":
         return user.activeTime;
       case "friends":
@@ -105,8 +104,8 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
     switch (criteria) {
       case "messages":
         return "Messages Sent";
-      case "calls":
-        return "Calls Initiated";
+      case "groups":
+        return "Groups Joined";
       case "activeTime":
         return "Active Hours";
       case "friends":
@@ -121,7 +120,7 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
   // Use only real data from API
   const usersData = [
     ...topUsers.byMessages,
-    ...topUsers.byCalls,
+    ...topUsers.byGroups,
     ...topUsers.byActiveTime,
     ...topUsers.byEngagement,
   ].filter(
@@ -297,7 +296,6 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
                 >
                   <option value="engagement">Engagement Score</option>
                   <option value="messages">Messages Sent</option>
-                  <option value="calls">Calls Initiated</option>
                   <option value="activeTime">Active Time</option>
                   <option value="friends">Friends Count</option>
                 </select>
@@ -368,8 +366,8 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
                       <span>{user.messagesSent}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Phone className="w-4 h-4" />
-                      <span>{user.callsInitiated}</span>
+                      <Users className="w-4 h-4" />
+                      <span>{user.groupsJoined}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Clock className="w-4 h-4" />
@@ -453,14 +451,14 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
         <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-6 border border-emerald-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-emerald-900">
-              Call Champions
+              Group Leaders
             </h3>
-            <Phone className="w-6 h-6 text-emerald-600" />
+            <Users className="w-6 h-6 text-emerald-600" />
           </div>
           <div className="space-y-3">
             {sortedUsers.length > 0 ? (
               [...sortedUsers]
-                .sort((a, b) => b.callsInitiated - a.callsInitiated)
+                .sort((a, b) => b.groupsJoined - a.groupsJoined)
                 .slice(0, 3)
                 .map((user) => (
                   <div key={user.id} className="flex items-center space-x-3">
@@ -480,7 +478,7 @@ const UserStatisticsSection: React.FC<UserStatisticsProps> = ({
                         {user.name}
                       </p>
                       <p className="text-xs text-emerald-600">
-                        {user.callsInitiated} calls
+                        {user.groupsJoined} groups
                       </p>
                     </div>
                   </div>
