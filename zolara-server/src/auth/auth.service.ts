@@ -34,6 +34,60 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
+  async checkUserStatus(identifier: string) {
+    this.logger.log(`Checking user status - Identifier: ${identifier}`);
+
+    // Find user by email or phone number
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ email: identifier }, { phoneNumber: identifier }],
+      },
+      select: {
+        id: true,
+        email: true,
+        phoneNumber: true,
+        blockDate: true,
+      },
+    });
+
+    if (!user) {
+      this.logger.warn(`User not found for identifier: ${identifier}`);
+      return {
+        exists: false,
+        isBlocked: false,
+        message: 'User not found',
+      };
+    }
+
+    // Check if user is blocked
+    const now = new Date();
+    let isBlocked = false;
+    let blockReason = '';
+
+    if (user.blockDate) {
+      // If blockDate is null or current date has passed the block date, user is not blocked
+      // If blockDate is in the future (after current date), user is blocked
+      if (user.blockDate > now) {
+        isBlocked = true;
+        blockReason = `Your account is blocked until ${user.blockDate.toLocaleDateString()}`;
+      }
+    }
+
+    this.logger.log(
+      `User status check result - UserId: ${user.id}, IsBlocked: ${isBlocked}`,
+    );
+
+    return {
+      exists: true,
+      isBlocked,
+      blockDate: user.blockDate,
+      message: isBlocked
+        ? blockReason
+        : 'User account is active',
+      canProceed: !isBlocked,
+    };
+  }
+
   async login(identifier: string, password: string, deviceInfo: any) {
     this.logger.log(
       `Login attempt - Identifier: ${identifier}, DeviceType: ${deviceInfo.deviceType}`,

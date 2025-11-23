@@ -4,6 +4,8 @@ import {
 	Text,
 	KeyboardAvoidingView,
 	Platform,
+	Alert,
+	ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import ShareInput from '@/components/customize/input/share.input';
@@ -12,10 +14,12 @@ import { APP_COLOR } from '@/utils/constants';
 import ShareQuestion from '@/components/customize/button/share.question';
 import ShareBack from '@/components/customize/button/share.back';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { checkUserStatus } from '@/services/user-service';
 
 export default function LoginEmail() {
 	const router = useRouter();
 	const [identifier, setIdentifier] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	const isEmail = (value: string) => {
 		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -25,22 +29,55 @@ export default function LoginEmail() {
 		return /^[0-9]{10}$/.test(value);
 	};
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		if (!identifier.trim()) {
 			return;
 		}
 
 		if (!isEmail(identifier) && !isPhoneNumber(identifier)) {
+			Alert.alert('Lỗi', 'Vui lòng nhập email hoặc số điện thoại hợp lệ');
 			return;
 		}
 
-		router.navigate({
-			pathname: '/(screens)/(auth)/confirm.password',
-			params: { identifier, isLogin: 1 },
-		});
+		setIsLoading(true);
+		try {
+			// Prepare request data
+			const requestData = isEmail(identifier)
+				? { email: identifier }
+				: { phoneNumber: identifier };
+
+			// Check user status
+			const statusResponse = await checkUserStatus(requestData);
+
+			// Check if user exists
+			if (!statusResponse.exists) {
+				Alert.alert('Lỗi', 'Tài khoản không tồn tại. Vui lòng đăng ký tài khoản mới.');
+				return;
+			}
+
+			// Check if user is blocked
+			if (statusResponse.isBlocked || !statusResponse.canProceed) {
+				Alert.alert('Tài khoản bị khóa', statusResponse.message);
+				return;
+			}
+
+			// If all checks pass, navigate to password screen
+			router.navigate({
+				pathname: '/(screens)/(auth)/confirm.password',
+				params: { identifier, isLogin: 1 },
+			});
+		} catch (error: any) {
+			console.error('Error checking user status:', error);
+			Alert.alert(
+				'Lỗi',
+				error?.response?.data?.message || 'Không thể kiểm tra trạng thái tài khoản. Vui lòng thử lại.'
+			);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
-	const isNextDisabled = !identifier.trim();
+	const isNextDisabled = !identifier.trim() || isLoading;
 
 	return (
 		<SafeAreaView className="flex-1 bg-white">
@@ -69,7 +106,7 @@ export default function LoginEmail() {
 
 					{/* Next Button */}
 					<ShareButton
-						title="Tiếp tục"
+						title={isLoading ? "Đang kiểm tra..." : "Tiếp tục"}
 						onPress={handleNext}
 						disabled={isNextDisabled}
 						buttonStyle={{
@@ -83,6 +120,13 @@ export default function LoginEmail() {
 								: APP_COLOR.LIGHT_MODE,
 						}}
 					/>
+
+					{/* Loading Indicator */}
+					{isLoading && (
+						<View className="items-center mt-4">
+							<ActivityIndicator size="small" color={APP_COLOR.PRIMARY} />
+						</View>
+					)}
 
 					{/* Create Account Link */}
 					<View className="flex-row items-center justify-center mt-5">

@@ -10,6 +10,28 @@ import {
 } from "@/types";
 import * as SecureStore from "expo-secure-store";
 
+// Check user status (blocked/active)
+export interface CheckUserStatusResponse {
+  exists: boolean;
+  isBlocked: boolean;
+  blockDate?: string | null;
+  message: string;
+  canProceed?: boolean;
+}
+
+export const checkUserStatus = async (data: {
+  email?: string;
+  phoneNumber?: string;
+}): Promise<CheckUserStatusResponse> => {
+  try {
+    const response = await axiosInstance.post("/auth/check-user-status", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error checking user status:", error);
+    throw error;
+  }
+};
+
 export const getAllUsers = async (): Promise<ChatItemData[]> => {
   try {
     const token = await SecureStore.getItemAsync("accessToken");

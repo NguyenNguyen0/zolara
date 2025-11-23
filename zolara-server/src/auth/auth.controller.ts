@@ -40,12 +40,29 @@ import { InitiateUpdateEmailDto } from './dto/initiate-update-email.dto';
 import { InitiateUpdatePhoneDto } from './dto/initiate-update-phone.dto';
 import { VerifyUpdateOtpDto } from './dto/verify-update-otp.dto';
 import { AuthGuard } from './guards/auth.guard';
+import { CheckUserStatusDto } from './dto/check-user-status.dto';
 
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger('AuthController');
 
   constructor(private readonly authService: AuthService) {}
+
+  @Post('check-user-status')
+  @Public()
+  async checkUserStatus(@Body() checkStatusDto: CheckUserStatusDto) {
+    this.logger.log(
+      `Check user status request - Email/Phone: ${checkStatusDto.email || checkStatusDto.phoneNumber}`,
+    );
+
+    if (!checkStatusDto.email && !checkStatusDto.phoneNumber) {
+      this.logger.warn('Check status failed - No email or phone number provided');
+      throw new BadRequestException('Either email or phone number is required');
+    }
+
+    const identifier = checkStatusDto.email || checkStatusDto.phoneNumber;
+    return this.authService.checkUserStatus(identifier);
+  }
 
   @Post('register/initiate')
   @Public()
