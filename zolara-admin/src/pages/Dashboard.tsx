@@ -4,6 +4,8 @@ import { DashboardSidebar, type DashboardSection } from '../components/Dashboard
 import { DashboardHeader } from '../components/DashboardHeader';
 import { OverviewSection } from '../components/OverviewSection';
 import { AnalyticsSection } from '../components/AnalyticsSection';
+import UserStatisticsSection from '../components/UserStatisticsSection';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../hooks/useAuth';
 
@@ -12,6 +14,7 @@ const Dashboard: React.FC = () => {
   const { user, logout, isAuthenticated, fetchUserProfile } = useAuth();
   const [activeSection, setActiveSection] = useState<DashboardSection>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   // Get dashboard data from hook
   const { userStats, messageStats, callStats, lastUpdated, isLoading } = useDashboard();
@@ -31,13 +34,22 @@ const Dashboard: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user?.id, user?.userId]);
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    setShowLogoutConfirm(false);
     await logout();
     navigate('/');
   };
 
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-blue-50">
       {/* Sidebar - Fixed Position */}
       <div className="fixed top-0 left-0 h-full z-30">
         <DashboardSidebar
@@ -58,7 +70,7 @@ const Dashboard: React.FC = () => {
         <DashboardHeader
           activeSection={activeSection}
           user={user}
-          onLogout={handleLogout}
+          onLogout={handleLogoutClick}
           isSidebarOpen={isSidebarOpen}
         />
 
@@ -72,14 +84,31 @@ const Dashboard: React.FC = () => {
               lastUpdated={lastUpdated}
               isLoading={isLoading}
             />
-          ) : (
+          ) : activeSection === "analytics" ? (
             <AnalyticsSection 
               callStats={callStats} 
               isLoading={isLoading}
             />
-          )}
+          ) : activeSection === "user-statistics" ? (
+            <UserStatisticsSection
+              userStats={userStats}
+              isLoading={isLoading}
+            />
+          ) : null}
         </div>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showLogoutConfirm}
+        onConfirm={handleConfirmLogout}
+        onCancel={handleCancelLogout}
+        title="Confirm Logout"
+        message="Are you sure you want to log out? You will be redirected to the login page."
+        confirmText="Yes, Logout"
+        cancelText="Cancel"
+        confirmVariant="destructive"
+      />
     </div>
   );
 };
