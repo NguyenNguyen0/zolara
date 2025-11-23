@@ -12,10 +12,10 @@ import {
   LineElement,
   Filler,
 } from 'chart.js';
-import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card';
 import { useDashboard } from '../../hooks/useDashboard';
-import { SkeletonWrapper, ChartSkeleton, DonutChartSkeleton } from './Skeleton';
+import { SkeletonWrapper, ChartSkeleton } from './Skeleton';
 
 // Register Chart.js components
 ChartJS.register(
