@@ -48,6 +48,12 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [blockDuration, setBlockDuration] = useState<string>("1");
   const [blockingUserId, setBlockingUserId] = useState<string | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    type: 'block' | 'unblock';
+    user: User | null;
+    onConfirm: () => void;
+  }>({ isOpen: false, type: 'block', user: null, onConfirm: () => {} });
 
   // Load blocked users on component mount
   useEffect(() => {
@@ -56,6 +62,7 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
 
   const loadBlockedUsers = async () => {
     setIsLoadingBlocked(true);
+    setError(null); // Clear any previous errors
     try {
       const response = await apiService.getBlockedUsers();
       setBlockedUsers(response.data || []);
@@ -94,8 +101,18 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
     }
   };
 
-  const handleBlockUser = async (userId: string) => {
+  const showBlockConfirm = (user: User) => {
+    setConfirmDialog({
+      isOpen: true,
+      type: 'block',
+      user,
+      onConfirm: () => executeBlockUser(user.id)
+    });
+  };
+
+  const executeBlockUser = async (userId: string) => {
     setBlockingUserId(userId);
+    setConfirmDialog({ isOpen: false, type: 'block', user: null, onConfirm: () => {} });
     try {
       const blockUntil = new Date();
       blockUntil.setDate(blockUntil.getDate() + parseInt(blockDuration));
@@ -113,8 +130,6 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
         setSearchResult(null);
         setSearchQuery("");
       }
-
-      setError(null);
     } catch (error: unknown) {
       const errorMsg =
         error && typeof error === "object" && "response" in error
@@ -127,14 +142,23 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
     }
   };
 
-  const handleUnblockUser = async (userId: string) => {
+  const showUnblockConfirm = (user: User) => {
+    setConfirmDialog({
+      isOpen: true,
+      type: 'unblock',
+      user,
+      onConfirm: () => executeUnblockUser(user.id)
+    });
+  };
+
+  const executeUnblockUser = async (userId: string) => {
     setBlockingUserId(userId);
+    setConfirmDialog({ isOpen: false, type: 'unblock', user: null, onConfirm: () => {} });
     try {
       await apiService.unblockUser({ userId });
 
       // Refresh blocked users list
       await loadBlockedUsers();
-      setError(null);
     } catch (error: unknown) {
       const errorMsg =
         error && typeof error === "object" && "response" in error
@@ -184,12 +208,37 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
         </p>
       </div>
 
-      {/* Search Section */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-          <Search className="w-5 h-5" />
-          Search Users
-        </h3>
+      {/* Stats and Search Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Stats Card */}
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">
+                Blocked Users
+              </p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">
+                {isLoadingBlocked ? "..." : blockedUsers.length}
+              </p>
+            </div>
+            <div className="p-3 bg-red-100 rounded-full">
+              <Ban className="w-8 h-8 text-red-600" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <div className="flex items-center text-sm text-gray-600">
+              <AlertTriangle className="w-4 h-4 mr-1" />
+              <span>Requires admin action</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Form */}
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+            <Search className="w-5 h-5" />
+            Search Users
+          </h3>
 
         <form onSubmit={handleSearch} className="space-y-4">
           <div className="flex gap-4">
@@ -308,7 +357,7 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
                       Blocked
                     </span>
                     <button
-                      onClick={() => handleUnblockUser(searchResult.id)}
+                      onClick={() => showUnblockConfirm(searchResult)}
                       disabled={blockingUserId === searchResult.id}
                       className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm flex items-center gap-1"
                     >
@@ -330,7 +379,7 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
                       <option value="30">1 Month</option>
                     </select>
                     <button
-                      onClick={() => handleBlockUser(searchResult.id)}
+                      onClick={() => showBlockConfirm(searchResult)}
                       disabled={blockingUserId === searchResult.id}
                       className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm flex items-center gap-1"
                     >
@@ -351,6 +400,7 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
             <span className="text-red-700">{error}</span>
           </div>
         )}
+        </div>
       </div>
 
       {/* Blocked Users Section */}
@@ -381,81 +431,157 @@ const UserManagementSection: React.FC<UserManagementSectionProps> = ({
             <p>No blocked users found</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {blockedUsers.map((user) => (
-              <div
-                key={user.id}
-                className="p-5 border border-gray-200 rounded-xl hover:border-red-300 hover:shadow-md transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    {user.userInfo?.profilePictureUrl ? (
-                      <div className="relative">
-                        <img
-                          src={user.userInfo.profilePictureUrl}
-                          alt={user.userInfo?.fullName || user.email}
-                          className="w-14 h-14 rounded-full object-cover border-3 border-red-200 shadow-md"
-                        />
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                          <Ban className="w-3 h-3 text-white" />
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    User
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact Info
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Blocked Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Member Since
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {blockedUsers.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="relative">
+                          {user.userInfo?.profilePictureUrl ? (
+                            <img
+                              src={user.userInfo.profilePictureUrl}
+                              alt={user.userInfo?.fullName || user.email}
+                              className="w-12 h-12 rounded-full object-cover border-2 border-red-200"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center border-2 border-red-200">
+                              <Users className="w-6 h-6 text-red-600" />
+                            </div>
+                          )}
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                            <Ban className="w-2.5 h-2.5 text-white" />
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <div className="flex items-center gap-2">
+                            <div className="text-sm font-medium text-gray-900">
+                              {user.userInfo?.fullName || user.email}
+                            </div>
+                            {user.role === "ADMIN" && (
+                              <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                                Admin
+                              </span>
+                            )}
+                          </div>
+                          {user.userInfo?.bio && (
+                            <div className="text-xs text-gray-500 truncate max-w-48">
+                              {user.userInfo.bio}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ) : (
-                      <div className="relative">
-                        <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center border-3 border-red-200 shadow-md">
-                          <Users className="w-7 h-7 text-red-600" />
-                        </div>
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                          <Ban className="w-3 h-3 text-white" />
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold text-gray-900 text-lg">
-                          {user.userInfo?.fullName || user.email}
-                        </p>
-                        {user.role === "ADMIN" && (
-                          <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs font-medium">
-                            Admin
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600 mb-1">{user.email}</p>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{user.email}</div>
                       {user.phoneNumber && (
-                        <p className="text-sm text-gray-600 mb-2">
-                          {user.phoneNumber}
-                        </p>
+                        <div className="text-sm text-gray-500">{user.phoneNumber}</div>
                       )}
-                      <div className="flex flex-col gap-1">
-                        {user.blockDate && (
-                          <p className="text-xs text-red-700 font-medium">
-                            🚫 Blocked since: {formatDate(user.blockDate)}
-                          </p>
-                        )}
-                        {user.createdAt && (
-                          <p className="text-xs text-gray-500">
-                            👤 Member since: {formatDate(user.createdAt)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleUnblockUser(user.id)}
-                    disabled={blockingUserId === user.id}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm flex items-center gap-1"
-                  >
-                    <ShieldOff className="w-4 h-4" />
-                    {blockingUserId === user.id ? "Unblocking..." : "Unblock"}
-                  </button>
-                </div>
-              </div>
-            ))}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.blockDate && (
+                        <div className="text-sm text-red-700 font-medium">
+                          {formatDate(user.blockDate)}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.createdAt && (
+                        <div className="text-sm text-gray-500">
+                          {formatDate(user.createdAt)}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <button
+                        onClick={() => showUnblockConfirm(user)}
+                        disabled={blockingUserId === user.id}
+                        className="bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm flex items-center gap-1 ml-auto"
+                      >
+                        <ShieldOff className="w-4 h-4" />
+                        {blockingUserId === user.id ? "Unblocking..." : "Unblock"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
+
+      {/* Confirm Dialog */}
+      {confirmDialog.isOpen && (
+        <div className="fixed inset-0 bg-gray-600/40 bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`p-2 rounded-full ${
+                confirmDialog.type === 'block' ? 'bg-red-100' : 'bg-green-100'
+              }`}>
+                {confirmDialog.type === 'block' ? (
+                  <Shield className="w-6 h-6 text-red-600" />
+                ) : (
+                  <ShieldOff className="w-6 h-6 text-green-600" />
+                )}
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {confirmDialog.type === 'block' ? 'Block User' : 'Unblock User'}
+              </h3>
+            </div>
+            
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to {confirmDialog.type} {' '}
+              <span className="font-medium text-gray-900">
+                {confirmDialog.user?.userInfo?.fullName || confirmDialog.user?.email}
+              </span>?
+              {confirmDialog.type === 'block' && (
+                <span className="block mt-2 text-sm text-red-600">
+                  This will prevent the user from accessing the platform for {blockDuration} day{parseInt(blockDuration) > 1 ? 's' : ''}.
+                </span>
+              )}
+            </p>
+            
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setConfirmDialog({ isOpen: false, type: 'block', user: null, onConfirm: () => {} })}
+                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDialog.onConfirm}
+                className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                  confirmDialog.type === 'block'
+                    ? 'bg-red-600 hover:bg-red-700'
+                    : 'bg-green-600 hover:bg-green-700'
+                }`}
+              >
+                {confirmDialog.type === 'block' ? 'Block User' : 'Unblock User'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
