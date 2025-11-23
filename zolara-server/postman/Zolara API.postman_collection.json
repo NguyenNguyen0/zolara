@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6e239d29-3628-4e3c-8c06-b25e9d42daa4",
+		"_postman_id": "814f2f86-0a42-45eb-8257-215c414ac7dd",
 		"name": "Zolara API",
 		"description": "Complete API collection for Zolara Backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -682,6 +682,149 @@
 						"description": "Verify OTP for phone number update"
 					},
 					"response": []
+				},
+				{
+					"name": "Check User Status",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gdragon@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/check-user-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"check-user-status"
+							]
+						},
+						"description": "Check if user exists and is blocked before login. Validates blockDate to determine if user can proceed to password entry."
+					},
+					"response": [
+						{
+							"name": "User Active",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"gdragon@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/check-user-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"check-user-status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"exists\": true,\n  \"isBlocked\": false,\n  \"blockDate\": null,\n  \"message\": \"User account is active\",\n  \"canProceed\": true\n}"
+						},
+						{
+							"name": "User Blocked",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"phoneNumber\": \"0123456789\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/check-user-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"check-user-status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"exists\": true,\n  \"isBlocked\": true,\n  \"blockDate\": \"2025-12-31T00:00:00.000Z\",\n  \"message\": \"Your account is blocked until 12/31/2025\",\n  \"canProceed\": false\n}"
+						},
+						{
+							"name": "User Not Found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"notfound@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/check-user-status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"check-user-status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"exists\": false,\n  \"isBlocked\": false,\n  \"message\": \"User not found\"\n}"
+						}
+					]
 				},
 				{
 					"name": "Admin Verify",
