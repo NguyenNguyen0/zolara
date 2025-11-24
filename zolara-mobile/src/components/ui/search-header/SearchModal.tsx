@@ -142,7 +142,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isVisible, onClose }) => {
           {/* Header */}
           <View
             className="flex-row items-center p-3 border-b border-gray-200"
-            style={{ paddingTop: Platform.OS === "ios" ? insets.top : 12 }}
+            style={{ paddingTop: insets.top }}
           >
             <TouchableOpacity onPress={onClose} className="mr-3">
               <ArrowLeft size={24} color="white" />

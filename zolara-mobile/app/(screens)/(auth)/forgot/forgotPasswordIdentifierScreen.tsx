@@ -56,7 +56,7 @@ export default function ForgotPasswordEmailScreen() {
           className="p-4 flex-row items-center w-full px-2.5"
           style={{
             backgroundColor: Colors.light.PRIMARY_500,
-            paddingTop: Platform.OS === "ios" ? insets.top : insets.top + 10,
+            paddingTop: insets.top,
           }}
         >
           <Pressable

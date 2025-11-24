@@ -370,7 +370,7 @@ export default function PhoneContactsScreen() {
         <View
           className="bg-transparent flex-row items-center p-4"
           style={{
-            paddingTop: Platform.OS === "ios" ? insets.top : insets.top + 10,
+            paddingTop: insets.top,
           }}
         >
           <Pressable onPress={() => router.back()}>

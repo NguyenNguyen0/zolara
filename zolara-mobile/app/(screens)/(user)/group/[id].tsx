@@ -1574,7 +1574,7 @@ export default function GroupInfoScreen() {
             end={{ x: 0.99, y: 2.5 }}
             colors={Colors.light.GRADIENT as any}
             style={{
-              paddingTop: Platform.OS === "ios" ? insets.top : 0,
+              paddingTop: insets.top,
             }}
           >
             <HStack className="p-2.5 border-b border-gray-200 justify-between items-center">
