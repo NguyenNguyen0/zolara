@@ -16,6 +16,7 @@ import { useAuth } from "@/hooks/useAuth";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { SocketProvider } from "@/providers/SocketProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,22 +52,24 @@ export default function RootLayout() {
   }, [loaded, isAuthenticated, router]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ErrorBoundary>
-        <GluestackUIProvider mode="light">
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <SocketProvider>
-              <Stack>
-                <Stack.Screen name="(screens)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" options={{ headerShown: false }} />
-              </Stack>
-              <StatusBar style="light" />
-            </SocketProvider>
-          </ThemeProvider>
-        </GluestackUIProvider>
-      </ErrorBoundary>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ErrorBoundary>
+          <GluestackUIProvider mode="light">
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <SocketProvider>
+                <Stack>
+                  <Stack.Screen name="(screens)" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+                </Stack>
+                <StatusBar style="light" />
+              </SocketProvider>
+            </ThemeProvider>
+          </GluestackUIProvider>
+        </ErrorBoundary>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }

@@ -6,6 +6,7 @@ import { Conversation, Message } from "@/types";
 import { useRouter } from "expo-router";
 import { useSocket } from "@/providers/SocketProvider";
 import { useAuthStore } from "@/store/authStore";
+import { HomeHeader } from "./HomeHeader";
 
 const HomeConversations: React.FC = () => {
   const router = useRouter();
@@ -14,6 +15,7 @@ const HomeConversations: React.FC = () => {
   const [filteredConversations, setFilteredConversations] = useState<
     Conversation[]
   >([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const {
     conversations,
     loading,
@@ -26,15 +28,24 @@ const HomeConversations: React.FC = () => {
     updateConversation,
   } = useConversationsStore();
 
-  // Lọc cuộc trò chuyện để chỉ hiển thị với bạn bè và nhóm
+  // Lọc cuộc trò chuyện theo search query
   useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredConversations(conversations);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
     const filtered = conversations.filter((conversation) => {
-      // Luôn hiển thị tất cả cuộc trò chuyện
-      return true;
+      const name = conversation.type === "USER"
+        ? conversation.user?.fullName
+        : conversation.group?.name;
+      
+      return name?.toLowerCase().includes(query);
     });
 
     setFilteredConversations(filtered);
-  }, [conversations]);
+  }, [conversations, searchQuery]);
 
   // Tải danh sách cuộc trò chuyện khi component được mount
   useEffect(() => {
@@ -151,6 +162,7 @@ const HomeConversations: React.FC = () => {
 
   return (
     <View className="flex-1">
+      <HomeHeader onSearchChange={setSearchQuery} />
       <ConversationList
         conversations={filteredConversations}
         onConversationPress={handleConversationPress}
