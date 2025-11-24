@@ -8,28 +8,35 @@ export class MailService {
   private readonly logger = new Logger(MailService.name);
 
   constructor() {
-    const gmailUser = process.env.GMAIL_USER;
-    const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+    const sendgridApiKey = process.env.SENDGRID_API_KEY;
 
-    if (!gmailUser || !gmailAppPassword) {
-      this.logger.error(
-        'Gmail credentials are not set in environment variables',
-      );
+    if (!sendgridApiKey) {
+      this.logger.error('SENDGRID_API_KEY is required');
+      throw new Error('SENDGRID_API_KEY is required');
     }
 
+    this.logger.log('Using SendGrid for email delivery');
     this.transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.sendgrid.net',
+      port: 587,
+      secure: false, // use TLS
       auth: {
-        user: gmailUser,
-        pass: gmailAppPassword,
+        user: 'apikey', // This is fixed for SendGrid
+        pass: sendgridApiKey,
       },
     });
   }
 
   async sendOtpEmail(email: string, otp: string) {
     try {
+      const fromEmail = process.env.SENDGRID_FROM_EMAIL;
+      
+      if (!fromEmail) {
+        throw new Error('SENDGRID_FROM_EMAIL is required');
+      }
+
       const info = await this.transporter.sendMail({
-        from: `"Zolara" <${process.env.GMAIL_USER}>`,
+        from: `"Zolara" <${fromEmail}>`,
         to: email,
         subject: 'Verify your email address',
         html: `
@@ -51,16 +58,6 @@ export class MailService {
               <tr>
                 <td align="center">
                   <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                    
-                    <!-- Logo Section -->
-                    <tr>
-                      <td style="padding: 48px 48px 32px 48px; text-align: center;">
-                        <img src="https://bpvhtgzjpccsngxhiugw.supabase.co/storage/v1/object/public/system/system/2507031a-c38d-4697-a0e5-cac96629fa99.png" 
-                             alt="Zolara" 
-                             style="width: 80px; height: 80px; border-radius: 16px;"
-                        />
-                      </td>
-                    </tr>
 
                     <!-- Title -->
                     <tr>
