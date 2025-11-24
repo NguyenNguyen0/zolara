@@ -161,7 +161,6 @@ export default function NewsScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{
-          paddingTop: insets.top,
           paddingBottom: insets.bottom + 80,
         }}
         refreshControl={

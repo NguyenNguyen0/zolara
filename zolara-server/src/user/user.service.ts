@@ -11,8 +11,9 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   private validateUUID(id: string): void {
+    // Simplified UUID validation - accepts all UUID formats
     const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
       throw new BadRequestException('Invalid user ID format');
     }
