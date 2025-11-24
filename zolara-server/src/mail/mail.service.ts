@@ -1,10 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import { Transporter } from 'nodemailer';
+import * as sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class MailService {
-  private transporter: Transporter;
   private readonly logger = new Logger(MailService.name);
 
   constructor() {
@@ -15,16 +13,8 @@ export class MailService {
       throw new Error('SENDGRID_API_KEY is required');
     }
 
-    this.logger.log('Using SendGrid for email delivery');
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.sendgrid.net',
-      port: 2525, // Use port 2525 instead of 587 for Railway
-      secure: false, // use TLS
-      auth: {
-        user: 'apikey', // This is fixed for SendGrid
-        pass: sendgridApiKey,
-      },
-    });
+    this.logger.log('Using SendGrid Web API for email delivery');
+    sgMail.setApiKey(sendgridApiKey);
   }
 
   async sendOtpEmail(email: string, otp: string) {
@@ -35,9 +25,12 @@ export class MailService {
         throw new Error('SENDGRID_FROM_EMAIL is required');
       }
 
-      const info = await this.transporter.sendMail({
-        from: `"Zolara" <${fromEmail}>`,
+      const msg = {
         to: email,
+        from: {
+          email: fromEmail,
+          name: 'Zolara',
+        },
         subject: 'Verify your email address',
         html: `
           <!DOCTYPE html>
@@ -189,8 +182,9 @@ export class MailService {
           </body>
           </html>
         `,
-      });
+      };
 
+      await sgMail.send(msg);
       this.logger.log(`Email sent successfully to ${email}`);
       return true;
     } catch (error) {

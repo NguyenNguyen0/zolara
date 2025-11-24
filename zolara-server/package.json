@@ -44,6 +44,7 @@
     "@nestjs/websockets": "^11.1.8",
     "@prisma/client": "^6.19.0",
     "@redis/client": "^5.9.0",
+    "@sendgrid/mail": "^8.1.6",
     "@supabase/supabase-js": "^2.81.1",
     "@types/multer": "^2.0.0",
     "@types/nodemailer": "^7.0.3",
