@@ -32,7 +32,7 @@
         ],
         "BGTaskSchedulerPermittedIdentifiers": [
           "com.zolara.mobile.refresh",
-          "com.zolara.mobile.background-fetch",
+          "com.zolara.mobile.background-fetch"
         ],
         "ITSAppUsesNonExemptEncryption": false
       },
