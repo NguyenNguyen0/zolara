@@ -18,7 +18,7 @@ export class MailService {
     this.logger.log('Using SendGrid for email delivery');
     this.transporter = nodemailer.createTransport({
       host: 'smtp.sendgrid.net',
-      port: 587,
+      port: 2525, // Use port 2525 instead of 587 for Railway
       secure: false, // use TLS
       auth: {
         user: 'apikey', // This is fixed for SendGrid
