@@ -91,22 +91,30 @@ const AudioMessage: React.FC<AudioMessageProps> = ({ url }) => {
   const progressPercentage = duration > 0 ? (position / duration) * 100 : 0;
 
   return (
-    <TouchableOpacity onPress={togglePlayback} style={styles.container}>
+    <TouchableOpacity onPress={togglePlayback} style={styles.container} activeOpacity={0.7}>
       <View style={styles.contentContainer}>
         <View style={styles.controlsContainer}>
           <View style={styles.controlsContainer}>
-            <Volume2 size={20} color={Colors.light.PRIMARY} />
+            <View style={{ 
+              backgroundColor: 'rgba(139, 92, 246, 0.1)', 
+              borderRadius: 20, 
+              padding: 8,
+              marginRight: 2 
+            }}>
+              <Volume2 size={20} color={Colors.light.PRIMARY} strokeWidth={2.5} />
+            </View>
             <TouchableOpacity
               onPress={togglePlayback}
               disabled={isLoading}
               style={styles.playButton}
+              activeOpacity={0.8}
             >
               {isLoading ? (
                 <Text style={styles.loadingText}>...</Text>
               ) : isPlaying ? (
-                <Pause size={20} color={Colors.light.PRIMARY} />
+                <Pause size={22} color="#FFFFFF" fill="#FFFFFF" strokeWidth={2} />
               ) : (
-                <Play size={20} color={Colors.light.PRIMARY} />
+                <Play size={22} color="#FFFFFF" fill="#FFFFFF" strokeWidth={2} style={{ marginLeft: 2 }} />
               )}
             </TouchableOpacity>
           </View>
@@ -127,12 +135,12 @@ const AudioMessage: React.FC<AudioMessageProps> = ({ url }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#f1f1f1",
-    borderRadius: 12,
-    padding: 10,
+    backgroundColor: "transparent",
+    borderRadius: 16,
+    padding: 12,
     marginVertical: 4,
     alignItems: "center",
-    width: 250,
+    minWidth: 260,
   },
   iconContainer: {
     marginRight: 10,
@@ -141,15 +149,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   progressContainer: {
-    height: 4,
-    backgroundColor: "#ddd",
-    borderRadius: 2,
-    marginTop: 8,
+    height: 6,
+    backgroundColor: "rgba(0, 0, 0, 0.08)",
+    borderRadius: 3,
+    marginTop: 10,
     overflow: "hidden",
   },
   progressBar: {
     height: "100%",
     backgroundColor: Colors.light.PRIMARY,
+    borderRadius: 3,
   },
   controlsContainer: {
     flexDirection: "row",
@@ -157,21 +166,30 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   playButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#e0e0e0",
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.light.PRIMARY,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 15,
+    marginLeft: 12,
+    shadowColor: Colors.light.PRIMARY,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   timeText: {
-    fontSize: 12,
-    color: "#666",
+    fontSize: 13,
+    color: "#555",
+    fontWeight: "500",
   },
   loadingText: {
     fontSize: 10,
-    color: "#666",
+    color: "#555",
   },
 });
 

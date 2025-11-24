@@ -49,11 +49,11 @@ interface ReactionOption {
 
 const reactionOptions: ReactionOption[] = [
   { type: "LIKE", emoji: "👍" },
-  { type: "LOVE", emoji: "❤️" },
-  { type: "HAHA", emoji: "😆" },
-  { type: "WOW", emoji: "😮" },
-  { type: "SAD", emoji: "😢" },
-  { type: "ANGRY", emoji: "😠" },
+  { type: "LOVE", emoji: "💖" },
+  { type: "HAHA", emoji: "😂" },
+  { type: "WOW", emoji: "😲" },
+  { type: "SAD", emoji: "😥" },
+  { type: "ANGRY", emoji: "😡" },
 ];
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -250,8 +250,27 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           )}
           style={
             isMyMessage
-              ? { backgroundColor: Colors.light.MESSAGE_BUBBLE_BG }
-              : undefined
+              ? { 
+                  backgroundColor: Colors.light.MESSAGE_BUBBLE_BG,
+                  shadowColor: Colors.light.PRIMARY,
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 4,
+                  elevation: 3,
+                }
+              : {
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 1,
+                  },
+                  shadowOpacity: 0.08,
+                  shadowRadius: 3,
+                  elevation: 2,
+                }
           }
         >
           <View className="p-2.5 px-4">
