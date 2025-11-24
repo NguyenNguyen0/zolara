@@ -19,8 +19,10 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3000
+      - REDIS_URL=${REDIS_URL}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
       - GMAIL_USER=${GMAIL_USER}
       - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
       - SUPABASE_URL=${SUPABASE_URL}
@@ -67,12 +69,24 @@ services:
     container_name: redis
     ports:
       - '6379:6379'
+    command: sh -c "if [ -n \"$${REDIS_PASSWORD}\" ]; then redis-server --requirepass \"$${REDIS_PASSWORD}\"; else redis-server; fi"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - redis-data:/data
     networks:
       - zolara-network
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test:
+        - CMD
+        - sh
+        - -c
+        - |
+          if [ -n "$$REDIS_PASSWORD" ]; then
+            redis-cli --no-auth-warning -a "$$REDIS_PASSWORD" ping
+          else
+            redis-cli ping
+          fi
       interval: 10s
       timeout: 5s
       retries: 5
