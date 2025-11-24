@@ -86,7 +86,7 @@ export default function SearchHeader({
       <View
         className="flex-row items-center justify-between "
         style={{
-          paddingTop: Platform.OS === "ios" ? insets.top : insets.top + 10,
+          paddingTop: insets.top,
         }}
       >
         <View className="flex-1">

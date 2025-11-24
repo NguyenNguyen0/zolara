@@ -182,11 +182,11 @@ export default function FriendRequestScreen() {
           end={{ x: 0.99, y: 2.5 }}
           colors={Colors.light.GRADIENT as any}
           style={{
-            paddingTop: Platform.OS === "ios" ? 0 : insets.top,
+            paddingTop: insets.top,
           }}
         >
           {/* WebSocket connection indicator */}
-          <View style={{ paddingTop: insets.top }} className="pb-4 px-4">
+          <View className="pb-4 px-4">
             <HStack className="items-center">
               <TouchableOpacity onPress={() => router.back()}>
                 <ArrowLeft size={24} color="white" />

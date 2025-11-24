@@ -80,7 +80,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
       <View
         className="flex-row items-center justify-between px-4 py-2"
         style={{
-          paddingTop: Platform.OS === "ios" ? insets.top : insets.top + 5,
+          paddingTop: insets.top,
         }}
       >
         <HStack className="items-center justify-between w-full">

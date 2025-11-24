@@ -79,14 +79,14 @@ const VerifyOTPScreen = () => {
     <View
       className="flex-1 justify-between items-center bg-white pt-8 pb-8 px-4"
       style={{
-        paddingTop: Platform.OS === "ios" ? insets.top : 20,
+        paddingTop: insets.top,
       }}
     >
       <Pressable
         onPress={() => router.back()}
         className="absolute top-8 left-4"
         style={{
-          top: Platform.OS === "ios" ? insets.top : 20,
+          top: insets.top + 8,
         }}
       >
         <ArrowLeft size={24} color={"black"} />

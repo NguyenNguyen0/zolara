@@ -207,7 +207,7 @@ export default function ContactScreen() {
   );
 
   return (
-    <View className="flex-1 bg-gray-100" style={{ paddingTop: insets.top }}>
+    <View className="flex-1 bg-gray-100">
       <HStack className=" px-4  bg-white">
         {/* WebSocket connection indicator */}
         <Pressable

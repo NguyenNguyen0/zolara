@@ -64,7 +64,7 @@ const SettingsScreen = () => {
         end={{ x: 0.99, y: 2.5 }}
         colors={Colors.light.GRADIENT as any}
         style={{
-          paddingTop: Platform.OS === "ios" ? insets.top : insets.top + 10,
+          paddingTop: insets.top,
           paddingBottom: 10,
         }}
       >
